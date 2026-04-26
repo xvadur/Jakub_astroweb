@@ -17,7 +17,9 @@ export const site = {
     endpoint: "",
     source: "jakub-olsa-web",
   },
-  heroImage: "/images/jakub-portrait.png",
+  logoImage: "/images/brand/jakub-logo.jpg",
+  heroImage: "/images/brand/jakub-official.jpg",
+  posterImage: "/images/brand/jakub-poster.jpg",
   handshakeImage: "/images/jakub-handshake.png",
   proofPoints: [
     "individuálny prístup",

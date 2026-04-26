@@ -38,8 +38,11 @@ const isSold = listing.group === "sold";
   <body>
     <header class="site-header">
       <a class="brand" href="/">
-        <span>{site.brand}</span>
-        <small>{site.role}</small>
+        <img class="brand-mark" src={site.logoImage} alt="" />
+        <span class="brand-label">
+          <span>{site.brand}</span>
+          <small>{site.role}</small>
+        </span>
       </a>
       <nav aria-label="Navigácia detailu">
         <a href="/#ponuky">Ponuky</a>
@@ -111,15 +114,17 @@ const isSold = listing.group === "sold";
 
     <style>
       :root {
-        --paper: #f5f1e8;
-        --paper-strong: #ebe2d4;
-        --ink: #1e1c19;
-        --muted: #6d665f;
-        --wine: #6a3b36;
-        --brass: #b08d57;
+        --paper: #f6f1e8;
+        --paper-strong: #e9dfcf;
+        --ink: #0b0b0a;
+        --charcoal: #1b1b19;
+        --muted: #6f6a62;
+        --wine: #9a5c32;
+        --brass: #d8b878;
+        --brass-muted: #b8945b;
         --white: #fffaf2;
-        --line: rgba(30, 28, 25, 0.16);
-        --shadow: 0 24px 70px rgba(30, 28, 25, 0.13);
+        --line: rgba(11, 11, 10, 0.16);
+        --shadow: 0 24px 70px rgba(11, 11, 10, 0.2);
         --font-body: "Instrument Sans", system-ui, sans-serif;
         --font-display: "Newsreader", Georgia, serif;
       }
@@ -164,26 +169,41 @@ const isSold = listing.group === "sold";
         justify-content: space-between;
         gap: 24px;
         padding: 10px 14px 10px 18px;
-        border: 1px solid rgba(255, 250, 242, 0.34);
+        border: 1px solid rgba(216, 184, 120, 0.3);
         border-radius: 8px;
-        background: rgba(30, 28, 25, 0.72);
+        background: rgba(11, 11, 10, 0.78);
         color: var(--white);
         transform: translateX(-50%);
         backdrop-filter: blur(18px);
       }
 
       .brand {
+        display: flex;
+        min-width: 0;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .brand-mark {
+        width: 112px;
+        height: 36px;
+        object-fit: cover;
+        object-position: center;
+        mix-blend-mode: screen;
+      }
+
+      .brand-label {
         display: grid;
       }
 
-      .brand span {
+      .brand-label span {
         font-family: var(--font-display);
         font-size: 24px;
         font-weight: 650;
         line-height: 1;
       }
 
-      .brand small,
+      .brand-label small,
       nav {
         color: rgba(255, 250, 242, 0.72);
       }
@@ -202,6 +222,7 @@ const isSold = listing.group === "sold";
         border-radius: 6px;
         padding: 0 14px;
         font-weight: 700;
+        white-space: nowrap;
       }
 
       .detail-hero,
@@ -218,6 +239,9 @@ const isSold = listing.group === "sold";
         align-items: center;
         padding-top: 118px;
         padding-bottom: 72px;
+        background:
+          radial-gradient(circle at 84% 18%, rgba(216, 184, 120, 0.16), transparent 30%),
+          var(--paper);
       }
 
       .detail-hero > div {
@@ -353,7 +377,7 @@ const isSold = listing.group === "sold";
       }
 
       .highlights span {
-        border: 1px solid rgba(30, 28, 25, 0.18);
+        border: 1px solid rgba(11, 11, 10, 0.18);
         border-radius: 999px;
         padding: 10px 14px;
         background: rgba(255, 250, 242, 0.54);
@@ -367,12 +391,12 @@ const isSold = listing.group === "sold";
         align-items: center;
         padding-top: 100px;
         padding-bottom: 100px;
-        background: var(--ink);
+        background: linear-gradient(110deg, var(--ink), var(--charcoal));
         color: var(--white);
       }
 
       .detail-cta .eyebrow {
-        color: #e7c385;
+        color: var(--brass);
       }
 
       .cta-actions {
@@ -430,16 +454,25 @@ const isSold = listing.group === "sold";
         .site-header {
           width: calc(100% - 20px);
           min-height: 58px;
+          gap: 10px;
         }
 
-        .brand span {
+        .brand-label span {
           font-size: 21px;
+        }
+
+        .brand-label {
+          display: none;
+        }
+
+        .brand-mark {
+          width: 88px;
         }
 
         .header-phone {
           min-height: 38px;
-          padding: 0 12px;
-          font-size: 14px;
+          padding: 0 10px;
+          font-size: 13px;
         }
 
         .detail-hero,
