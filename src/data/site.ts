@@ -94,9 +94,9 @@ export const site = {
   },
   listingsIntro: {
     eyebrow: "Nehnuteľnosti",
-    title: "Predané nehnuteľnosti a pripravené miesto pre nové ponuky.",
+    title: "Predaje, ktoré majú ukázať spôsob práce.",
     text:
-      "Každá nehnuteľnosť má vlastnú detailnú stránku s fotkami, parametrami, textom a jasnou výzvou na kontakt. Referencie ukazujú výsledok, aktuálne ponuky doplníme po dodaní podkladov.",
+      "Každá referencia má rovnaký rytmus: typ nehnuteľnosti, rozhodujúci kontext a výsledok. Aktuálne ponuky doplníme po dodaní podkladov.",
   },
   listings: [
     {
@@ -114,9 +114,9 @@ export const site = {
         "/images/listings/orenburska-polyfunkcny-objekt/04-hala.jpg",
         "/images/listings/orenburska-polyfunkcny-objekt/05-kuchyna.jpg",
       ],
-      note: "Objekt s výmerou približne 1 000 m², vhodný ako rodinné alebo firemné sídlo.",
+      note: "Veľký objekt s jasným komerčným potenciálom. Predaj sa postavil na využití pre firmu, nie iba na parametroch budovy.",
       summary:
-        "Polyfunkčný objekt v Podunajských Biskupiciach sa predal za 810 000 €. Kupujúci ho využil práve na firemné účely.",
+        "Predaj polyfunkčného objektu za 810 000 €. Nehnuteľnosť sa od začiatku komunikovala ako priestor pre rodinné alebo firemné sídlo.",
       specs: [
         { label: "Typ", value: "polyfunkčný objekt" },
         { label: "Výmera", value: "približne 1 000 m²" },
@@ -124,9 +124,9 @@ export const site = {
         { label: "Výsledok", value: "predané za 810 000 €" },
         { label: "Využitie", value: "firemné sídlo" },
       ],
-      highlights: ["firemné sídlo", "veľkorysá výmera", "polyfunkčné využitie", "predané za 810 000 €"],
+      highlights: ["firemné sídlo", "približne 1 000 m²", "polyfunkčné využitie", "výsledok 810 000 €"],
       detail:
-        "Predaj stál na jasnom pomenovaní využitia nehnuteľnosti. Objekt dával zmysel nielen ako veľké rodinné bývanie, ale aj ako reprezentatívne firemné zázemie. Práve tento smer sa napokon ukázal ako rozhodujúci a nehnuteľnosť bola predaná na firemné účely.",
+        "Pri tomto predaji bolo dôležité nepôsobiť len ako ďalší veľký dom v ponuke. Objekt mal silný potenciál ako reprezentatívne firemné zázemie, preto bolo potrebné pomenovať využitie, kupujúceho a hodnotu širšie než iba cez metre štvorcové. Predaj sa napokon uzavrel práve na firemné účely.",
       href: "/nehnutelnosti/polyfunkcny-objekt-orenburska/",
       cta: "Pozrieť predaj",
     },
@@ -145,9 +145,9 @@ export const site = {
         "/images/listings/skalicka-cesta-4-izbovy-byt/04-spalna.jpg",
         "/images/listings/skalicka-cesta-4-izbovy-byt/05-obyvacka-detail.jpg",
       ],
-      note: "156 m², dve terasy, tri kúpeľne a predaj za rekordných 8 dní.",
+      note: "Prémiový byt s veľkou výmerou a silnými parametrami. Dôležité bolo rýchlo ukázať, pre koho má takýto byt najväčší zmysel.",
       summary:
-        "Veľkorysý 4-izbový byt na Skalickej ceste bol predaný za 650 000 € za rekordných 8 dní.",
+        "Predaj 4-izbového bytu za 650 000 € za rekordných 8 dní. Rozhodovali výmera, dve terasy a presne nastavená prezentácia.",
       specs: [
         { label: "Typ", value: "4-izbový byt" },
         { label: "Výmera", value: "156 m²" },
@@ -155,9 +155,9 @@ export const site = {
         { label: "Kúpeľne", value: "3 kúpeľne" },
         { label: "Výsledok", value: "predané za 8 dní" },
       ],
-      highlights: ["156 m²", "2 terasy", "3 kúpeľne", "predané za 650 000 €", "predané za 8 dní"],
+      highlights: ["156 m²", "2 terasy", "3 kúpeľne", "výsledok 650 000 €", "predané za 8 dní"],
       detail:
-        "Pri tejto nehnuteľnosti rozhodovala kombinácia veľkej výmery, silnej prezentácie a správne nastavenej ceny. Byt mal parametre, ktoré bolo potrebné komunikovať jasne: 156 m², dve terasy a tri kúpeľne. Výsledkom bol rýchly predaj za 650 000 €.",
+        "Pri tejto nehnuteľnosti bolo potrebné okamžite zdôrazniť, že nejde o bežný 4-izbový byt. Výmera 156 m², dve terasy a tri kúpeľne vytvárali silný argument pre konkrétny typ kupujúceho. Po správnom nastavení prezentácie a ceny sa predaj uzavrel za 8 dní.",
       href: "/nehnutelnosti/4-izbovy-byt-skalicka-cesta/",
       cta: "Pozrieť predaj",
     },
@@ -176,18 +176,18 @@ export const site = {
         "/images/listings/luxusna-rekonstrukcia-3-izbovy-byt/04-jedalen.jpg",
         "/images/listings/luxusna-rekonstrukcia-3-izbovy-byt/05-kuchyna.jpg",
       ],
-      note: "Krásny 3-izbový byt po kvalitnej rekonštrukcii, predaný za 259 500 €.",
+      note: "Byt po výraznej rekonštrukcii, kde bolo potrebné predať kvalitu prevedenia a pocit z interiéru, nie len dispozíciu.",
       summary:
-        "3-izbový byt po luxusnej rekonštrukcii ukázal, ako veľmi záleží na prezentácii detailov a dojme z interiéru.",
+        "Predaj 3-izbového bytu za 259 500 €. Hlavnou hodnotou bola kvalitná rekonštrukcia a čistý vizuálny dojem.",
       specs: [
         { label: "Typ", value: "3-izbový byt" },
         { label: "Stav", value: "luxusná rekonštrukcia" },
         { label: "Lokalita", value: "Bratislava" },
         { label: "Výsledok", value: "predané za 259 500 €" },
       ],
-      highlights: ["3-izbový byt", "luxusná rekonštrukcia", "kvalitná prezentácia", "predané za 259 500 €"],
+      highlights: ["3-izbový byt", "luxusná rekonštrukcia", "kvalitná prezentácia", "výsledok 259 500 €"],
       detail:
-        "Pri kompletne zrekonštruovanom byte bolo dôležité ukázať kvalitu prevedenia, svetlo, materiály a celkový pocit z bývania. Referencia je pripravená ako predajný príbeh, ktorý neskôr doplníme o presnejší text po Jakubovej korekcii.",
+        "Pri zrekonštruovanom byte nestačí napísať, že je pekný. Kupujúci potrebuje vidieť detaily, svetlo, materiály a celkový pocit z bývania. Preto referencia stojí na vizuálnej prezentácii a jasnom výsledku, ktorý sa dá neskôr doplniť o presnejší príbeh predaja.",
       href: "/nehnutelnosti/3-izbovy-byt-luxusna-rekonstrukcia/",
       cta: "Pozrieť predaj",
     },
@@ -206,18 +206,18 @@ export const site = {
         "/images/listings/slnecnice-2-izbovy-byt/04-kuchyna.jpg",
         "/images/listings/slnecnice-2-izbovy-byt/05-kuchyna-detail.jpg",
       ],
-      note: "2-izbový byt s výmerou 65 m² v Slnečniciach, predaný za 255 000 €.",
+      note: "Moderný 2-izbový byt v lokalite, kde kupujúci veľa porovnávajú. Rozhodovalo jasné odlíšenie od podobných ponúk.",
       summary:
-        "Moderný 2-izbový byt v Slnečniciach v Petržalke bol predaný za 255 000 €.",
+        "Predaj 2-izbového bytu v Slnečniciach za 255 000 €. Pri výmere 65 m² bolo dôležité ukázať praktickosť a lokalitu.",
       specs: [
         { label: "Typ", value: "2-izbový byt" },
         { label: "Výmera", value: "65 m²" },
         { label: "Lokalita", value: "Slnečnice, Petržalka" },
         { label: "Výsledok", value: "predané za 255 000 €" },
       ],
-      highlights: ["Slnečnice", "65 m²", "2-izbový byt", "predané za 255 000 €"],
+      highlights: ["Slnečnice", "65 m²", "2-izbový byt", "výsledok 255 000 €"],
       detail:
-        "Slnečnice sú lokalita, kde kupujúci porovnávajú veľa podobných ponúk naraz. Pri tomto byte preto dávalo zmysel postaviť prezentáciu na čistých fotkách, zrozumiteľných parametroch a jasnom výsledku.",
+        "Slnečnice sú lokalita, kde kupujúci často porovnávajú viac podobných bytov naraz. Pri tomto predaji preto dávalo zmysel postaviť prezentáciu na praktickej výmere, čistých fotkách a rýchlom pochopení hodnoty. Výsledkom bol predaj za 255 000 €.",
       href: "/nehnutelnosti/2-izbovy-byt-slnecnice/",
       cta: "Pozrieť predaj",
     },

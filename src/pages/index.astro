@@ -179,10 +179,20 @@ const jsonLd = {
 
           <div class="listing-group sold-listings" data-reveal>
             <div class="listing-group-heading">
-              <p class="eyebrow">Predané byty a referencie</p>
-              <span>{soldListings.length} predané referencie</span>
+              <div>
+                <p class="eyebrow">Predané byty a referencie</p>
+                <span>{soldListings.length} predané referencie</span>
+              </div>
+              <div class="carousel-controls" aria-label="Ovládanie referencií">
+                <button type="button" class="carousel-button" data-carousel-prev aria-label="Predchádzajúca referencia">
+                  ‹
+                </button>
+                <button type="button" class="carousel-button" data-carousel-next aria-label="Ďalšia referencia">
+                  ›
+                </button>
+              </div>
             </div>
-            <div class="listing-grid">
+            <div class="listing-carousel" data-carousel-track>
               {
                 soldListings.map((listing) => (
                   <article class="listing sold">
@@ -496,9 +506,39 @@ const jsonLd = {
           .map(([key, value]) => `${key}: ${value}`)
           .join("\n");
 
-        window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-        status.textContent = "Otvoril sa email s predvyplneným dopytom.";
+      window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      status.textContent = "Otvoril sa email s predvyplneným dopytom.";
       });
+
+      const carouselTrack = document.querySelector("[data-carousel-track]");
+      const carouselPrev = document.querySelector("[data-carousel-prev]");
+      const carouselNext = document.querySelector("[data-carousel-next]");
+
+      const scrollCarousel = (direction) => {
+        if (!carouselTrack) return;
+
+        const firstCard = carouselTrack.querySelector(".listing");
+        const cardWidth = firstCard?.getBoundingClientRect().width ?? 320;
+        const gap = Number.parseFloat(getComputedStyle(carouselTrack).columnGap || "18");
+        const maxScroll = carouselTrack.scrollWidth - carouselTrack.clientWidth;
+        const nearStart = carouselTrack.scrollLeft <= 4;
+        const nearEnd = carouselTrack.scrollLeft >= maxScroll - 4;
+
+        if (direction > 0 && nearEnd) {
+          carouselTrack.scrollTo({ left: 0, behavior: "smooth" });
+          return;
+        }
+
+        if (direction < 0 && nearStart) {
+          carouselTrack.scrollTo({ left: maxScroll, behavior: "smooth" });
+          return;
+        }
+
+        carouselTrack.scrollBy({ left: direction * (cardWidth + gap), behavior: "smooth" });
+      };
+
+      carouselPrev?.addEventListener("click", () => scrollCarousel(-1));
+      carouselNext?.addEventListener("click", () => scrollCarousel(1));
 
       const mobileCta = document.querySelector(".mobile-cta");
       const toggleMobileCta = () => {
@@ -1136,16 +1176,68 @@ const jsonLd = {
         margin-bottom: 0;
       }
 
+      .listing-group-heading > div:first-child {
+        display: grid;
+        gap: 6px;
+      }
+
       .listing-group-heading span {
         color: var(--muted);
         font-size: 14px;
         font-weight: 700;
       }
 
+      .carousel-controls {
+        display: flex;
+        gap: 8px;
+      }
+
+      .carousel-button {
+        display: inline-grid;
+        width: 44px;
+        height: 44px;
+        place-items: center;
+        border: 1px solid rgba(11, 11, 10, 0.22);
+        border-radius: 999px;
+        background: rgba(255, 250, 242, 0.72);
+        color: var(--ink);
+        cursor: pointer;
+        font: inherit;
+        font-size: 28px;
+        line-height: 1;
+        transition: background 160ms ease, border-color 160ms ease, transform 160ms ease;
+      }
+
+      .carousel-button:hover {
+        border-color: var(--brass-muted);
+        background: var(--brass);
+        transform: translateY(-1px);
+      }
+
       .listing-grid {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 18px;
+      }
+
+      .listing-carousel {
+        display: flex;
+        gap: 18px;
+        overflow-x: auto;
+        padding: 2px 0 16px;
+        scroll-behavior: smooth;
+        scroll-padding-inline: 1px;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: none;
+      }
+
+      .listing-carousel::-webkit-scrollbar {
+        display: none;
+      }
+
+      .listing-carousel .listing {
+        flex: 0 0 clamp(330px, 32vw, 390px);
+        scroll-snap-align: start;
       }
 
       .listing {
@@ -1509,6 +1601,10 @@ const jsonLd = {
           grid-template-columns: repeat(2, minmax(0, 1fr));
         }
 
+        .listing-carousel .listing {
+          flex-basis: min(420px, 58vw);
+        }
+
         .positioning-panel p {
           max-width: none;
           align-self: start;
@@ -1652,6 +1748,24 @@ const jsonLd = {
           display: grid;
           align-items: start;
           gap: 6px;
+        }
+
+        .carousel-controls {
+          justify-self: start;
+        }
+
+        .carousel-button {
+          width: 42px;
+          height: 42px;
+        }
+
+        .listing-carousel {
+          margin-right: -18px;
+          padding-right: 18px;
+        }
+
+        .listing-carousel .listing {
+          flex-basis: min(84vw, 340px);
         }
 
         .listing dl {
