@@ -77,7 +77,7 @@ const isSold = listing.group === "sold";
       <section class="detail-section detail-grid">
         <div>
           <p class="eyebrow">{isSold ? "Referenčný predaj" : "Detail ponuky"}</p>
-          <h2>{isSold ? "Čo bude detail ukazovať" : "Informácie o nehnuteľnosti"}</h2>
+          <h2>{isSold ? "Výsledok predaja" : "Informácie o nehnuteľnosti"}</h2>
           <p>{listing.detail}</p>
         </div>
         <dl class="specs">
@@ -187,9 +187,8 @@ const isSold = listing.group === "sold";
       .brand-mark {
         width: 112px;
         height: 36px;
-        object-fit: cover;
+        object-fit: contain;
         object-position: center;
-        mix-blend-mode: screen;
       }
 
       .brand-label {

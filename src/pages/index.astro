@@ -139,33 +139,40 @@ const jsonLd = {
           <div class="listing-group" data-reveal>
             <div class="listing-group-heading">
               <p class="eyebrow">Aktuálne v ponuke</p>
-              <span>{availableListings.length} ponuka</span>
+              <span>{availableListings.length ? `${availableListings.length} ponuka` : "doplníme neskôr"}</span>
             </div>
             <div class="listing-grid">
               {
-                availableListings.map((listing) => (
-                  <article class="listing">
-                    <a href={listing.href} aria-label={`Detail: ${listing.title}`}>
-                      <img src={listing.image} alt="" loading="lazy" />
-                      <div>
-                        <p>{listing.status}</p>
-                        <h3>{listing.title}</h3>
-                        <dl>
-                          <div>
-                            <dt>Lokalita</dt>
-                            <dd>{listing.place}</dd>
-                          </div>
-                          <div>
-                            <dt>Cena</dt>
-                            <dd>{listing.price}</dd>
-                          </div>
-                        </dl>
-                        <span>{listing.note}</span>
-                        <strong>{listing.cta}</strong>
-                      </div>
-                    </a>
-                  </article>
-                ))
+                availableListings.length ? (
+                  availableListings.map((listing) => (
+                    <article class="listing">
+                      <a href={listing.href} aria-label={`Detail: ${listing.title}`}>
+                        <img src={listing.image} alt="" loading="lazy" />
+                        <div>
+                          <p>{listing.status}</p>
+                          <h3>{listing.title}</h3>
+                          <dl>
+                            <div>
+                              <dt>Lokalita</dt>
+                              <dd>{listing.place}</dd>
+                            </div>
+                            <div>
+                              <dt>Cena</dt>
+                              <dd>{listing.price}</dd>
+                            </div>
+                          </dl>
+                          <span>{listing.note}</span>
+                          <strong>{listing.cta}</strong>
+                        </div>
+                      </a>
+                    </article>
+                  ))
+                ) : (
+                  <div class="listing-empty">
+                    <p>Aktuálne ponuky doplníme po dodaní fotiek, parametrov a ceny.</p>
+                    <span>Zatiaľ je pripravená štruktúra detailov, galérie aj kontaktu.</span>
+                  </div>
+                )
               }
             </div>
           </div>
@@ -173,7 +180,7 @@ const jsonLd = {
           <div class="listing-group sold-listings" data-reveal>
             <div class="listing-group-heading">
               <p class="eyebrow">Predané byty a referencie</p>
-              <span>{soldListings.length} pripravené referencie</span>
+              <span>{soldListings.length} predané referencie</span>
             </div>
             <div class="listing-grid">
               {
@@ -1212,6 +1219,30 @@ const jsonLd = {
 
       .listing.sold {
         background: rgba(255, 250, 242, 0.62);
+      }
+
+      .listing-empty {
+        display: grid;
+        min-height: 190px;
+        grid-column: 1 / -1;
+        align-content: center;
+        gap: 8px;
+        border: 1px dashed rgba(11, 11, 10, 0.22);
+        border-radius: 8px;
+        padding: 26px;
+        background: rgba(255, 250, 242, 0.44);
+      }
+
+      .listing-empty p {
+        margin: 0;
+        color: var(--ink);
+        font-size: 22px;
+        font-weight: 800;
+        line-height: 1.15;
+      }
+
+      .listing-empty span {
+        color: var(--muted);
       }
 
       .contact-section {
