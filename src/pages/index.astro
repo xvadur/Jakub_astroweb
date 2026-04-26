@@ -8,7 +8,8 @@ const hasInstagram = site.contact.instagram.startsWith("http");
 const contactHref = hasPhone ? `tel:${cleanPhone}` : "#kontakt";
 const contactLabel = hasPhone ? site.contact.phone : "Kontakt";
 const canSubmitLead = Boolean(site.lead.endpoint || hasEmail);
-const listingSets = [site.listings, site.listings, site.listings];
+const availableListings = site.listings.filter((listing) => listing.group === "available");
+const soldListings = site.listings.filter((listing) => listing.group === "sold");
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "RealEstateAgent",
@@ -122,6 +123,83 @@ const jsonLd = {
         </article>
       </section>
 
+      <section class="section listings" id="ponuky">
+        <div class="section-heading" data-reveal>
+          <p class="eyebrow">{site.listingsIntro.eyebrow}</p>
+          <h2>{site.listingsIntro.title}</h2>
+          <p>{site.listingsIntro.text}</p>
+        </div>
+        <div class="listing-groups">
+          <div class="listing-group" data-reveal>
+            <div class="listing-group-heading">
+              <p class="eyebrow">Aktuálne v ponuke</p>
+              <span>{availableListings.length} ponuka</span>
+            </div>
+            <div class="listing-grid">
+              {
+                availableListings.map((listing) => (
+                  <article class="listing">
+                    <a href={listing.href} aria-label={`Detail: ${listing.title}`}>
+                      <img src={listing.image} alt="" loading="lazy" />
+                      <div>
+                        <p>{listing.status}</p>
+                        <h3>{listing.title}</h3>
+                        <dl>
+                          <div>
+                            <dt>Lokalita</dt>
+                            <dd>{listing.place}</dd>
+                          </div>
+                          <div>
+                            <dt>Cena</dt>
+                            <dd>{listing.price}</dd>
+                          </div>
+                        </dl>
+                        <span>{listing.note}</span>
+                        <strong>{listing.cta}</strong>
+                      </div>
+                    </a>
+                  </article>
+                ))
+              }
+            </div>
+          </div>
+
+          <div class="listing-group sold-listings" data-reveal>
+            <div class="listing-group-heading">
+              <p class="eyebrow">Predané byty a referencie</p>
+              <span>{soldListings.length} pripravené referencie</span>
+            </div>
+            <div class="listing-grid">
+              {
+                soldListings.map((listing) => (
+                  <article class="listing sold">
+                    <a href={listing.href} aria-label={`Detail: ${listing.title}`}>
+                      <img src={listing.image} alt="" loading="lazy" />
+                      <div>
+                        <p>{listing.status}</p>
+                        <h3>{listing.title}</h3>
+                        <dl>
+                          <div>
+                            <dt>Lokalita</dt>
+                            <dd>{listing.place}</dd>
+                          </div>
+                          <div>
+                            <dt>Výsledok</dt>
+                            <dd>{listing.price}</dd>
+                          </div>
+                        </dl>
+                        <span>{listing.note}</span>
+                        <strong>{listing.cta}</strong>
+                      </div>
+                    </a>
+                  </article>
+                ))
+              }
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section class="section split" id="sluzby">
         <div class="section-heading" data-reveal>
           <p class="eyebrow">Kedy dáva zmysel ozvať sa</p>
@@ -191,58 +269,6 @@ const jsonLd = {
           <h2 id="sale-time-title">{site.saleTime.title}</h2>
         </div>
         <p data-reveal>{site.saleTime.text}</p>
-      </section>
-
-      <section class="section listings" id="ponuky">
-        <div class="section-heading" data-reveal>
-          <p class="eyebrow">Ponuky a dopyty</p>
-          <h2>Miesto pre nehnuteľnosti, bez preplneného katalógu.</h2>
-          <p>
-            Aktuálna ponuka, konkrétne dopyty a rýchly vstup pre majiteľov, ktorí riešia
-            predaj alebo prenájom podobnej nehnuteľnosti.
-          </p>
-        </div>
-        <div class="listing-slider" data-listing-slider data-reveal>
-          <div class="listing-controls" aria-label="Ovládanie ponúk">
-            <button class="slider-button" type="button" data-slider-prev aria-label="Predchádzajúca ponuka">
-              ←
-            </button>
-            <button class="slider-button" type="button" data-slider-next aria-label="Ďalšia ponuka">
-              →
-            </button>
-          </div>
-          <div class="listing-track" data-listing-track tabindex="0" aria-label="Posuvný zoznam ponúk">
-            {
-              listingSets.map((set, setIndex) =>
-                set.map((listing, listingIndex) => (
-                  <article
-                    class="listing"
-                    aria-hidden={setIndex === 1 ? "false" : "true"}
-                    data-listing-card
-                  >
-                    <img src={listing.image} alt="" loading="lazy" />
-                    <div>
-                      <p>{listing.status}</p>
-                      <h3>{listing.title}</h3>
-                      <dl>
-                        <div>
-                          <dt>Lokalita</dt>
-                          <dd>{listing.place}</dd>
-                        </div>
-                        <div>
-                          <dt>Cena</dt>
-                          <dd>{listing.price}</dd>
-                        </div>
-                      </dl>
-                      <span>{listing.note}</span>
-                      {listing.href && <a class="listing-link" href={listing.href}>{listing.cta}</a>}
-                    </div>
-                  </article>
-                )),
-              )
-            }
-          </div>
-        </div>
       </section>
 
       <section class="contact-section" id="kontakt">
@@ -466,74 +492,6 @@ const jsonLd = {
       toggleMobileCta();
       window.addEventListener("scroll", toggleMobileCta, { passive: true });
 
-      const slider = document.querySelector("[data-listing-slider]");
-      const track = document.querySelector("[data-listing-track]");
-      const cards = [...document.querySelectorAll("[data-listing-card]")];
-      const prevButton = document.querySelector("[data-slider-prev]");
-      const nextButton = document.querySelector("[data-slider-next]");
-
-      if (slider && track && cards.length) {
-        let paused = false;
-        let lastFrame = performance.now();
-
-        const getSegmentWidth = () => track.scrollWidth / 3;
-        const normalizeScroll = () => {
-          const segment = getSegmentWidth();
-          if (!segment) return;
-
-          if (track.scrollLeft >= segment * 2) {
-            track.scrollLeft -= segment;
-          } else if (track.scrollLeft <= 0) {
-            track.scrollLeft += segment;
-          }
-        };
-
-        const getStep = () => {
-          const card = cards[0];
-          const styles = getComputedStyle(track);
-          return card.getBoundingClientRect().width + Number.parseFloat(styles.columnGap || styles.gap || "0");
-        };
-
-        requestAnimationFrame(() => {
-          track.scrollLeft = getSegmentWidth();
-        });
-
-        const tick = (now) => {
-          const elapsed = now - lastFrame;
-          lastFrame = now;
-
-          if (!paused && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-            track.scrollLeft += elapsed * 0.025;
-            normalizeScroll();
-          }
-
-          requestAnimationFrame(tick);
-        };
-
-        requestAnimationFrame(tick);
-
-        slider.addEventListener("mouseenter", () => {
-          paused = true;
-        });
-        slider.addEventListener("mouseleave", () => {
-          paused = false;
-        });
-        slider.addEventListener("focusin", () => {
-          paused = true;
-        });
-        slider.addEventListener("focusout", () => {
-          paused = false;
-        });
-        track.addEventListener("scroll", normalizeScroll, { passive: true });
-        prevButton?.addEventListener("click", () => {
-          paused = true;
-          track.scrollBy({ left: -getStep(), behavior: "smooth" });
-        });
-        nextButton?.addEventListener("click", () => {
-          paused = true;
-          track.scrollBy({ left: getStep(), behavior: "smooth" });
-        });
-      }
     </script>
 
     <style>
@@ -1089,61 +1047,40 @@ const jsonLd = {
         background: var(--paper);
       }
 
-      .listing-slider {
-        position: relative;
-        margin-top: 40px;
-        max-width: 100%;
-        min-width: 0;
-        overflow: hidden;
-      }
-
-      .listing-controls {
-        display: flex;
-        justify-content: flex-end;
-        gap: 10px;
-        margin-bottom: 14px;
-      }
-
-      .slider-button {
-        display: inline-flex;
-        width: 44px;
-        height: 44px;
-        align-items: center;
-        justify-content: center;
-        border: 1px solid rgba(30, 28, 25, 0.22);
-        border-radius: 999px;
-        background: rgba(255, 250, 242, 0.78);
-        color: var(--ink);
-        cursor: pointer;
-        font: inherit;
-        font-size: 22px;
-        font-weight: 700;
-        transition: transform 160ms ease, background 160ms ease;
-      }
-
-      .slider-button:hover {
-        background: var(--white);
-        transform: translateY(-2px);
-      }
-
-      .listing-track {
+      .listing-groups {
         display: grid;
-        width: 100%;
-        max-width: 100%;
-        grid-auto-columns: clamp(320px, 32vw, 390px);
-        grid-auto-flow: column;
-        gap: 18px;
-        overflow-x: auto;
-        overscroll-behavior-inline: contain;
-        padding: 2px max(28px, calc((100vw - 1180px) / 2)) 12px 0;
-        contain: layout paint;
-        scroll-behavior: smooth;
-        scrollbar-width: none;
-        mask-image: linear-gradient(90deg, transparent 0, #000 28px, #000 calc(100% - 28px), transparent 100%);
+        gap: 54px;
+        margin-top: 48px;
       }
 
-      .listing-track::-webkit-scrollbar {
-        display: none;
+      .listing-group {
+        display: grid;
+        gap: 18px;
+      }
+
+      .listing-group-heading {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 18px;
+        border-bottom: 1px solid var(--line);
+        padding-bottom: 14px;
+      }
+
+      .listing-group-heading .eyebrow {
+        margin-bottom: 0;
+      }
+
+      .listing-group-heading span {
+        color: var(--muted);
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      .listing-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
       }
 
       .listing {
@@ -1154,13 +1091,25 @@ const jsonLd = {
         background: var(--white);
       }
 
+      .listing a {
+        display: grid;
+        height: 100%;
+      }
+
       .listing img {
         width: 100%;
         aspect-ratio: 4 / 3;
         object-fit: cover;
+        transition: transform 240ms ease;
       }
 
-      .listing > div {
+      .listing:hover img {
+        transform: scale(1.03);
+      }
+
+      .listing a > div {
+        display: grid;
+        align-content: start;
         padding: 20px;
       }
 
@@ -1194,13 +1143,17 @@ const jsonLd = {
         font-size: 14px;
       }
 
-      .listing-link {
+      .listing strong {
         display: inline-flex;
         margin-top: 18px;
         color: var(--wine);
         font-weight: 800;
         text-decoration: underline;
         text-underline-offset: 5px;
+      }
+
+      .listing.sold {
+        background: rgba(255, 250, 242, 0.62);
       }
 
       .contact-section {
@@ -1440,6 +1393,10 @@ const jsonLd = {
           gap: 34px;
         }
 
+        .listing-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
         .positioning-panel p {
           max-width: none;
           align-self: start;
@@ -1570,14 +1527,14 @@ const jsonLd = {
           line-height: 0.96;
         }
 
-        .listing-controls {
-          justify-content: flex-start;
+        .listing-grid {
+          grid-template-columns: 1fr;
         }
 
-        .listing-track {
-          grid-auto-columns: minmax(286px, min(82vw, 360px));
-          padding-right: 18px;
-          mask-image: none;
+        .listing-group-heading {
+          display: grid;
+          align-items: start;
+          gap: 6px;
         }
 
         .listing dl {
