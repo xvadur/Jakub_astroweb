@@ -1,0 +1,1468 @@
+---
+import { formOptions, site } from "../data/site";
+
+const cleanPhone = site.contact.phone.replace(/[^\d+]/g, "");
+const hasPhone = cleanPhone.length >= 10;
+const hasEmail = site.contact.email.includes("@") && !site.contact.email.includes("example.");
+const hasInstagram = site.contact.instagram.startsWith("http");
+const contactHref = hasPhone ? `tel:${cleanPhone}` : "#kontakt";
+const contactLabel = hasPhone ? site.contact.phone : "Kontakt";
+const canSubmitLead = Boolean(site.lead.endpoint || hasEmail);
+const listingSets = [site.listings, site.listings, site.listings];
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "RealEstateAgent",
+  name: site.brand,
+  description: `${site.brand}, ${site.role}. ${site.shortPromise}`,
+  areaServed: site.cityLabel,
+  ...(hasPhone ? { telephone: site.contact.phone } : {}),
+  ...(hasEmail ? { email: site.contact.email } : {}),
+  ...(hasInstagram ? { sameAs: [site.contact.instagram] } : {}),
+};
+---
+
+<!doctype html>
+<html lang="sk">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <meta
+      name="description"
+      content={`${site.brand} je ${site.role}. ${site.shortPromise} Dohodnite si krátky rozhovor o predaji, kúpe alebo prenájme.`}
+    />
+    <meta property="og:title" content={`${site.brand} | ${site.shortPromise}`} />
+    <meta
+      property="og:description"
+      content="Osobný web realitného makléra so zrozumiteľným procesom, aktuálnymi ponukami a rýchlym kontaktom."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content={site.heroImage} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,650;6..72,700&display=swap"
+      rel="stylesheet"
+    />
+    <title>{site.brand} | {site.shortPromise}</title>
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </head>
+  <body>
+    <a class="skip-link" href="#kontakt">Prejsť na kontakt</a>
+
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label={`${site.brand}, úvod`}>
+        <span>{site.brand}</span>
+        <small>{site.role}</small>
+      </a>
+      <nav aria-label="Hlavná navigácia">
+        <a href="#sluzby">Služby</a>
+        <a href="#proces">Proces</a>
+        <a href="#ponuky">Ponuky</a>
+        <a href="#kontakt">Kontakt</a>
+      </nav>
+      <a class="header-phone" href={contactHref}>{contactLabel}</a>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy" data-reveal>
+          <p class="eyebrow">Realitný maklér pre ľudí, ktorí chcú vedieť, čo sa deje ďalej.</p>
+          <h1 id="hero-title">{site.brand}</h1>
+          <p class="promise">{site.shortPromise}</p>
+          <p class="intro">{site.intro}</p>
+          <div class="hero-actions" aria-label="Hlavné akcie">
+            <a class="button primary" href="#kontakt">Dohodnúť rozhovor</a>
+            <a class="button secondary" href="#ponuky">Pozrieť ponuky</a>
+          </div>
+        </div>
+        <div class="hero-visual" data-reveal>
+          <img src={site.heroImage} alt="Portrét realitného makléra Jakuba Olšu" />
+          <div class="portrait-note">
+            <p>
+              <strong>Osobný kontakt.</strong>
+              Najprv krátky rozhovor. Potom jasný ďalší krok.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="proof-strip" aria-label="Čo môžete čakať">
+        {
+          site.proofPoints.map((point) => (
+            <p data-reveal>
+              <span></span>
+              {point}
+            </p>
+          ))
+        }
+      </section>
+
+      <section class="section split" id="sluzby">
+        <div class="section-heading" data-reveal>
+          <p class="eyebrow">Kedy dáva zmysel ozvať sa</p>
+          <h2>Nie každý potrebuje hneď makléra. Niekedy stačí dobrý prvý rozhovor.</h2>
+        </div>
+        <div class="service-list">
+          {
+            site.services.map((service) => (
+              <article class="service" data-reveal>
+                <h3>{service.title}</h3>
+                <p>{service.text}</p>
+              </article>
+            ))
+          }
+        </div>
+      </section>
+
+      <section class="section process-section" id="proces">
+        <div class="section-heading centered" data-reveal>
+          <p class="eyebrow">Ako prebieha spolupráca</p>
+          <h2>Tri kroky, ktoré chránia čas, cenu aj nervy.</h2>
+        </div>
+        <div class="process-grid">
+          {
+            site.process.map((item) => (
+              <article class="process-item" data-reveal>
+                <span>{item.step}</span>
+                <h3>{item.title}</h3>
+                <p>{item.text}</p>
+              </article>
+            ))
+          }
+        </div>
+      </section>
+
+      <section
+        class="image-band"
+        aria-label="Poznámka k práci realitného makléra"
+        style={`--band-image: url('${site.handshakeImage}')`}
+      >
+        <div data-reveal>
+          <p class="eyebrow">Jakubov spôsob práce</p>
+          <h2>Najprv sa pozrieme na realitu. Potom až na inzerát.</h2>
+        </div>
+      </section>
+
+      <section class="section principles">
+        <div class="principle-lead" data-reveal>
+          <p class="eyebrow">Prečo to nie je ďalšia realitná fráza</p>
+          <h2>Web nesľubuje zázraky. Má vám ukázať, ako sa bude rozhodovať.</h2>
+        </div>
+        <div class="principle-list">
+          {
+            site.principles.map((item) => (
+              <article data-reveal>
+                <h3>{item.title}</h3>
+                <p>{item.text}</p>
+              </article>
+            ))
+          }
+        </div>
+      </section>
+
+      <section class="section listings" id="ponuky">
+        <div class="section-heading" data-reveal>
+          <p class="eyebrow">Ponuky a dopyty</p>
+          <h2>Miesto pre nehnuteľnosti, bez preplneného katalógu.</h2>
+          <p>
+            Aktuálna ponuka, konkrétne dopyty a rýchly vstup pre majiteľov, ktorí riešia
+            predaj alebo prenájom podobnej nehnuteľnosti.
+          </p>
+        </div>
+        <div class="listing-slider" data-listing-slider data-reveal>
+          <div class="listing-controls" aria-label="Ovládanie ponúk">
+            <button class="slider-button" type="button" data-slider-prev aria-label="Predchádzajúca ponuka">
+              ←
+            </button>
+            <button class="slider-button" type="button" data-slider-next aria-label="Ďalšia ponuka">
+              →
+            </button>
+          </div>
+          <div class="listing-track" data-listing-track tabindex="0" aria-label="Posuvný zoznam ponúk">
+            {
+              listingSets.map((set, setIndex) =>
+                set.map((listing, listingIndex) => (
+                  <article
+                    class="listing"
+                    aria-hidden={setIndex === 1 ? "false" : "true"}
+                    data-listing-card
+                  >
+                    <img src={listing.image} alt="" loading="lazy" />
+                    <div>
+                      <p>{listing.status}</p>
+                      <h3>{listing.title}</h3>
+                      <dl>
+                        <div>
+                          <dt>Lokalita</dt>
+                          <dd>{listing.place}</dd>
+                        </div>
+                        <div>
+                          <dt>Cena</dt>
+                          <dd>{listing.price}</dd>
+                        </div>
+                      </dl>
+                      <span>{listing.note}</span>
+                      {listing.href && <a class="listing-link" href={listing.href}>{listing.cta}</a>}
+                    </div>
+                  </article>
+                )),
+              )
+            }
+          </div>
+        </div>
+      </section>
+
+      <section class="contact-section" id="kontakt">
+        <div class="contact-copy" data-reveal>
+          <p class="eyebrow">Začnime bez záväzku</p>
+          <h2>Povedzte mi, čo riešite. Ja vám poviem, čo by bol rozumný ďalší krok.</h2>
+          <p>
+            Nechajte kontakt a preferovaný termín. Jakub sa ozve s návrhom ďalšieho kroku
+            podľa toho, čo práve riešite.
+          </p>
+          <div class="direct-contact">
+            {
+              hasPhone ? (
+                <a href={`tel:${cleanPhone}`}>{site.contact.phone}</a>
+              ) : (
+                <span>Telefón doplniť pred spustením</span>
+              )
+            }
+            {
+              hasEmail ? (
+                <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>
+              ) : (
+                <span>Email doplniť pred spustením</span>
+              )
+            }
+            {
+              hasInstagram ? (
+                <a href={site.contact.instagram}>{site.contact.instagramLabel}</a>
+              ) : (
+                <span>Instagram doplniť pred spustením</span>
+              )
+            }
+          </div>
+        </div>
+
+        <form
+          class="lead-form"
+          action={hasEmail ? `mailto:${site.contact.email}` : "#kontakt"}
+          method="post"
+          enctype="text/plain"
+          data-email={hasEmail ? site.contact.email : ""}
+          data-endpoint={site.lead.endpoint}
+          data-source={site.lead.source}
+          data-can-submit={canSubmitLead ? "true" : "false"}
+          data-reveal
+        >
+          <label>
+            Meno a priezvisko
+            <input name="meno" autocomplete="name" required />
+          </label>
+          <label>
+            Telefón
+            <input name="telefon" type="tel" autocomplete="tel" required />
+          </label>
+          <label>
+            Email
+            <input name="email" type="email" autocomplete="email" />
+          </label>
+          <div class="field-row">
+            <label>
+              Riešim
+              <select name="zamer" required>
+                <option value="">Vyberte možnosť</option>
+                {formOptions.goals.map((goal) => <option>{goal}</option>)}
+              </select>
+            </label>
+            <label>
+              Čas kontaktu
+              <select name="cas">
+                {formOptions.contactTimes.map((time) => <option>{time}</option>)}
+              </select>
+            </label>
+          </div>
+          <div class="field-row">
+            <label>
+              Preferovaný deň
+              <input name="preferovany-den" type="date" />
+            </label>
+            <label>
+              Preferovaný čas
+              <input name="preferovany-cas" type="time" />
+            </label>
+          </div>
+          <label>
+            Lokalita alebo typ nehnuteľnosti
+            <input name="lokalita" placeholder="napr. 3-izbový byt, Bratislava" />
+          </label>
+          <label>
+            Krátka poznámka
+            <textarea
+              name="poznamka"
+              rows="4"
+              placeholder="Čo je dôležité vedieť pred prvým telefonátom?"
+            ></textarea>
+          </label>
+          <fieldset>
+            <legend>Preferovaný kontakt</legend>
+            <div class="radio-grid">
+              {
+                formOptions.contactMethods.map((method) => (
+                  <label>
+                    <input type="radio" name="kontakt" value={method} />
+                    {method}
+                  </label>
+                ))
+              }
+            </div>
+          </fieldset>
+          <label class="consent">
+            <input type="checkbox" name="suhlas" required />
+            <span>
+              Súhlasím so spracovaním údajov za účelom kontaktovania k môjmu dopytu.
+              <a href="/ochrana-osobnych-udajov/">Ochrana osobných údajov</a>
+            </span>
+          </label>
+          {
+            !canSubmitLead && (
+              <p class="preview-note">
+                Preview režim: odosielanie zapneme po doplnení Jakubovho emailu alebo CRM
+                endpointu.
+              </p>
+            )
+          }
+          <button class="button primary form-button" type="submit" disabled={!canSubmitLead}>
+            {canSubmitLead ? "Odoslať žiadosť" : "Doplniť kontakt pre odoslanie"}
+          </button>
+          <p class="form-status" role="status" aria-live="polite">
+            {canSubmitLead ? site.lead.responseLabel : "Formulár je pripravený, čaká na kontakt."}
+          </p>
+        </form>
+      </section>
+    </main>
+
+      <a class="mobile-cta" href="#kontakt">Dohodnúť rozhovor</a>
+
+    <footer>
+      <p>{site.brand}</p>
+      <p>{site.shortPromise}</p>
+      <a href={contactHref}>{contactLabel}</a>
+    </footer>
+
+    <script>
+      const revealItems = document.querySelectorAll("[data-reveal]");
+
+      if ("IntersectionObserver" in window) {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("is-visible");
+                observer.unobserve(entry.target);
+              }
+            });
+          },
+          { threshold: 0.12 },
+        );
+
+        revealItems.forEach((item) => observer.observe(item));
+      } else {
+        revealItems.forEach((item) => item.classList.add("is-visible"));
+      }
+
+      const form = document.querySelector(".lead-form");
+      const status = document.querySelector(".form-status");
+
+      form?.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const data = new FormData(form);
+        const payload = Object.fromEntries(data.entries());
+        const endpoint = form.getAttribute("data-endpoint");
+        const email = form.getAttribute("data-email") || "";
+        const canSubmit = form.getAttribute("data-can-submit") === "true";
+
+        if (!canSubmit) {
+          status.textContent = "Najprv treba doplniť email alebo CRM endpoint.";
+          return;
+        }
+
+        status.textContent = "Pripravujem odoslanie...";
+
+        if (endpoint) {
+          try {
+            const response = await fetch(endpoint, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                ...payload,
+                source: form.getAttribute("data-source"),
+                createdAt: new Date().toISOString(),
+              }),
+            });
+
+            if (!response.ok) {
+              throw new Error("Lead endpoint rejected the request.");
+            }
+
+            form.reset();
+            status.textContent = "Ďakujem. Dopyt odišiel, ozvem sa vám.";
+            return;
+          } catch {
+            status.textContent = "CRM odoslanie zlyhalo, otváram email ako zálohu.";
+          }
+        }
+
+        const subject = `Dopyt z webu: ${payload.meno || "nový kontakt"}`;
+        const body = Object.entries(payload)
+          .filter(([, value]) => Boolean(value))
+          .map(([key, value]) => `${key}: ${value}`)
+          .join("\n");
+
+        window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        status.textContent = "Otvoril sa email s predvyplneným dopytom.";
+      });
+
+      const mobileCta = document.querySelector(".mobile-cta");
+      const toggleMobileCta = () => {
+        mobileCta?.classList.toggle("is-visible", window.scrollY > 520);
+      };
+
+      toggleMobileCta();
+      window.addEventListener("scroll", toggleMobileCta, { passive: true });
+
+      const slider = document.querySelector("[data-listing-slider]");
+      const track = document.querySelector("[data-listing-track]");
+      const cards = [...document.querySelectorAll("[data-listing-card]")];
+      const prevButton = document.querySelector("[data-slider-prev]");
+      const nextButton = document.querySelector("[data-slider-next]");
+
+      if (slider && track && cards.length) {
+        let paused = false;
+        let lastFrame = performance.now();
+
+        const getSegmentWidth = () => track.scrollWidth / 3;
+        const normalizeScroll = () => {
+          const segment = getSegmentWidth();
+          if (!segment) return;
+
+          if (track.scrollLeft >= segment * 2) {
+            track.scrollLeft -= segment;
+          } else if (track.scrollLeft <= 0) {
+            track.scrollLeft += segment;
+          }
+        };
+
+        const getStep = () => {
+          const card = cards[0];
+          const styles = getComputedStyle(track);
+          return card.getBoundingClientRect().width + Number.parseFloat(styles.columnGap || styles.gap || "0");
+        };
+
+        requestAnimationFrame(() => {
+          track.scrollLeft = getSegmentWidth();
+        });
+
+        const tick = (now) => {
+          const elapsed = now - lastFrame;
+          lastFrame = now;
+
+          if (!paused && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+            track.scrollLeft += elapsed * 0.025;
+            normalizeScroll();
+          }
+
+          requestAnimationFrame(tick);
+        };
+
+        requestAnimationFrame(tick);
+
+        slider.addEventListener("mouseenter", () => {
+          paused = true;
+        });
+        slider.addEventListener("mouseleave", () => {
+          paused = false;
+        });
+        slider.addEventListener("focusin", () => {
+          paused = true;
+        });
+        slider.addEventListener("focusout", () => {
+          paused = false;
+        });
+        track.addEventListener("scroll", normalizeScroll, { passive: true });
+        prevButton?.addEventListener("click", () => {
+          paused = true;
+          track.scrollBy({ left: -getStep(), behavior: "smooth" });
+        });
+        nextButton?.addEventListener("click", () => {
+          paused = true;
+          track.scrollBy({ left: getStep(), behavior: "smooth" });
+        });
+      }
+    </script>
+
+    <style>
+      :root {
+        --paper: #f5f1e8;
+        --paper-strong: #ebe2d4;
+        --ink: #1e1c19;
+        --muted: #6d665f;
+        --olive: #5e6b5c;
+        --wine: #6a3b36;
+        --brass: #b08d57;
+        --white: #fffaf2;
+        --line: rgba(30, 28, 25, 0.16);
+        --shadow: 0 24px 70px rgba(30, 28, 25, 0.13);
+        --font-body: "Instrument Sans", system-ui, sans-serif;
+        --font-display: "Newsreader", Georgia, serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+        overflow-x: hidden;
+      }
+
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: var(--font-body);
+        line-height: 1.5;
+        overflow-x: clip;
+      }
+
+      body::after {
+        position: fixed;
+        inset: 0;
+        z-index: 999;
+        pointer-events: none;
+        content: "";
+        opacity: 0.04;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.45'/%3E%3C/svg%3E");
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      img {
+        display: block;
+        max-width: 100%;
+      }
+
+      .skip-link {
+        position: fixed;
+        top: 12px;
+        left: 12px;
+        z-index: 1000;
+        transform: translateY(-140%);
+        padding: 10px 14px;
+        background: var(--ink);
+        color: var(--white);
+        border-radius: 4px;
+      }
+
+      .skip-link:focus {
+        transform: translateY(0);
+      }
+
+      .site-header {
+        position: fixed;
+        top: 18px;
+        left: 50%;
+        z-index: 50;
+        display: flex;
+        width: min(1180px, calc(100% - 32px));
+        min-height: 64px;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        padding: 10px 14px 10px 18px;
+        border: 1px solid rgba(255, 250, 242, 0.34);
+        border-radius: 8px;
+        background: rgba(30, 28, 25, 0.72);
+        color: var(--white);
+        transform: translateX(-50%);
+        backdrop-filter: blur(18px);
+      }
+
+      .brand {
+        display: grid;
+        gap: 0;
+      }
+
+      .brand span {
+        font-family: var(--font-display);
+        font-size: 24px;
+        font-weight: 650;
+        line-height: 1;
+      }
+
+      .brand small {
+        color: rgba(255, 250, 242, 0.72);
+        font-size: 13px;
+      }
+
+      nav {
+        display: flex;
+        gap: 20px;
+        color: rgba(255, 250, 242, 0.8);
+        font-size: 14px;
+      }
+
+      nav a,
+      .header-phone,
+      .direct-contact a,
+      footer a {
+        text-decoration-line: underline;
+        text-decoration-color: transparent;
+        text-decoration-thickness: 1px;
+        text-underline-offset: 5px;
+        transition: text-decoration-color 160ms ease, color 160ms ease;
+      }
+
+      nav a:hover,
+      .header-phone:hover,
+      .direct-contact a:hover,
+      footer a:hover {
+        color: var(--brass);
+        text-decoration-color: currentColor;
+      }
+
+      .header-phone {
+        display: inline-flex;
+        min-height: 42px;
+        align-items: center;
+        border: 1px solid rgba(255, 250, 242, 0.22);
+        border-radius: 6px;
+        padding: 0 14px;
+        font-weight: 600;
+      }
+
+      .hero {
+        display: grid;
+        min-height: 100svh;
+        grid-template-columns: minmax(0, 0.9fr) minmax(420px, 1.1fr);
+        gap: 48px;
+        align-items: stretch;
+        padding: 118px max(28px, calc((100vw - 1180px) / 2)) 52px;
+        background:
+          linear-gradient(90deg, rgba(245, 241, 232, 0.97) 0%, rgba(245, 241, 232, 0.88) 48%, rgba(245, 241, 232, 0.45) 100%),
+          radial-gradient(circle at 20% 30%, rgba(176, 141, 87, 0.22), transparent 32%),
+          var(--paper);
+      }
+
+      .hero-copy {
+        display: flex;
+        max-width: 560px;
+        flex-direction: column;
+        justify-content: center;
+        padding: 42px 0;
+      }
+
+      .eyebrow {
+        margin: 0 0 18px;
+        color: var(--wine);
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin-top: 0;
+      }
+
+      h1,
+      h2 {
+        font-family: var(--font-display);
+        font-weight: 650;
+        line-height: 0.95;
+      }
+
+      h1 {
+        margin-bottom: 18px;
+        font-size: 86px;
+      }
+
+      h2 {
+        margin-bottom: 18px;
+        font-size: 54px;
+      }
+
+      h3 {
+        margin-bottom: 10px;
+        font-size: 23px;
+        line-height: 1.15;
+      }
+
+      .promise {
+        margin-bottom: 22px;
+        color: var(--olive);
+        font-family: var(--font-display);
+        font-size: 38px;
+        font-weight: 500;
+        line-height: 1.06;
+      }
+
+      .intro {
+        max-width: 520px;
+        margin-bottom: 30px;
+        color: var(--muted);
+        font-size: 18px;
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .button {
+        display: inline-flex;
+        min-height: 50px;
+        align-items: center;
+        justify-content: center;
+        border-radius: 6px;
+        padding: 0 20px;
+        border: 1px solid var(--ink);
+        font-weight: 700;
+        transition: transform 160ms ease, background 160ms ease, color 160ms ease;
+      }
+
+      .button:hover {
+        transform: translateY(-2px);
+      }
+
+      .button.primary {
+        background: var(--ink);
+        color: var(--white);
+      }
+
+      .button.secondary {
+        background: transparent;
+        color: var(--ink);
+      }
+
+      .hero-visual {
+        position: relative;
+        min-height: 620px;
+        align-self: stretch;
+        overflow: hidden;
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+      }
+
+      .hero-visual > img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: 52% 34%;
+        filter: saturate(0.9) contrast(0.96);
+      }
+
+      .portrait-note {
+        position: absolute;
+        right: 22px;
+        bottom: 22px;
+        display: block;
+        width: min(330px, calc(100% - 44px));
+        padding: 18px;
+        border: 1px solid rgba(255, 250, 242, 0.28);
+        border-radius: 8px;
+        background: rgba(30, 28, 25, 0.78);
+        color: var(--white);
+        backdrop-filter: blur(16px);
+      }
+
+      .portrait-note p {
+        margin: 0;
+        color: rgba(255, 250, 242, 0.82);
+        font-size: 14px;
+      }
+
+      .portrait-note strong {
+        display: block;
+        color: var(--white);
+      }
+
+      .proof-strip {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        padding: 0 max(28px, calc((100vw - 1180px) / 2));
+        border-top: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+        background: var(--ink);
+        color: var(--white);
+      }
+
+      .proof-strip p {
+        display: flex;
+        min-height: 96px;
+        align-items: center;
+        gap: 12px;
+        margin: 0;
+        min-width: 0;
+        padding: 0 clamp(18px, 2.4vw, 32px);
+        border-right: 1px solid rgba(255, 250, 242, 0.14);
+        font-weight: 600;
+        line-height: 1.25;
+        text-wrap: balance;
+      }
+
+      .proof-strip p:first-child {
+        padding-left: 0;
+      }
+
+      .proof-strip p:last-child {
+        padding-right: 0;
+        border-right: 0;
+      }
+
+      .proof-strip span {
+        width: 9px;
+        height: 9px;
+        flex: 0 0 auto;
+        border-radius: 999px;
+        background: var(--brass);
+      }
+
+      .section {
+        padding: 110px max(28px, calc((100vw - 1180px) / 2));
+      }
+
+      .split {
+        display: grid;
+        grid-template-columns: 0.8fr 1.2fr;
+        gap: 70px;
+      }
+
+      .section-heading {
+        max-width: 700px;
+      }
+
+      .section-heading p:not(.eyebrow),
+      .contact-copy p,
+      .principle-lead + .principle-list p {
+        color: var(--muted);
+      }
+
+      .centered {
+        max-width: 760px;
+        margin: 0 auto 42px;
+        text-align: center;
+      }
+
+      .service-list {
+        display: grid;
+        gap: 0;
+        border-top: 1px solid var(--line);
+      }
+
+      .service {
+        display: grid;
+        grid-template-columns: 0.7fr 1fr;
+        gap: 32px;
+        padding: 28px 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .service p {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      .process-section {
+        background: var(--paper-strong);
+      }
+
+      .process-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+      }
+
+      .process-item {
+        min-height: 320px;
+        padding: 28px;
+        border: 1px solid rgba(30, 28, 25, 0.18);
+        border-radius: 8px;
+        background: rgba(255, 250, 242, 0.45);
+      }
+
+      .process-item span {
+        display: block;
+        margin-bottom: 70px;
+        color: var(--wine);
+        font-family: var(--font-display);
+        font-size: 42px;
+      }
+
+      .process-item p {
+        color: var(--muted);
+      }
+
+      .image-band {
+        min-height: 760px;
+        display: flex;
+        align-items: flex-end;
+        padding: 70px max(28px, calc((100vw - 1180px) / 2));
+        color: var(--white);
+        background:
+          linear-gradient(90deg, rgba(30, 28, 25, 0.78) 0%, rgba(30, 28, 25, 0.52) 42%, rgba(30, 28, 25, 0.2) 74%),
+          linear-gradient(180deg, rgba(30, 28, 25, 0.04), rgba(30, 28, 25, 0.58)),
+          var(--band-image) 60% 10%/cover;
+      }
+
+      .image-band div {
+        width: min(100%, 920px);
+        max-width: none;
+      }
+
+      .image-band .eyebrow {
+        color: #e7c385;
+      }
+
+      .image-band h2 {
+        margin: 0;
+        max-width: min(920px, 66vw);
+        font-size: clamp(46px, 5.2vw, 76px);
+        line-height: 0.96;
+        text-wrap: balance;
+      }
+
+      .principles {
+        display: grid;
+        grid-template-columns: 0.9fr 1.1fr;
+        gap: 70px;
+        background: var(--white);
+      }
+
+      .principle-list {
+        display: grid;
+        gap: 26px;
+      }
+
+      .principle-list article {
+        padding-bottom: 26px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .principle-list p {
+        margin: 0;
+      }
+
+      .listings {
+        overflow: hidden;
+        background: var(--paper);
+      }
+
+      .listing-slider {
+        position: relative;
+        margin-top: 40px;
+        max-width: 100%;
+        min-width: 0;
+        overflow: hidden;
+      }
+
+      .listing-controls {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+
+      .slider-button {
+        display: inline-flex;
+        width: 44px;
+        height: 44px;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid rgba(30, 28, 25, 0.22);
+        border-radius: 999px;
+        background: rgba(255, 250, 242, 0.78);
+        color: var(--ink);
+        cursor: pointer;
+        font: inherit;
+        font-size: 22px;
+        font-weight: 700;
+        transition: transform 160ms ease, background 160ms ease;
+      }
+
+      .slider-button:hover {
+        background: var(--white);
+        transform: translateY(-2px);
+      }
+
+      .listing-track {
+        display: grid;
+        width: 100%;
+        max-width: 100%;
+        grid-auto-columns: clamp(320px, 32vw, 390px);
+        grid-auto-flow: column;
+        gap: 18px;
+        overflow-x: auto;
+        overscroll-behavior-inline: contain;
+        padding: 2px max(28px, calc((100vw - 1180px) / 2)) 12px 0;
+        contain: layout paint;
+        scroll-behavior: smooth;
+        scrollbar-width: none;
+        mask-image: linear-gradient(90deg, transparent 0, #000 28px, #000 calc(100% - 28px), transparent 100%);
+      }
+
+      .listing-track::-webkit-scrollbar {
+        display: none;
+      }
+
+      .listing {
+        overflow: hidden;
+        min-width: 0;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--white);
+      }
+
+      .listing img {
+        width: 100%;
+        aspect-ratio: 4 / 3;
+        object-fit: cover;
+      }
+
+      .listing > div {
+        padding: 20px;
+      }
+
+      .listing p {
+        margin-bottom: 12px;
+        color: var(--wine);
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .listing dl {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin: 18px 0;
+      }
+
+      .listing dt {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .listing dd {
+        margin: 0;
+        font-weight: 700;
+      }
+
+      .listing span {
+        display: block;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .listing-link {
+        display: inline-flex;
+        margin-top: 18px;
+        color: var(--wine);
+        font-weight: 800;
+        text-decoration: underline;
+        text-underline-offset: 5px;
+      }
+
+      .contact-section {
+        display: grid;
+        grid-template-columns: 0.9fr 1.1fr;
+        gap: 70px;
+        padding: 110px max(28px, calc((100vw - 1180px) / 2));
+        background: var(--ink);
+        color: var(--white);
+      }
+
+      .contact-copy {
+        align-self: start;
+        position: sticky;
+        top: 120px;
+      }
+
+      .contact-copy .eyebrow {
+        color: #e7c385;
+      }
+
+      .contact-copy p {
+        color: rgba(255, 250, 242, 0.72);
+      }
+
+      .direct-contact {
+        display: grid;
+        gap: 12px;
+        margin-top: 34px;
+        color: rgba(255, 250, 242, 0.88);
+      }
+
+      .direct-contact span {
+        color: rgba(255, 250, 242, 0.62);
+      }
+
+      .lead-form {
+        display: grid;
+        gap: 18px;
+        padding: 26px;
+        border: 1px solid rgba(255, 250, 242, 0.18);
+        border-radius: 8px;
+        background: rgba(255, 250, 242, 0.07);
+      }
+
+      label,
+      fieldset {
+        display: grid;
+        gap: 8px;
+        margin: 0;
+        border: 0;
+        padding: 0;
+        color: rgba(255, 250, 242, 0.86);
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      input,
+      select,
+      textarea {
+        width: 100%;
+        min-height: 48px;
+        border: 1px solid rgba(255, 250, 242, 0.2);
+        border-radius: 6px;
+        padding: 12px 14px;
+        background: rgba(255, 250, 242, 0.94);
+        color: var(--ink);
+        font: inherit;
+      }
+
+      textarea {
+        min-height: 120px;
+        resize: vertical;
+      }
+
+      .field-row,
+      .radio-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+      }
+
+      .radio-grid label,
+      .consent {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 500;
+      }
+
+      .radio-grid input,
+      .consent input {
+        width: 18px;
+        min-height: 18px;
+        flex: 0 0 auto;
+      }
+
+      .form-button {
+        width: 100%;
+        border-color: var(--brass);
+        background: var(--brass);
+        color: var(--ink);
+      }
+
+      .form-button:disabled {
+        cursor: not-allowed;
+        border-color: rgba(255, 250, 242, 0.24);
+        background: rgba(255, 250, 242, 0.18);
+        color: rgba(255, 250, 242, 0.66);
+        transform: none;
+      }
+
+      .form-status,
+      .preview-note {
+        margin: 0;
+        color: rgba(255, 250, 242, 0.7);
+        font-size: 14px;
+      }
+
+      .preview-note {
+        border-left: 3px solid var(--brass);
+        padding-left: 12px;
+      }
+
+      footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        padding: 26px max(28px, calc((100vw - 1180px) / 2));
+        background: #151310;
+        color: rgba(255, 250, 242, 0.72);
+      }
+
+      footer p {
+        margin: 0;
+      }
+
+      footer p:first-child {
+        color: var(--white);
+        font-family: var(--font-display);
+        font-size: 24px;
+        font-weight: 650;
+      }
+
+      .mobile-cta {
+        display: none;
+      }
+
+      [data-reveal] {
+        opacity: 1;
+        transform: none;
+        transition: opacity 700ms ease, transform 700ms ease;
+      }
+
+      [data-reveal].is-visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      @media (max-width: 980px) {
+        .site-header {
+          position: absolute;
+          top: 12px;
+        }
+
+        nav {
+          display: none;
+        }
+
+        .header-phone {
+          min-height: 38px;
+          padding: 0 12px;
+          font-size: 14px;
+        }
+
+        .hero,
+        .split,
+        .principles,
+        .contact-section {
+          grid-template-columns: 1fr;
+        }
+
+        .hero {
+          gap: 24px;
+          padding-top: 102px;
+        }
+
+        .hero-copy {
+          max-width: none;
+          padding: 18px 0 0;
+        }
+
+        h1 {
+          font-size: 62px;
+        }
+
+        h2 {
+          font-size: 42px;
+        }
+
+        .promise {
+          font-size: 31px;
+        }
+
+        .hero-visual {
+          min-height: 480px;
+        }
+
+        .proof-strip,
+        .process-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .proof-strip {
+          padding: 0 18px;
+        }
+
+        .proof-strip p {
+          min-height: 74px;
+          padding: 0;
+          border-right: 0;
+          border-bottom: 1px solid rgba(255, 250, 242, 0.14);
+        }
+
+        .service {
+          grid-template-columns: 1fr;
+          gap: 10px;
+        }
+
+        .contact-copy {
+          position: static;
+        }
+
+        .mobile-cta {
+          display: none;
+        }
+
+        .mobile-cta.is-visible {
+          opacity: 1;
+          pointer-events: auto;
+          transform: translateY(0);
+        }
+      }
+
+      @media (max-width: 620px) {
+        .site-header {
+          width: calc(100% - 20px);
+          min-height: 58px;
+        }
+
+        .brand span {
+          font-size: 21px;
+        }
+
+        .hero,
+        .section,
+        .contact-section {
+          padding-left: 18px;
+          padding-right: 18px;
+        }
+
+        .hero {
+          min-height: auto;
+          padding-bottom: 32px;
+        }
+
+        h1 {
+          font-size: 46px;
+        }
+
+        h2 {
+          font-size: 34px;
+          line-height: 1;
+        }
+
+        .promise {
+          font-size: 27px;
+        }
+
+        .intro {
+          font-size: 16px;
+        }
+
+        .hero-actions,
+        .field-row,
+        .radio-grid,
+        footer {
+          grid-template-columns: 1fr;
+        }
+
+        .hero-actions {
+          display: grid;
+        }
+
+        .button {
+          width: 100%;
+        }
+
+        .hero-visual {
+          min-height: 390px;
+        }
+
+        .portrait-note {
+          right: 12px;
+          bottom: 12px;
+          width: calc(100% - 24px);
+          padding: 14px;
+        }
+
+        .section,
+        .contact-section {
+          padding-top: 72px;
+          padding-bottom: 72px;
+        }
+
+        .process-item {
+          min-height: 260px;
+        }
+
+        .process-item span {
+          margin-bottom: 42px;
+        }
+
+        .image-band {
+          min-height: 620px;
+          padding: 48px 18px;
+          background:
+            linear-gradient(180deg, rgba(30, 28, 25, 0.1), rgba(30, 28, 25, 0.72)),
+            var(--band-image) 44% 8%/cover;
+        }
+
+        .image-band div {
+          width: min(100%, 700px);
+        }
+
+        .image-band h2 {
+          max-width: 100%;
+          font-size: clamp(38px, 12vw, 58px);
+          line-height: 0.96;
+        }
+
+        .listing-controls {
+          justify-content: flex-start;
+        }
+
+        .listing-track {
+          grid-auto-columns: minmax(286px, min(82vw, 360px));
+          padding-right: 18px;
+          mask-image: none;
+        }
+
+        .listing dl {
+          grid-template-columns: 1fr;
+        }
+
+        .lead-form {
+          padding: 18px;
+        }
+
+        footer {
+          display: grid;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+
+        *,
+        *::before,
+        *::after {
+          transition-duration: 0.01ms !important;
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+        }
+
+        [data-reveal] {
+          opacity: 1;
+          transform: none;
+        }
+      }
+    </style>
+  </body>
+</html>

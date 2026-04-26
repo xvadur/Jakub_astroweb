@@ -1,0 +1,114 @@
+---
+import { site } from "../data/site";
+---
+
+<!doctype html>
+<html lang="sk">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ochrana osobných údajov | {site.brand}</title>
+    <meta
+      name="description"
+      content={`Zásady spracovania osobných údajov pre kontaktný formulár na webe ${site.brand}.`}
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,650&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --paper: #f5f1e8;
+        --ink: #1e1c19;
+        --muted: #6d665f;
+        --wine: #6a3b36;
+      }
+
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Instrument Sans", system-ui, sans-serif;
+        line-height: 1.6;
+      }
+
+      main {
+        width: min(760px, calc(100% - 36px));
+        margin: 0 auto;
+        padding: 70px 0;
+      }
+
+      a {
+        color: var(--wine);
+      }
+
+      h1,
+      h2 {
+        font-family: "Newsreader", Georgia, serif;
+        line-height: 1;
+      }
+
+      h1 {
+        margin: 18px 0 22px;
+        font-size: 54px;
+      }
+
+      h2 {
+        margin-top: 44px;
+        font-size: 30px;
+      }
+
+      p,
+      li {
+        color: var(--muted);
+      }
+
+      .back {
+        font-weight: 700;
+      }
+
+      @media (max-width: 620px) {
+        h1 {
+          font-size: 40px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <a class="back" href="/">Späť na web</a>
+      <h1>Ochrana osobných údajov</h1>
+      <p>
+        Prevádzkovateľ: Jakub Olša / Bosen Group s.r.o., potvrdiť pred verejným spustením.
+        Tento text slúži ako pracovná verzia pre prvé nasadenie a musí sa skontrolovať podľa
+        reálnych údajov prevádzkovateľa.
+      </p>
+
+      <h2>Aké údaje spracúvame</h2>
+      <p>
+        Ak odošlete kontaktný formulár, spracúvame údaje, ktoré vyplníte: meno, telefón,
+        email, lokalitu, typ dopytu, preferovaný termín kontaktu a text poznámky.
+      </p>
+
+      <h2>Na čo údaje slúžia</h2>
+      <p>
+        Údaje používame výlučne na to, aby vás Jakub mohol kontaktovať a reagovať na váš
+        dopyt k predaju, kúpe, prenájmu alebo konzultácii nehnuteľnosti.
+      </p>
+
+      <h2>Ako dlho údaje držíme</h2>
+      <p>
+        Údaje uchovávame iba počas obdobia potrebného na vybavenie dopytu a následnú komunikáciu,
+        pokiaľ právne predpisy nevyžadujú dlhšie uchovanie.
+      </p>
+
+      <h2>Kontakt</h2>
+      <p>
+        Pre otázky alebo žiadosť o vymazanie údajov kontaktujte Jakuba na
+        <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>.
+      </p>
+    </main>
+  </body>
+</html>
