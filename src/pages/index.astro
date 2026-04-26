@@ -72,8 +72,10 @@ const jsonLd = {
 
     <main id="top">
       <section class="hero" aria-labelledby="hero-title">
-        <div class="hero-copy" data-reveal>
+        <div class="hero-brand" data-reveal>
           <img class="hero-logo" src={site.logoImage} alt="Jakub Olša Reality" />
+        </div>
+        <div class="hero-copy" data-reveal>
           <p class="eyebrow">Realitný maklér pre ľudí, ktorí chcú vedieť, čo sa deje ďalej.</p>
           <h1 id="hero-title">{site.brand}</h1>
           <p class="promise">{site.shortPromise}</p>
@@ -603,9 +605,8 @@ const jsonLd = {
       .brand-mark {
         width: 112px;
         height: 36px;
-        object-fit: cover;
+        object-fit: contain;
         object-position: center;
-        mix-blend-mode: screen;
       }
 
       .brand-label {
@@ -666,9 +667,11 @@ const jsonLd = {
         display: grid;
         min-height: 100svh;
         grid-template-columns: minmax(0, 0.9fr) minmax(420px, 1.1fr);
-        gap: 48px;
+        grid-template-rows: auto 1fr;
+        column-gap: 48px;
+        row-gap: 34px;
         align-items: center;
-        padding: 118px max(28px, calc((100vw - 1180px) / 2)) 52px;
+        padding: 112px max(28px, calc((100vw - 1180px) / 2)) 52px;
         background:
           linear-gradient(110deg, rgba(11, 11, 10, 0.98) 0%, rgba(27, 27, 25, 0.92) 48%, rgba(11, 11, 10, 0.82) 100%),
           radial-gradient(circle at 18% 24%, rgba(216, 184, 120, 0.22), transparent 34%),
@@ -676,18 +679,25 @@ const jsonLd = {
         color: var(--white);
       }
 
+      .hero-brand {
+        display: flex;
+        grid-column: 1 / -1;
+        align-items: center;
+        justify-content: center;
+      }
+
       .hero-copy {
         display: flex;
         max-width: 560px;
         flex-direction: column;
         justify-content: center;
-        padding: 42px 0;
+        padding: 18px 0 42px;
       }
 
       .hero-logo {
-        width: min(340px, 68vw);
-        margin-bottom: 26px;
-        mix-blend-mode: screen;
+        width: min(520px, 62vw);
+        height: auto;
+        filter: drop-shadow(0 22px 42px rgba(0, 0, 0, 0.32));
       }
 
       .eyebrow {
@@ -1402,8 +1412,18 @@ const jsonLd = {
         }
 
         .hero {
-          gap: 24px;
+          gap: 26px;
           padding-top: 102px;
+        }
+
+        .hero-brand,
+        .hero-copy,
+        .hero-visual {
+          grid-column: 1;
+        }
+
+        .hero-logo {
+          width: min(420px, 76vw);
         }
 
         .hero-copy {
@@ -1625,7 +1645,7 @@ const jsonLd = {
         }
 
         .hero-logo {
-          width: min(280px, 78vw);
+          width: min(320px, 82vw);
         }
       }
 
