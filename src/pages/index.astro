@@ -667,7 +667,7 @@ const jsonLd = {
         min-height: 100svh;
         grid-template-columns: minmax(0, 0.9fr) minmax(420px, 1.1fr);
         gap: 48px;
-        align-items: stretch;
+        align-items: center;
         padding: 118px max(28px, calc((100vw - 1180px) / 2)) 52px;
         background:
           linear-gradient(110deg, rgba(11, 11, 10, 0.98) 0%, rgba(27, 27, 25, 0.92) 48%, rgba(11, 11, 10, 0.82) 100%),
@@ -791,8 +791,9 @@ const jsonLd = {
 
       .hero-visual {
         position: relative;
-        min-height: 620px;
-        align-self: stretch;
+        height: clamp(560px, 74svh, 760px);
+        min-height: 0;
+        align-self: center;
         overflow: hidden;
         border: 1px solid rgba(216, 184, 120, 0.2);
         border-radius: 8px;
@@ -803,7 +804,7 @@ const jsonLd = {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        object-position: 100% 50%;
+        object-position: 78% 50%;
         filter: saturate(0.86) contrast(1.04);
       }
 
@@ -1423,7 +1424,7 @@ const jsonLd = {
         }
 
         .hero-visual {
-          min-height: 480px;
+          height: clamp(430px, 62svh, 560px);
         }
 
         .proof-strip,
@@ -1550,7 +1551,7 @@ const jsonLd = {
         }
 
         .hero-visual {
-          min-height: 390px;
+          height: 390px;
         }
 
         .portrait-note {
