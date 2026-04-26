@@ -3,9 +3,9 @@ export const site = {
   role: "realitný maklér",
   locale: "sk-SK",
   cityLabel: "Slovensko",
-  shortPromise: "Realitné rozhodnutia bez chaosu.",
+  shortPromise: "Riadim predaj tak, aby sme z neho vyťažili maximum.",
   intro:
-    "Pomáham ľuďom predávať, kupovať a prenajímať nehnuteľnosti s jasným postupom, priamou komunikáciou a rešpektom k tomu, že bývanie nie je len položka v inzeráte.",
+    "Nehnuteľnosť nie je len inzerát. Od prvého stretnutia nastavíme stratégiu, cenu, marketing a cieľ. Vy viete, čo sa deje, ja držím proces.",
   contact: {
     phone: "+421 944 844 489",
     email: "olsa@bosen.sk",
@@ -20,14 +20,39 @@ export const site = {
   heroImage: "/images/jakub-portrait.png",
   handshakeImage: "/images/jakub-handshake.png",
   proofPoints: [
-    "osobný prístup bez frázy",
-    "jasný plán pred prvým inzerátom",
-    "komunikácia od prvého hovoru po podpis",
+    "19 predajov za posledných 12 mesiacov",
+    "2 miliónové obchody",
+    "5 rokov skúseností v obchode",
   ],
+  trackRecord: {
+    eyebrow: "Výsledky a skúsenosť",
+    title: "Skúsenosť z bankovníctva, výsledky z realít.",
+    text:
+      "Tri a pol roka ako osobný bankár vo VÚB Magnifica a rok a pol ako realitný maklér. Za posledných 12 mesiacov Jakub uzavrel 19 predajov nehnuteľností, z toho dva miliónové obchody.",
+    stats: [
+      {
+        value: "19",
+        label: "uzavretých predajov za posledných 12 mesiacov",
+      },
+      {
+        value: "2",
+        label: "miliónové obchody s náročným klientom",
+      },
+      {
+        value: "5 rokov",
+        label: "skúseností v obchode, bankovníctve a realitách",
+      },
+    ],
+  },
+  positioning: {
+    title: "Väčšina maklérov čaká na klienta. Ja ho aktívne vytváram.",
+    text:
+      "Cez marketing, databázu a prácu s dopytom. Mojou úlohou nie je iba zverejniť ponuku, ale riadiť predaj tak, aby mal klient čo najlepší výsledok.",
+  },
   services: [
     {
       title: "Predaj nehnuteľnosti",
-      text: "Najprv si ujasníme cieľ, cenu, časový rámec a spôsob prezentácie. Až potom riešime inzerciu a obhliadky.",
+      text: "Nastavíme stratégiu, cenu, marketing a cieľ. Jakub zabezpečí prezentáciu, obhliadky, vyjednávanie aj právny servis.",
     },
     {
       title: "Kúpa bývania",
@@ -45,20 +70,26 @@ export const site = {
   process: [
     {
       step: "01",
-      title: "Krátky rozhovor",
-      text: "Poviete mi, čo riešite, kde ste teraz a čo by bol dobrý výsledok. Bez predajného tlaku.",
+      title: "Stratégia, cena a cieľ",
+      text: "Najprv si ujasníme, čo má byť dobrý výsledok. Až potom riešime inzerciu, termíny a komunikáciu.",
     },
     {
       step: "02",
-      title: "Plán spolupráce",
-      text: "Dostanete konkrétny postup: príprava, prezentácia, komunikácia so záujemcami, termíny a ďalšie kroky.",
+      title: "Marketing a dopyt",
+      text: "Ponuka nesmie len čakať. Pracujem s prezentáciou, databázou, marketingom a kupujúcimi, ktorí dávajú zmysel.",
     },
     {
       step: "03",
-      title: "Realizácia",
-      text: "Držím komunikáciu, obhliadky a ďalšie dohody pokope, aby ste vedeli, čo sa deje a čo bude nasledovať.",
+      title: "Vyjednávanie a servis",
+      text: "Držím obhliadky, komunikáciu, dohodu aj právny servis pokope. Vy sa nemusíte starať o nič.",
     },
   ],
+  saleTime: {
+    eyebrow: "Ako dlho trvá predaj?",
+    title: "Niektoré nehnuteľnosti sa predajú za pár dní. Cieľom však nie je rýchlosť za každú cenu.",
+    text:
+      "Ak je správne nastavená cena a marketing, výsledok sa často dá dosiahnuť v horizonte niekoľkých týždňov. Priorita je najlepší možný výsledok pre klienta, nie iba najrýchlejší podpis.",
+  },
   listings: [
     {
       status: "Aktuálna ponuka",
@@ -93,16 +124,16 @@ export const site = {
   ],
   principles: [
     {
-      title: "Najprv realita, potom reklama",
-      text: "Dobrá prezentácia nevyrieši zlú cenu alebo nejasný cieľ. Preto začíname plánom.",
+      title: "Nehnuteľnosť nepredávam len ako inzerát",
+      text: "Riadim celý proces predaja: prípravu, cenu, prezentáciu, obhliadky, vyjednávanie a ďalší krok.",
+    },
+    {
+      title: "Dopyt sa dá vytvárať",
+      text: "Dobrý maklér nečaká len na reakciu z portálu. Pracuje s databázou, marketingom a konkrétnymi kupujúcimi.",
     },
     {
       title: "Klient má vedieť, čo sa deje",
-      text: "Spolupráca nemá byť čierna skrinka. Každý krok má mať dôvod a ďalší konkrétny krok.",
-    },
-    {
-      title: "Instagram je dôkaz práce, web je miesto rozhodnutia",
-      text: "Sociálne siete ukazujú tempo a osobnosť. Web má človeku pomôcť urobiť ďalší krok.",
+      text: "Od prvého stretnutia má byť jasné, čo robíme, prečo to robíme a čo bude nasledovať.",
     },
   ],
 };

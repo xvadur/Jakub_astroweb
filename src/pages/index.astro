@@ -100,6 +100,28 @@ const jsonLd = {
         }
       </section>
 
+      <section class="section track-record" aria-labelledby="track-record-title">
+        <div class="track-copy" data-reveal>
+          <p class="eyebrow">{site.trackRecord.eyebrow}</p>
+          <h2 id="track-record-title">{site.trackRecord.title}</h2>
+          <p>{site.trackRecord.text}</p>
+        </div>
+        <div class="stat-grid" aria-label="Jakubove výsledky">
+          {
+            site.trackRecord.stats.map((stat) => (
+              <article class="stat-item" data-reveal>
+                <strong>{stat.value}</strong>
+                <span>{stat.label}</span>
+              </article>
+            ))
+          }
+        </div>
+        <article class="positioning-panel" data-reveal>
+          <h3>{site.positioning.title}</h3>
+          <p>{site.positioning.text}</p>
+        </article>
+      </section>
+
       <section class="section split" id="sluzby">
         <div class="section-heading" data-reveal>
           <p class="eyebrow">Kedy dáva zmysel ozvať sa</p>
@@ -161,6 +183,14 @@ const jsonLd = {
             ))
           }
         </div>
+      </section>
+
+      <section class="section sale-time" aria-labelledby="sale-time-title">
+        <div data-reveal>
+          <p class="eyebrow">{site.saleTime.eyebrow}</p>
+          <h2 id="sale-time-title">{site.saleTime.title}</h2>
+        </div>
+        <p data-reveal>{site.saleTime.text}</p>
       </section>
 
       <section class="section listings" id="ponuky">
@@ -838,6 +868,79 @@ const jsonLd = {
         background: var(--brass);
       }
 
+      .track-record {
+        display: grid;
+        grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+        gap: 62px;
+        background: var(--white);
+      }
+
+      .track-copy {
+        max-width: 620px;
+      }
+
+      .track-copy > p:not(.eyebrow),
+      .positioning-panel p,
+      .sale-time > p {
+        color: var(--muted);
+      }
+
+      .stat-grid {
+        display: grid;
+        gap: 0;
+        align-self: start;
+        border-top: 1px solid var(--line);
+      }
+
+      .stat-item {
+        display: grid;
+        grid-template-columns: 0.42fr 1fr;
+        gap: 28px;
+        padding: 25px 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .stat-item strong {
+        color: var(--wine);
+        font-family: var(--font-display);
+        font-size: clamp(42px, 4vw, 68px);
+        font-weight: 650;
+        line-height: 0.92;
+      }
+
+      .stat-item span {
+        align-self: center;
+        color: var(--ink);
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 1.25;
+      }
+
+      .positioning-panel {
+        grid-column: 1 / -1;
+        display: grid;
+        grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+        gap: 62px;
+        padding-top: 34px;
+        border-top: 1px solid var(--line);
+      }
+
+      .positioning-panel h3 {
+        max-width: 760px;
+        margin: 0;
+        font-family: var(--font-display);
+        font-size: clamp(36px, 4vw, 58px);
+        font-weight: 650;
+        line-height: 0.98;
+      }
+
+      .positioning-panel p {
+        max-width: 520px;
+        margin: 0;
+        align-self: end;
+        font-size: 18px;
+      }
+
       .section {
         padding: 110px max(28px, calc((100vw - 1180px) / 2));
       }
@@ -961,6 +1064,24 @@ const jsonLd = {
 
       .principle-list p {
         margin: 0;
+      }
+
+      .sale-time {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(340px, 0.72fr);
+        gap: 72px;
+        align-items: end;
+        background: var(--paper-strong);
+      }
+
+      .sale-time h2 {
+        max-width: 880px;
+        margin-bottom: 0;
+      }
+
+      .sale-time > p {
+        margin: 0;
+        font-size: 18px;
       }
 
       .listings {
@@ -1258,7 +1379,10 @@ const jsonLd = {
 
         .hero,
         .split,
+        .track-record,
+        .positioning-panel,
         .principles,
+        .sale-time,
         .contact-section {
           grid-template-columns: 1fr;
         }
@@ -1308,6 +1432,17 @@ const jsonLd = {
         .service {
           grid-template-columns: 1fr;
           gap: 10px;
+        }
+
+        .track-record,
+        .positioning-panel,
+        .sale-time {
+          gap: 34px;
+        }
+
+        .positioning-panel p {
+          max-width: none;
+          align-self: start;
         }
 
         .contact-copy {
@@ -1362,6 +1497,19 @@ const jsonLd = {
 
         .intro {
           font-size: 16px;
+        }
+
+        .stat-item {
+          grid-template-columns: 1fr;
+          gap: 10px;
+        }
+
+        .stat-item strong {
+          font-size: 46px;
+        }
+
+        .positioning-panel h3 {
+          font-size: 34px;
         }
 
         .hero-actions,
