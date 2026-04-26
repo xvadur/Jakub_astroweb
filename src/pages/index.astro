@@ -76,7 +76,7 @@ const jsonLd = {
           <img class="hero-logo" src={site.logoImage} alt="Jakub Olša Reality" />
         </div>
         <div class="hero-copy" data-reveal>
-          <p class="eyebrow">Realitný maklér pre ľudí, ktorí chcú vedieť, čo sa deje ďalej.</p>
+          <p class="eyebrow">Som realitný maklér pre ľudí, ktorí chcú vedieť, čo sa deje ďalej.</p>
           <h1 id="hero-title">{site.brand}</h1>
           <p class="promise">{site.shortPromise}</p>
           <p class="intro">{site.intro}</p>
@@ -138,7 +138,7 @@ const jsonLd = {
         <div class="listing-groups">
           <div class="listing-group" data-reveal>
             <div class="listing-group-heading">
-              <p class="eyebrow">Aktuálne v ponuke</p>
+              <h3 class="listing-section-title">Aktuálne v ponuke</h3>
               <span>{availableListings.length ? `${availableListings.length} ponuka` : "doplníme neskôr"}</span>
             </div>
             <div class="listing-grid">
@@ -169,8 +169,8 @@ const jsonLd = {
                   ))
                 ) : (
                   <div class="listing-empty">
-                    <p>Aktuálne ponuky doplníme po dodaní fotiek, parametrov a ceny.</p>
-                    <span>Zatiaľ je pripravená štruktúra detailov, galérie aj kontaktu.</span>
+                    <p>Aktuálna ponuka bude doplnená čoskoro...</p>
+                    <span>Keď bude pripravená, nájdete tu fotky, parametre, cenu aj detail nehnuteľnosti.</span>
                   </div>
                 )
               }
@@ -180,8 +180,8 @@ const jsonLd = {
           <div class="listing-group sold-listings" data-reveal>
             <div class="listing-group-heading">
               <div>
-                <p class="eyebrow">Predané byty a referencie</p>
-                <span>{soldListings.length} predané referencie</span>
+                <h3 class="listing-section-title">Predané nehnuteľnosti</h3>
+                <span>{soldListings.length} predané nehnuteľnosti</span>
               </div>
               <div class="carousel-controls" aria-label="Ovládanie referencií">
                 <button type="button" class="carousel-button" data-carousel-prev aria-label="Predchádzajúca referencia">
@@ -271,8 +271,8 @@ const jsonLd = {
 
       <section class="section principles">
         <div class="principle-lead" data-reveal>
-          <p class="eyebrow">Prečo to nie je ďalšia realitná fráza</p>
-          <h2>Web nesľubuje zázraky. Má vám ukázať, ako sa bude rozhodovať.</h2>
+          <p class="eyebrow">Ako pracujem</p>
+          <h2>Od prvého stretnutia musí byť jasné, čo robíme a prečo.</h2>
         </div>
         <div class="principle-list">
           {
@@ -299,7 +299,7 @@ const jsonLd = {
           <p class="eyebrow">Začnime bez záväzku</p>
           <h2>Povedzte mi, čo riešite. Ja vám poviem, čo by bol rozumný ďalší krok.</h2>
           <p>
-            Nechajte kontakt a preferovaný termín. Jakub sa ozve s návrhom ďalšieho kroku
+            Nechajte mi kontakt a preferovaný termín. Ozvem sa vám s návrhom ďalšieho kroku
             podľa toho, čo práve riešite.
           </p>
           <div class="direct-contact">
@@ -650,8 +650,8 @@ const jsonLd = {
       }
 
       .brand-mark {
-        width: 112px;
-        height: 36px;
+        width: 118px;
+        height: 42px;
         object-fit: contain;
         object-position: center;
       }
@@ -742,7 +742,7 @@ const jsonLd = {
       }
 
       .hero-logo {
-        width: min(520px, 62vw);
+        width: min(460px, 64vw);
         height: auto;
         filter: drop-shadow(0 22px 42px rgba(0, 0, 0, 0.32));
       }
@@ -861,7 +861,7 @@ const jsonLd = {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        object-position: 78% 50%;
+        object-position: 36% 50%;
         filter: saturate(0.86) contrast(1.04);
       }
 
@@ -1176,6 +1176,14 @@ const jsonLd = {
         margin-bottom: 0;
       }
 
+      .listing-section-title {
+        margin: 0;
+        font-family: var(--font-display);
+        font-size: clamp(30px, 3vw, 42px);
+        font-weight: 650;
+        line-height: 0.98;
+      }
+
       .listing-group-heading > div:first-child {
         display: grid;
         gap: 6px;
@@ -1481,9 +1489,8 @@ const jsonLd = {
 
       .footer-brand img {
         width: 118px;
-        height: 38px;
-        object-fit: cover;
-        mix-blend-mode: screen;
+        height: 52px;
+        object-fit: contain;
       }
 
       .footer-brand p {
@@ -1781,7 +1788,7 @@ const jsonLd = {
         }
 
         .brand-mark {
-          width: 88px;
+          width: 82px;
         }
 
         .header-phone {
@@ -1790,7 +1797,7 @@ const jsonLd = {
         }
 
         .hero-logo {
-          width: min(320px, 82vw);
+          width: min(300px, 82vw);
         }
       }
 
