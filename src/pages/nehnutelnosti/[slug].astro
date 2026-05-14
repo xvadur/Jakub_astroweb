@@ -30,7 +30,7 @@ const isSold = listing.group === "sold";
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,650;6..72,700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&display=swap"
       rel="stylesheet"
     />
     <title>{listing.title} | {site.brand}</title>
@@ -114,19 +114,19 @@ const isSold = listing.group === "sold";
 
     <style>
       :root {
-        --paper: #f6f1e8;
-        --paper-strong: #e9dfcf;
-        --ink: #0b0b0a;
-        --charcoal: #1b1b19;
-        --muted: #6f6a62;
-        --wine: #9a5c32;
-        --brass: #d8b878;
-        --brass-muted: #b8945b;
-        --white: #fffaf2;
-        --line: rgba(11, 11, 10, 0.16);
-        --shadow: 0 24px 70px rgba(11, 11, 10, 0.2);
-        --font-body: "Instrument Sans", system-ui, sans-serif;
-        --font-display: "Newsreader", Georgia, serif;
+        --paper: #f4f5f1;
+        --paper-strong: #e3e9df;
+        --ink: #101513;
+        --charcoal: #1b2421;
+        --muted: #68716d;
+        --wine: #506a5f;
+        --brass: #c98452;
+        --brass-muted: #8c6448;
+        --white: #fbfbf6;
+        --line: rgba(16, 21, 19, 0.16);
+        --shadow: 0 24px 70px rgba(16, 21, 19, 0.2);
+        --font-body: "Inter", system-ui, sans-serif;
+        --font-display: "Source Serif 4", Georgia, serif;
       }
 
       * {
@@ -169,9 +169,9 @@ const isSold = listing.group === "sold";
         justify-content: space-between;
         gap: 24px;
         padding: 10px 14px 10px 18px;
-        border: 1px solid rgba(216, 184, 120, 0.3);
+        border: 1px solid rgba(201, 132, 82, 0.3);
         border-radius: 8px;
-        background: rgba(11, 11, 10, 0.78);
+        background: rgba(16, 21, 19, 0.78);
         color: var(--white);
         transform: translateX(-50%);
         backdrop-filter: blur(18px);
@@ -198,13 +198,13 @@ const isSold = listing.group === "sold";
       .brand-label span {
         font-family: var(--font-display);
         font-size: 24px;
-        font-weight: 650;
+        font-weight: 600;
         line-height: 1;
       }
 
       .brand-label small,
       nav {
-        color: rgba(255, 250, 242, 0.72);
+        color: rgba(251, 251, 246, 0.72);
       }
 
       nav {
@@ -217,7 +217,7 @@ const isSold = listing.group === "sold";
         display: inline-flex;
         min-height: 42px;
         align-items: center;
-        border: 1px solid rgba(255, 250, 242, 0.22);
+        border: 1px solid rgba(251, 251, 246, 0.22);
         border-radius: 6px;
         padding: 0 14px;
         font-weight: 700;
@@ -239,7 +239,7 @@ const isSold = listing.group === "sold";
         padding-top: 118px;
         padding-bottom: 72px;
         background:
-          radial-gradient(circle at 84% 18%, rgba(216, 184, 120, 0.16), transparent 30%),
+          radial-gradient(circle at 84% 18%, rgba(201, 132, 82, 0.16), transparent 30%),
           var(--paper);
       }
 
@@ -270,13 +270,13 @@ const isSold = listing.group === "sold";
       h1,
       h2 {
         font-family: var(--font-display);
-        font-weight: 650;
+        font-weight: 600;
         line-height: 0.96;
       }
 
       h1 {
         margin-bottom: 22px;
-        font-size: clamp(54px, 7vw, 94px);
+        font-size: clamp(50px, 6.4vw, 86px);
       }
 
       h2 {
@@ -376,10 +376,10 @@ const isSold = listing.group === "sold";
       }
 
       .highlights span {
-        border: 1px solid rgba(11, 11, 10, 0.18);
+        border: 1px solid rgba(16, 21, 19, 0.18);
         border-radius: 999px;
         padding: 10px 14px;
-        background: rgba(255, 250, 242, 0.54);
+        background: rgba(251, 251, 246, 0.54);
         font-weight: 800;
       }
 

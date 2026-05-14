@@ -44,7 +44,7 @@ const jsonLd = {
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,650;6..72,700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&display=swap"
       rel="stylesheet"
     />
     <title>{site.brand} | {site.shortPromise}</title>
@@ -552,20 +552,20 @@ const jsonLd = {
 
     <style>
       :root {
-        --paper: #f6f1e8;
-        --paper-strong: #e9dfcf;
-        --ink: #0b0b0a;
-        --charcoal: #1b1b19;
-        --muted: #6f6a62;
-        --olive: #8a8d91;
-        --wine: #9a5c32;
-        --brass: #d8b878;
-        --brass-muted: #b8945b;
-        --white: #fffaf2;
-        --line: rgba(11, 11, 10, 0.16);
-        --shadow: 0 24px 70px rgba(11, 11, 10, 0.2);
-        --font-body: "Instrument Sans", system-ui, sans-serif;
-        --font-display: "Newsreader", Georgia, serif;
+        --paper: #f4f5f1;
+        --paper-strong: #e3e9df;
+        --ink: #101513;
+        --charcoal: #1b2421;
+        --muted: #68716d;
+        --olive: #6f806f;
+        --wine: #506a5f;
+        --brass: #c98452;
+        --brass-muted: #8c6448;
+        --white: #fbfbf6;
+        --line: rgba(16, 21, 19, 0.16);
+        --shadow: 0 24px 70px rgba(16, 21, 19, 0.2);
+        --font-body: "Inter", system-ui, sans-serif;
+        --font-display: "Source Serif 4", Georgia, serif;
       }
 
       * {
@@ -634,9 +634,9 @@ const jsonLd = {
         justify-content: space-between;
         gap: 24px;
         padding: 10px 14px 10px 18px;
-        border: 1px solid rgba(216, 184, 120, 0.3);
+        border: 1px solid rgba(201, 132, 82, 0.3);
         border-radius: 8px;
-        background: rgba(11, 11, 10, 0.78);
+        background: rgba(16, 21, 19, 0.78);
         color: var(--white);
         transform: translateX(-50%);
         backdrop-filter: blur(18px);
@@ -664,19 +664,19 @@ const jsonLd = {
       .brand-label span {
         font-family: var(--font-display);
         font-size: 24px;
-        font-weight: 650;
+        font-weight: 600;
         line-height: 1;
       }
 
       .brand-label small {
-        color: rgba(255, 250, 242, 0.72);
+        color: rgba(251, 251, 246, 0.72);
         font-size: 13px;
       }
 
       nav {
         display: flex;
         gap: 20px;
-        color: rgba(255, 250, 242, 0.8);
+        color: rgba(251, 251, 246, 0.8);
         font-size: 14px;
       }
 
@@ -703,7 +703,7 @@ const jsonLd = {
         display: inline-flex;
         min-height: 42px;
         align-items: center;
-        border: 1px solid rgba(255, 250, 242, 0.22);
+        border: 1px solid rgba(251, 251, 246, 0.22);
         border-radius: 6px;
         padding: 0 14px;
         font-weight: 600;
@@ -720,8 +720,8 @@ const jsonLd = {
         align-items: center;
         padding: 112px max(28px, calc((100vw - 1180px) / 2)) 52px;
         background:
-          linear-gradient(110deg, rgba(11, 11, 10, 0.98) 0%, rgba(27, 27, 25, 0.92) 48%, rgba(11, 11, 10, 0.82) 100%),
-          radial-gradient(circle at 18% 24%, rgba(216, 184, 120, 0.22), transparent 34%),
+          linear-gradient(110deg, rgba(16, 21, 19, 0.98) 0%, rgba(27, 27, 25, 0.92) 48%, rgba(16, 21, 19, 0.82) 100%),
+          radial-gradient(circle at 18% 24%, rgba(201, 132, 82, 0.22), transparent 34%),
           var(--ink);
         color: var(--white);
       }
@@ -768,13 +768,13 @@ const jsonLd = {
       h1,
       h2 {
         font-family: var(--font-display);
-        font-weight: 650;
+        font-weight: 600;
         line-height: 0.95;
       }
 
       h1 {
         margin-bottom: 18px;
-        font-size: 86px;
+        font-size: 82px;
       }
 
       .hero h1 {
@@ -804,7 +804,7 @@ const jsonLd = {
       .intro {
         max-width: 520px;
         margin-bottom: 30px;
-        color: rgba(255, 250, 242, 0.74);
+        color: rgba(251, 251, 246, 0.74);
         font-size: 18px;
       }
 
@@ -842,7 +842,7 @@ const jsonLd = {
       }
 
       .hero .button.secondary {
-        border-color: rgba(255, 250, 242, 0.42);
+        border-color: rgba(251, 251, 246, 0.42);
         color: var(--white);
       }
 
@@ -852,7 +852,7 @@ const jsonLd = {
         min-height: 0;
         align-self: center;
         overflow: hidden;
-        border: 1px solid rgba(216, 184, 120, 0.2);
+        border: 1px solid rgba(201, 132, 82, 0.2);
         border-radius: 8px;
         box-shadow: var(--shadow);
       }
@@ -888,16 +888,16 @@ const jsonLd = {
         z-index: 2;
         width: min(330px, calc(100% - 44px));
         padding: 18px;
-        border: 1px solid rgba(216, 184, 120, 0.34);
+        border: 1px solid rgba(201, 132, 82, 0.34);
         border-radius: 8px;
-        background: rgba(11, 11, 10, 0.78);
+        background: rgba(16, 21, 19, 0.78);
         color: var(--white);
         backdrop-filter: blur(16px);
       }
 
       .portrait-note p {
         margin: 0;
-        color: rgba(255, 250, 242, 0.82);
+        color: rgba(251, 251, 246, 0.82);
         font-size: 14px;
       }
 
@@ -924,7 +924,7 @@ const jsonLd = {
         margin: 0;
         min-width: 0;
         padding: 0 clamp(18px, 2.4vw, 32px);
-        border-right: 1px solid rgba(255, 250, 242, 0.14);
+        border-right: 1px solid rgba(251, 251, 246, 0.14);
         font-weight: 600;
         line-height: 1.25;
         text-wrap: balance;
@@ -983,7 +983,7 @@ const jsonLd = {
         color: var(--wine);
         font-family: var(--font-display);
         font-size: clamp(42px, 4vw, 68px);
-        font-weight: 650;
+        font-weight: 600;
         line-height: 0.92;
       }
 
@@ -1009,7 +1009,7 @@ const jsonLd = {
         margin: 0;
         font-family: var(--font-display);
         font-size: clamp(36px, 4vw, 58px);
-        font-weight: 650;
+        font-weight: 600;
         line-height: 0.98;
       }
 
@@ -1078,9 +1078,9 @@ const jsonLd = {
       .process-item {
         min-height: 320px;
         padding: 28px;
-        border: 1px solid rgba(30, 28, 25, 0.18);
+        border: 1px solid rgba(16, 21, 19, 0.18);
         border-radius: 8px;
-        background: rgba(255, 250, 242, 0.45);
+        background: rgba(251, 251, 246, 0.45);
       }
 
       .process-item span {
@@ -1102,8 +1102,8 @@ const jsonLd = {
         padding: 70px max(28px, calc((100vw - 1180px) / 2));
         color: var(--white);
         background:
-          linear-gradient(90deg, rgba(30, 28, 25, 0.78) 0%, rgba(30, 28, 25, 0.52) 42%, rgba(30, 28, 25, 0.2) 74%),
-          linear-gradient(180deg, rgba(30, 28, 25, 0.04), rgba(30, 28, 25, 0.58)),
+          linear-gradient(90deg, rgba(16, 21, 19, 0.78) 0%, rgba(16, 21, 19, 0.52) 42%, rgba(16, 21, 19, 0.2) 74%),
+          linear-gradient(180deg, rgba(16, 21, 19, 0.04), rgba(16, 21, 19, 0.58)),
           var(--band-image) 60% 10%/cover;
       }
 
@@ -1113,7 +1113,7 @@ const jsonLd = {
       }
 
       .image-band .eyebrow {
-        color: #e7c385;
+        color: #e3b071;
       }
 
       .image-band h2 {
@@ -1334,7 +1334,7 @@ const jsonLd = {
       }
 
       .listing.sold {
-        background: rgba(255, 250, 242, 0.62);
+        background: rgba(251, 251, 246, 0.62);
       }
 
       .listing-empty {
@@ -1377,31 +1377,31 @@ const jsonLd = {
       }
 
       .contact-copy .eyebrow {
-        color: #e7c385;
+        color: #e3b071;
       }
 
       .contact-copy p {
-        color: rgba(255, 250, 242, 0.72);
+        color: rgba(251, 251, 246, 0.72);
       }
 
       .direct-contact {
         display: grid;
         gap: 12px;
         margin-top: 34px;
-        color: rgba(255, 250, 242, 0.88);
+        color: rgba(251, 251, 246, 0.88);
       }
 
       .direct-contact span {
-        color: rgba(255, 250, 242, 0.62);
+        color: rgba(251, 251, 246, 0.62);
       }
 
       .lead-form {
         display: grid;
         gap: 18px;
         padding: 26px;
-        border: 1px solid rgba(255, 250, 242, 0.18);
+        border: 1px solid rgba(251, 251, 246, 0.18);
         border-radius: 8px;
-        background: rgba(255, 250, 242, 0.07);
+        background: rgba(251, 251, 246, 0.07);
       }
 
       label,
@@ -1411,7 +1411,7 @@ const jsonLd = {
         margin: 0;
         border: 0;
         padding: 0;
-        color: rgba(255, 250, 242, 0.86);
+        color: rgba(251, 251, 246, 0.86);
         font-size: 14px;
         font-weight: 700;
       }
@@ -1421,10 +1421,10 @@ const jsonLd = {
       textarea {
         width: 100%;
         min-height: 48px;
-        border: 1px solid rgba(255, 250, 242, 0.2);
+        border: 1px solid rgba(251, 251, 246, 0.2);
         border-radius: 6px;
         padding: 12px 14px;
-        background: rgba(255, 250, 242, 0.94);
+        background: rgba(251, 251, 246, 0.94);
         color: var(--ink);
         font: inherit;
       }
@@ -1465,16 +1465,16 @@ const jsonLd = {
 
       .form-button:disabled {
         cursor: not-allowed;
-        border-color: rgba(255, 250, 242, 0.24);
-        background: rgba(255, 250, 242, 0.18);
-        color: rgba(255, 250, 242, 0.66);
+        border-color: rgba(251, 251, 246, 0.24);
+        background: rgba(251, 251, 246, 0.18);
+        color: rgba(251, 251, 246, 0.66);
         transform: none;
       }
 
       .form-status,
       .preview-note {
         margin: 0;
-        color: rgba(255, 250, 242, 0.7);
+        color: rgba(251, 251, 246, 0.7);
         font-size: 14px;
       }
 
@@ -1489,8 +1489,8 @@ const jsonLd = {
         justify-content: space-between;
         gap: 24px;
         padding: 26px max(28px, calc((100vw - 1180px) / 2));
-        background: #0b0b0a;
-        color: rgba(255, 250, 242, 0.72);
+        background: #101513;
+        color: rgba(251, 251, 246, 0.72);
       }
 
       footer p {
@@ -1513,7 +1513,7 @@ const jsonLd = {
         color: var(--white);
         font-family: var(--font-display);
         font-size: 24px;
-        font-weight: 650;
+        font-weight: 600;
       }
 
       .mobile-cta {
@@ -1606,7 +1606,7 @@ const jsonLd = {
           min-height: 74px;
           padding: 0;
           border-right: 0;
-          border-bottom: 1px solid rgba(255, 250, 242, 0.14);
+          border-bottom: 1px solid rgba(251, 251, 246, 0.14);
         }
 
         .service {
@@ -1750,7 +1750,7 @@ const jsonLd = {
           min-height: 620px;
           padding: 48px 18px;
           background:
-            linear-gradient(180deg, rgba(30, 28, 25, 0.1), rgba(30, 28, 25, 0.72)),
+            linear-gradient(180deg, rgba(16, 21, 19, 0.1), rgba(16, 21, 19, 0.72)),
             var(--band-image) 44% 8%/cover;
         }
 
