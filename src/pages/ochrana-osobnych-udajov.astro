@@ -7,10 +7,10 @@ import { site } from "../data/site";
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Ochrana osobných údajov | {site.brand}</title>
+    <title>Ochrana osobných údajov a cookies | {site.brand}</title>
     <meta
       name="description"
-      content={`Zásady spracovania osobných údajov pre kontaktný formulár na webe ${site.brand}.`}
+      content={`Informácie o spracovaní osobných údajov a používaní cookies na webe ${site.brand}.`}
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -24,6 +24,11 @@ import { site } from "../data/site";
         --ink: #0b0b0a;
         --muted: #6f6a62;
         --wine: #9a5c32;
+        --line: rgba(11, 11, 10, 0.16);
+      }
+
+      * {
+        box-sizing: border-box;
       }
 
       body {
@@ -35,7 +40,7 @@ import { site } from "../data/site";
       }
 
       main {
-        width: min(760px, calc(100% - 36px));
+        width: min(820px, calc(100% - 36px));
         margin: 0 auto;
         padding: 70px 0;
       }
@@ -52,12 +57,14 @@ import { site } from "../data/site";
 
       h1 {
         margin: 18px 0 22px;
-        font-size: 54px;
+        font-size: clamp(42px, 7vw, 64px);
       }
 
       h2 {
-        margin-top: 44px;
-        font-size: 30px;
+        margin: 46px 0 14px;
+        border-top: 1px solid var(--line);
+        padding-top: 30px;
+        font-size: 32px;
       }
 
       p,
@@ -65,50 +72,103 @@ import { site } from "../data/site";
         color: var(--muted);
       }
 
+      ul {
+        padding-left: 20px;
+      }
+
       .back {
         font-weight: 700;
       }
 
-      @media (max-width: 620px) {
-        h1 {
-          font-size: 40px;
-        }
+      .lead {
+        color: var(--ink);
+        font-size: 18px;
+      }
+
+      .updated {
+        margin-top: 34px;
+        color: var(--muted);
+        font-size: 14px;
       }
     </style>
   </head>
   <body>
     <main>
       <a class="back" href="/">Späť na web</a>
-      <h1>Ochrana osobných údajov</h1>
-      <p>
-        Prevádzkovateľ: Jakub Olša, fakturačné údaje doplniť pred verejným spustením.
-        Tento text slúži ako pracovná verzia pre prvé nasadenie a musí sa skontrolovať podľa
-        reálnych údajov prevádzkovateľa.
+      <h1>Ochrana osobných údajov a cookies</h1>
+      <p class="lead">
+        Na tomto webe predstavujem svoje služby realitného makléra. Kontakt prebieha cez
+        telefonát, email alebo rezervačný odkaz Google Kalendára.
       </p>
 
-      <h2>Aké údaje spracúvame</h2>
+      <h2>Prevádzkovateľ</h2>
       <p>
-        Ak odošlete kontaktný formulár, spracúvame údaje, ktoré vyplníte: meno, telefón,
-        email, lokalitu, typ dopytu, preferovaný termín kontaktu a text poznámky.
-      </p>
-
-      <h2>Na čo údaje slúžia</h2>
-      <p>
-        Údaje používame výlučne na to, aby vás Jakub mohol kontaktovať a reagovať na váš
-        dopyt k predaju, kúpe, prenájmu alebo konzultácii nehnuteľnosti.
-      </p>
-
-      <h2>Ako dlho údaje držíme</h2>
-      <p>
-        Údaje uchovávame iba počas obdobia potrebného na vybavenie dopytu a následnú komunikáciu,
-        pokiaľ právne predpisy nevyžadujú dlhšie uchovanie.
-      </p>
-
-      <h2>Kontakt</h2>
-      <p>
-        Pre otázky alebo žiadosť o vymazanie údajov kontaktujte Jakuba na
+        Prevádzkovateľom osobných údajov je {site.brand}, {site.role}. Pre otázky k spracovaniu
+        údajov alebo uplatnenie práv môžete písať na
         <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>.
       </p>
+
+      <h2>Aké údaje spracúvam</h2>
+      <p>
+        Ak ma kontaktujete telefonicky alebo emailom, spracúvam údaje, ktoré mi poskytnete
+        v rámci komunikácie: najmä meno, telefón, email, informácie o nehnuteľnosti a obsah
+        správy. Ak si rezervujete telefonát cez Google Kalendár, údaje zadávate v rezervačnom
+        rozhraní služby Google.
+      </p>
+
+      <h2>Účel spracúvania</h2>
+      <p>
+        Údaje používam výlučne na spätné kontaktovanie a vybavenie vášho dopytu k predaju,
+        kúpe, prenájmu, odhadu ceny alebo konzultácii nehnuteľnosti. Ak sa z prvého kontaktu
+        stane spolupráca, ďalšie údaje sa riešia v rámci bežnej obchodnej komunikácie a
+        príslušnej dokumentácie.
+      </p>
+
+      <h2>Právny základ</h2>
+      <p>
+        Údaje spracúvam na základe vášho súhlasu alebo na základe oprávneného záujmu vybaviť
+        vašu požiadavku, podľa toho, akým spôsobom ma kontaktujete. Súhlas môžete kedykoľvek
+        odvolať emailom na kontaktnú adresu uvedenú vyššie.
+      </p>
+
+      <h2>Ako dlho údaje uchovávam</h2>
+      <p>
+        Údaje uchovávam iba počas obdobia potrebného na vybavenie dopytu a nadväzujúcu
+        komunikáciu. Ak zo spolupráce nevznikne ďalší obchodný alebo zmluvný vzťah, údaje
+        z dopytu ďalej nepoužívam na marketingové účely.
+      </p>
+
+      <h2>Komu údaje poskytujem</h2>
+      <p>
+        Údaje môžu byť technicky spracované poskytovateľom emailovej schránky, hostingu alebo
+        služby Google Kalendár, ak použijete rezervačný odkaz. Údaje neposkytujem tretím stranám
+        na marketingové účely.
+      </p>
+
+      <h2>Cookies</h2>
+      <p>
+        Web nepoužíva analytické ani marketingové cookies. Rezervácia prebieha mimo tejto
+        stránky v rozhraní Google Kalendára, kde sa spracovanie riadi pravidlami služby Google.
+        Ak budú neskôr doplnené meracie nástroje, remarketing alebo iné cookies, ktoré nie sú
+        technicky nevyhnutné, web pred ich použitím doplním o cookie lištu s možnosťou súhlas
+        odmietnuť alebo zmeniť.
+      </p>
+
+      <h2>Vaše práva</h2>
+      <p>V súvislosti so spracovaním osobných údajov môžete požiadať najmä o:</p>
+      <ul>
+        <li>prístup k osobným údajom,</li>
+        <li>opravu nepresných údajov,</li>
+        <li>vymazanie údajov, ak už nie sú potrebné,</li>
+        <li>obmedzenie spracúvania,</li>
+        <li>odvolanie súhlasu so spracúvaním údajov.</li>
+      </ul>
+      <p>
+        Ak sa domnievate, že údaje spracúvam v rozpore s právnymi predpismi, môžete sa obrátiť
+        aj na Úrad na ochranu osobných údajov Slovenskej republiky.
+      </p>
+
+      <p class="updated">Posledná aktualizácia: 26. máj 2026</p>
     </main>
   </body>
 </html>

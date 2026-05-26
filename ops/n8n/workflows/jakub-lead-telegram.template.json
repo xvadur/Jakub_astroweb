@@ -1,0 +1,186 @@
+{
+  "name": "Jakub lead to CRM and Telegram",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "jakub-lead",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      },
+      "id": "webhook-jakub-lead",
+      "name": "Website Lead Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 0],
+      "webhookId": "jakub-lead"
+    },
+    {
+      "parameters": {
+        "jsCode": "const lead = $json.body && Object.keys($json.body).length ? $json.body : $json;\nconst labels = {\n  meno: 'Meno',\n  telefon: 'Telefón',\n  email: 'Email',\n  zamer: 'Dôvod kontaktu',\n  'preferovany-den': 'Preferovaný deň',\n  'preferovany-cas': 'Preferovaný čas',\n  lokalita: 'Lokalita alebo typ nehnuteľnosti',\n  poznamka: 'Poznámka',\n  suhlas: 'Súhlas so spracovaním údajov',\n  source: 'Zdroj',\n  createdAt: 'Vytvorené'\n};\nconst lines = Object.entries(lead)\n  .filter(([, value]) => value !== undefined && value !== null && String(value).trim() !== '')\n  .map(([key, value]) => `${labels[key] || key}: ${value}`);\nreturn [{\n  json: {\n    lead,\n    telegramMessage: `Nový dopyt z webu Jakuba Olšu\\n\\n${lines.join('\\n')}`,\n    response: { ok: true, message: 'Lead prijatý' }\n  }\n}];"
+      },
+      "id": "normalize-lead",
+      "name": "Normalize Lead",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [260, 0]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO leads (name, phone, email, goal, preferred_day, preferred_time, property_context, note, consent, source, raw_payload)\nVALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11::jsonb);",
+        "options": {
+          "queryReplacement": "={{ [\n  $json.lead.meno || null,\n  $json.lead.telefon || null,\n  $json.lead.email || null,\n  $json.lead.zamer || null,\n  $json.lead['preferovany-den'] || null,\n  $json.lead['preferovany-cas'] || null,\n  $json.lead.lokalita || null,\n  $json.lead.poznamka || null,\n  Boolean($json.lead.suhlas),\n  $json.lead.source || 'jakub-olsa-web',\n  JSON.stringify($json.lead)\n] }}"
+        }
+      },
+      "id": "store-crm",
+      "name": "Store Lead in CRM",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [520, -120],
+      "credentials": {
+        "postgres": {
+          "id": "replace-after-import",
+          "name": "Jakub CRM Postgres"
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.telegram.org/bot{{$env.TELEGRAM_BOT_TOKEN}}/sendMessage",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "chat_id",
+              "value": "={{$env.TELEGRAM_CHAT_ID}}"
+            },
+            {
+              "name": "text",
+              "value": "={{$json.telegramMessage}}"
+            },
+            {
+              "name": "disable_web_page_preview",
+              "value": "true"
+            }
+          ]
+        }
+      },
+      "id": "send-telegram",
+      "name": "Send Telegram Alert",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [520, 120],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combinationMode": "multiplex",
+        "options": {}
+      },
+      "id": "merge-results",
+      "name": "Merge Results",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [780, 0]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { ok: true, message: 'Lead prijatý' } }}",
+        "options": {
+          "responseCode": 200,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              }
+            ]
+          }
+        }
+      },
+      "id": "respond-ok",
+      "name": "Respond to Website",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1040, 0]
+    }
+  ],
+  "connections": {
+    "Website Lead Webhook": {
+      "main": [
+        [
+          {
+            "node": "Normalize Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Lead": {
+      "main": [
+        [
+          {
+            "node": "Store Lead in CRM",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send Telegram Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store Lead in CRM": {
+      "main": [
+        [
+          {
+            "node": "Merge Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Telegram Alert": {
+      "main": [
+        [
+          {
+            "node": "Merge Results",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge Results": {
+      "main": [
+        [
+          {
+            "node": "Respond to Website",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2026-05-26T00:00:00.000Z",
+  "versionId": "template"
+}

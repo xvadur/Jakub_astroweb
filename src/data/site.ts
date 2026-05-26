@@ -3,34 +3,35 @@ export const site = {
   role: "realitný maklér",
   locale: "sk-SK",
   cityLabel: "Slovensko",
-  shortPromise: "Nehnuteľnosti nepredávam. Riadim proces predaja.",
+  shortPromise: "Predaj, kúpu aj prenájom držím pokope.",
   intro:
-    "Od prvého stretnutia nastavíme stratégiu, cenu, marketing a cieľ. Ja zabezpečím všetko od prezentácie cez obhliadky až po právny servis.",
+    "Hral som hokej na profesionálnej úrovni, potom som pracoval s klientmi vo financiách a dnes tieto skúsenosti používam v realitách. Pri predaji alebo kúpe nejde len o inzerát. Ide o prípravu, čísla, komunikáciu a človeka, ktorý proces dotiahne.",
   contact: {
     phone: "+421 944 844 489",
+    whatsapp: "+421 944 844 489",
+    telegram: "",
     email: "olsa@bosen.sk",
-    instagram: "",
-    instagramLabel: "Instagram doplniť",
+    instagram: "https://www.instagram.com/jakubolsa_reality?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==",
+    instagramLabel: "@jakubolsa_reality",
   },
-  lead: {
-    responseLabel: "Ozvem sa vám s návrhom ďalšieho kroku.",
-    endpoint: "",
-    source: "jakub-olsa-web",
-  },
+  bookingUrl:
+    import.meta.env.PUBLIC_BOOKING_URL ??
+    (import.meta.env.DEV ? "https://calendar.app.google/tcGGfjMwk13YnE417" : ""),
   logoImage: "/images/brand/jakub-logo-mark-transparent.png",
   heroImage: "/images/brand/jakub-official-clean.jpg",
+  cityPanoramaImage: "/images/brand/bratislava-panorama.jpg",
   posterImage: "/images/brand/jakub-poster.jpg",
   handshakeImage: "/images/jakub-handshake.png",
   proofPoints: [
-    "individuálny prístup",
-    "jasný plán pred prvým inzerátom",
-    "komunikácia od prvého hovoru po podpis",
+    "disciplína z hokeja, pokoj pri tlaku",
+    "presnosť z bankovníctva a práca s číslami",
+    "osobná komunikácia od prvého hovoru po podpis",
   ],
   trackRecord: {
-    eyebrow: "Výsledky a skúsenosť",
-    title: "5 rokov vo veľkom obchode. 19 predajov za posledných 12 mesiacov.",
+    eyebrow: "Skúsenosť bez pózy",
+    title: "Z hokeja cez banku do realít. Stále rozhoduje príprava, komunikácia a dôvera.",
     text:
-      "Tri a pol roka som pôsobil ako osobný bankár vo VÚB Magnifica a rok a pol ako realitný maklér. Dve z posledných predaných nehnuteľností boli miliónové obchody, ktoré ma posunuli hlavne v myslení, vyjednávaní a práci s náročným klientom.",
+      "V hokeji som sa naučil fungovať pod tlakom, vo VÚB Magnifica pracovať s klientmi a číslami. Pri nehnuteľnostiach to dávam dokopy prakticky: dobrá príprava, realistická cena, jasná komunikácia a proces dotiahnutý do podpisu.",
     stats: [
       {
         value: "19",
@@ -47,33 +48,33 @@ export const site = {
     ],
   },
   positioning: {
-    title: "Väčšina maklérov čaká na klienta. Ja ho aktívne vytváram.",
+    title: "Dobrý predaj nie je čakanie na portáli. Je to práca s ľuďmi, cenou a načasovaním.",
     text:
-      "Cez marketing, databázu a prácu s dopytom. Mojou úlohou nie je iba zverejniť ponuku, ale riadiť celý proces tak, aby sme z predaja vyťažili maximum.",
+      "Pripravím prezentáciu, nastavím cenu a aktívne pracujem s dopytom. Komunikácia má byť jednoduchá: keď niečo viem, poviem to; keď treba rozhodnúť, pomenujem možnosti.",
   },
   services: [
     {
       title: "Predaj nehnuteľnosti",
-      text: "Nastavíme stratégiu, cenu, marketing a cieľ. Ja zabezpečím prezentáciu, obhliadky, vyjednávanie aj právny servis.",
+      text: "Ak chcete predať byt, dom alebo investičnú nehnuteľnosť, pripravím cenu, prezentáciu, marketing, obhliadky, vyjednávanie aj právny servis.",
     },
     {
       title: "Kúpa bývania",
-      text: "Pomôžem vám čítať trh prakticky: čo dáva zmysel, kde sú riziká a kedy sa oplatí konať rýchlo.",
+      text: "Pri kúpe vám pomôžem čítať trh prakticky: čo dáva zmysel, kde sú riziká, čo si preveriť a kedy sa oplatí konať rýchlo.",
     },
     {
       title: "Prenájom",
-      text: "Nastavíme ponuku, filtrujeme záujemcov a držíme proces tak, aby bol pre majiteľa aj nájomcu zrozumiteľný.",
+      text: "Pri prenájme nastavím ponuku, prefiltrujem záujemcov a podržím proces tak, aby bol pre majiteľa aj nájomcu zrozumiteľný.",
     },
     {
       title: "Odhad a konzultácia",
-      text: "Keď ešte neviete, či predávať alebo čakať, začneme krátkym rozhovorom a realistickým pohľadom na situáciu.",
+      text: "Ak ešte neviete, či predávať, čakať alebo len preveriť cenu, začnem krátkym rozhovorom a realistickým pohľadom na vašu situáciu.",
     },
   ],
   process: [
     {
       step: "01",
       title: "Stratégia, cena a cieľ",
-      text: "Najprv si ujasníme, čo má byť dobrý výsledok. Až potom riešime inzerciu, termíny a marketing.",
+      text: "Najprv si s vami ujasním, čo má byť dobrý výsledok. Až potom riešim inzerciu, termíny a marketing.",
     },
     {
       step: "02",
@@ -88,13 +89,13 @@ export const site = {
   ],
   saleTime: {
     eyebrow: "Ako dlho trvá predaj?",
-    title: "Niektoré nehnuteľnosti predám za pár dní. Mojím cieľom však nie je rýchlosť.",
+    title: "Rýchlosť je dobrá. Dôležitejší je však výsledok.",
     text:
-      "Každá nehnuteľnosť je iná, ale ak je správne nastavená cena a marketing, výsledok vieme dosiahnuť v horizonte niekoľkých týždňov. Cieľom je najlepší možný výsledok pre klienta.",
+      "Každá nehnuteľnosť je iná, ale ak je správne nastavená cena a marketing, výsledok sa dá dosiahnuť v horizonte niekoľkých týždňov. Mojím cieľom je najlepší možný výsledok pre klienta.",
   },
   listingsIntro: {
     eyebrow: "Nehnuteľnosti",
-    title: "Nehnuteľnosti, ktoré som úspešne predal.",
+    title: "Vybrané predaje, ktoré ukazujú môj spôsob práce.",
     text:
       "Toto je výber predajov, pri ktorých rozhodovalo správne nastavenie ceny, marketingu, vyjednávania a práce s dopytom.",
   },
@@ -187,7 +188,7 @@ export const site = {
       ],
       highlights: ["3-izbový byt", "luxusná rekonštrukcia", "kvalitná prezentácia", "výsledok 259 500 €"],
       detail:
-        "Pri zrekonštruovanom byte nestačí napísať, že je pekný. Kupujúci potrebuje vidieť detaily, svetlo, materiály a celkový pocit z bývania. Preto predaj stál na vizuálnej prezentácii a jasnom výsledku, ktorý sa dá neskôr doplniť o presnejší príbeh.",
+        "Pri zrekonštruovanom byte nestačí napísať, že je pekný. Kupujúci potrebuje vidieť detaily, svetlo, materiály a celkový pocit z bývania. Preto predaj stál na vizuálnej prezentácii, jasne pomenovanej hodnote rekonštrukcie a dôvere v hotový výsledok.",
       href: "/nehnutelnosti/3-izbovy-byt-luxusna-rekonstrukcia/",
       cta: "Pozrieť predaj",
     },
@@ -225,21 +226,15 @@ export const site = {
   principles: [
     {
       title: "Nastavím stratégiu ešte pred prvým inzerátom",
-      text: "Predaj nezačína fotografiou na portáli. Začína tým, že si ujasníme cieľ, cenu, časový rámec a spôsob prezentácie.",
+      text: "Predaj nezačína fotografiou na portáli. Začína tým, že si s vami ujasním cieľ, cenu, časový rámec a spôsob prezentácie.",
     },
     {
-      title: "Kupujúceho aktívne hľadám",
-      text: "Väčšina maklérov čaká na klienta. Ja ho vytváram cez marketing, databázu a prácu s dopytom.",
+      title: "Komunikujem priamo, nie iba formálne",
+      text: "Pri predaji sa veci hýbu rýchlo. Dôležité informácie neodkladám do neurčita; radšej zavolám, vysvetlím a dohodneme ďalší krok.",
     },
     {
-      title: "Vy sa nemusíte starať o nič",
-      text: "Zabezpečím prezentáciu, obhliadky, komunikáciu, vyjednávanie aj právny servis.",
+      title: "Držím proces aj vtedy, keď príde tlak",
+      text: "Obhliadky, komunikácia, vyjednávanie a právny servis musia držať pokope. Vtedy sa ukáže, či má človek veci pod kontrolou.",
     },
   ],
-};
-
-export const formOptions = {
-  goals: ["Predávam", "Kupujem", "Prenajímam", "Chcem odhad", "Ešte neviem"],
-  contactTimes: ["Dopoludnia", "Popoludní", "Večer", "Čo najskôr"],
-  contactMethods: ["Telefonát", "SMS", "Email", "WhatsApp"],
 };

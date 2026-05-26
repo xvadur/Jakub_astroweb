@@ -1,0 +1,6 @@
+name = "jakub-leads-telegram"
+main = "worker.js"
+compatibility_date = "2026-05-26"
+
+[vars]
+ALLOWED_ORIGINS = "https://jakubolsa.sk,http://127.0.0.1:4323,http://localhost:4323"

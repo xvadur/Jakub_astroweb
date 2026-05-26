@@ -10,38 +10,57 @@ bun install
 bun run dev
 ```
 
+If Bun is not installed:
+
+```bash
+npm install --no-package-lock
+npm run dev -- --host 127.0.0.1
+```
+
 Production build:
 
 ```bash
-bun run build
+npm run build
 ```
 
 ## Main files
 
-- `src/pages/index.astro` - homepage layout, styles, form behavior
+- `src/pages/index.astro` - homepage layout, styles, booking behavior
 - `src/data/site.ts` - broker content, contact data, listings, services
 - `src/pages/ochrana-osobnych-udajov.astro` - privacy page draft
+- `ops/telegram-worker` - minimal Telegram notification endpoint without n8n
+- `ops/n8n` - optional local n8n Docker setup for heavier lead automation and CRM handoff
+- `source-assets/originals` - archived original photos and uploads kept outside the public build
 
 ## Before public launch
 
-Replace the placeholder values in `src/data/site.ts`:
+Confirm these values in `src/data/site.ts`:
 
-- real phone number
-- real email
 - real Instagram URL and handle
+- real Google Calendar appointment schedule link
 - operating location
 - confirm imported draft listing photos from Bosen can be used on the live site
 - replace AI/generated broker imagery if Jakub wants only real photography
-- CRM endpoint if the form should submit to a backend instead of email fallback
 
 Legal/privacy:
 
 - fill in the real data controller details
 - confirm GDPR wording before launch
 
-## Form behavior
+## Booking behavior
 
-By default the form opens a prefilled email to the configured broker email.
+The main conversation CTA links to Jakub's Google Calendar appointment schedule. Visitors book a
+phone call in Google's booking flow, while the website stays static and mobile-friendly.
 
-To connect CRM later, set `site.lead.endpoint` in `src/data/site.ts`. The form will
-send JSON to that endpoint with all lead fields plus `source` and `createdAt`.
+For local preview, the site falls back to Adam's test booking link in dev mode. For production,
+set `PUBLIC_BOOKING_URL` to Jakub's real appointment schedule URL before deployment.
+
+This does not create a local CRM record by itself. Lead storage, Telegram notifications, or agent
+handoff can be added later through a backend such as Cloudflare Worker, OpenClaw, n8n, or another
+API.
+
+## Asset hygiene
+
+Only optimized, referenced public assets should live in `public/images`. Raw uploads and original
+client files belong in `source-assets/originals` so they are preserved in the repo but not copied
+to the production build.

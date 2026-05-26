@@ -1,13 +1,12 @@
 ---
-import { formOptions, site } from "../data/site";
+import { site } from "../data/site";
 
 const cleanPhone = site.contact.phone.replace(/[^\d+]/g, "");
 const hasPhone = cleanPhone.length >= 10;
 const hasEmail = site.contact.email.includes("@") && !site.contact.email.includes("example.");
 const hasInstagram = site.contact.instagram.startsWith("http");
-const contactHref = hasPhone ? `tel:${cleanPhone}` : "#kontakt";
-const contactLabel = hasPhone ? site.contact.phone : "Kontakt";
-const canSubmitLead = Boolean(site.lead.endpoint || hasEmail);
+const hasBooking = site.bookingUrl.startsWith("https://");
+const fallbackContactHref = hasPhone ? `tel:${cleanPhone}` : "#kontakt";
 const availableListings = site.listings.filter((listing) => listing.group === "available");
 const soldListings = site.listings.filter((listing) => listing.group === "sold");
 const jsonLd = {
@@ -37,7 +36,7 @@ const jsonLd = {
     <meta property="og:title" content={`${site.brand} | ${site.shortPromise}`} />
     <meta
       property="og:description"
-      content="Osobný web realitného makléra so zrozumiteľným procesom, aktuálnymi ponukami a rýchlym kontaktom."
+      content="Osobný web realitného makléra so zrozumiteľným procesom, referenčnými predajmi a rýchlym kontaktom."
     />
     <meta property="og:type" content="website" />
     <meta property="og:image" content={site.heroImage} />
@@ -48,6 +47,9 @@ const jsonLd = {
       rel="stylesheet"
     />
     <title>{site.brand} | {site.shortPromise}</title>
+    <script is:inline>
+      document.documentElement.classList.add("js");
+    </script>
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
   </head>
   <body>
@@ -63,25 +65,29 @@ const jsonLd = {
       </a>
       <nav aria-label="Hlavná navigácia">
         <a href="#sluzby">Služby</a>
-        <a href="#proces">Proces</a>
         <a href="#ponuky">Ponuky</a>
-        <a href="#kontakt">Kontakt</a>
+        <a href="#proces">Proces</a>
       </nav>
-      <a class="header-phone" href={contactHref}>{contactLabel}</a>
+      <a class="header-phone" href="#kontakt">Kontakt</a>
     </header>
 
     <main id="top">
       <section class="hero" aria-labelledby="hero-title">
-        <div class="hero-brand" data-reveal>
-          <img class="hero-logo" src={site.logoImage} alt="Jakub Olša Reality" />
-        </div>
         <div class="hero-copy" data-reveal>
-          <p class="eyebrow">Som realitný maklér pre ľudí, ktorí chcú vedieť, čo sa deje ďalej.</p>
+          <p class="eyebrow">Realitný maklér s neštandardnou cestou</p>
           <h1 id="hero-title">{site.brand}</h1>
           <p class="promise">{site.shortPromise}</p>
           <p class="intro">{site.intro}</p>
           <div class="hero-actions" aria-label="Hlavné akcie">
-            <a class="button primary" href="#kontakt">Dohodnúť rozhovor</a>
+            {
+              hasBooking ? (
+                <a class="button primary" href={site.bookingUrl} target="_blank" rel="noreferrer">
+                  Dohodnúť rozhovor
+                </a>
+              ) : (
+                <a class="button primary" href={fallbackContactHref}>Dohodnúť rozhovor</a>
+              )
+            }
             <a class="button secondary" href="#ponuky">Pozrieť ponuky</a>
           </div>
         </div>
@@ -89,8 +95,8 @@ const jsonLd = {
           <img src={site.heroImage} alt="Portrét realitného makléra Jakuba Olšu" />
           <div class="portrait-note">
             <p>
-              <strong>Osobný kontakt.</strong>
-              Najprv krátky rozhovor. Potom jasný ďalší krok.
+              <strong>Osobne a napriamo.</strong>
+              Najprv krátky rozhovor, potom jasný ďalší krok.
             </p>
           </div>
         </div>
@@ -107,13 +113,36 @@ const jsonLd = {
         }
       </section>
 
+      <div
+        class="city-panorama"
+        aria-hidden="true"
+        style={`--city-panorama-image: url('${site.cityPanoramaImage}')`}
+      ></div>
+
+      <section class="section split" id="sluzby">
+        <div class="section-heading" data-reveal>
+          <p class="eyebrow">Čo pre vás viem urobiť</p>
+          <h2>Predaj, kúpa, prenájom alebo odhad ceny. Začnem tým, čo práve riešite.</h2>
+        </div>
+        <div class="service-list">
+          {
+            site.services.map((service) => (
+              <article class="service" data-reveal>
+                <h3>{service.title}</h3>
+                <p>{service.text}</p>
+              </article>
+            ))
+          }
+        </div>
+      </section>
+
       <section class="section track-record" aria-labelledby="track-record-title">
         <div class="track-copy" data-reveal>
           <p class="eyebrow">{site.trackRecord.eyebrow}</p>
           <h2 id="track-record-title">{site.trackRecord.title}</h2>
           <p>{site.trackRecord.text}</p>
         </div>
-        <div class="stat-grid" aria-label="Jakubove výsledky">
+        <div class="stat-grid" aria-label="Moje výsledky">
           {
             site.trackRecord.stats.map((stat) => (
               <article class="stat-item" data-reveal>
@@ -136,14 +165,15 @@ const jsonLd = {
           <p>{site.listingsIntro.text}</p>
         </div>
         <div class="listing-groups">
-          <div class="listing-group" data-reveal>
-            <div class="listing-group-heading">
-              <h3 class="listing-section-title">Aktuálne v ponuke</h3>
-              <span>{availableListings.length ? `${availableListings.length} ponuka` : "doplníme neskôr"}</span>
-            </div>
-            <div class="listing-grid">
-              {
-                availableListings.length ? (
+          {
+            availableListings.length > 0 && (
+              <div class="listing-group" data-reveal>
+                <div class="listing-group-heading">
+                  <h3 class="listing-section-title">Aktuálne v ponuke</h3>
+                  <span>{`${availableListings.length} ponuka`}</span>
+                </div>
+                <div class="listing-grid">
+                  {
                   availableListings.map((listing) => (
                     <article class="listing">
                       <a href={listing.href} aria-label={`Detail: ${listing.title}`}>
@@ -167,20 +197,16 @@ const jsonLd = {
                       </a>
                     </article>
                   ))
-                ) : (
-                  <div class="listing-empty">
-                    <p>Aktuálna ponuka bude doplnená čoskoro...</p>
-                    <span>Keď bude pripravená, nájdete tu fotky, parametre, cenu aj detail nehnuteľnosti.</span>
-                  </div>
-                )
-              }
-            </div>
-          </div>
+                  }
+                </div>
+              </div>
+            )
+          }
 
           <div class="listing-group sold-listings" data-reveal>
             <div class="listing-group-heading">
               <div>
-                <h3 class="listing-section-title">Predané nehnuteľnosti</h3>
+                <h3 class="listing-section-title">Referenčné predaje</h3>
                 <span>{soldListings.length} predané nehnuteľnosti</span>
               </div>
               <div class="carousel-controls" aria-label="Ovládanie referencií">
@@ -223,23 +249,6 @@ const jsonLd = {
         </div>
       </section>
 
-      <section class="section split" id="sluzby">
-        <div class="section-heading" data-reveal>
-          <p class="eyebrow">Kedy dáva zmysel ozvať sa</p>
-          <h2>Nie každý potrebuje hneď makléra. Niekedy stačí dobrý prvý rozhovor.</h2>
-        </div>
-        <div class="service-list">
-          {
-            site.services.map((service) => (
-              <article class="service" data-reveal>
-                <h3>{service.title}</h3>
-                <p>{service.text}</p>
-              </article>
-            ))
-          }
-        </div>
-      </section>
-
       <section class="section process-section" id="proces">
         <div class="section-heading centered" data-reveal>
           <p class="eyebrow">Ako prebieha spolupráca</p>
@@ -264,15 +273,15 @@ const jsonLd = {
         style={`--band-image: url('${site.handshakeImage}')`}
       >
         <div data-reveal>
-          <p class="eyebrow">Jakubov spôsob práce</p>
-          <h2>Najprv sa pozrieme na realitu. Potom až na inzerát.</h2>
+          <p class="eyebrow">Môj spôsob práce</p>
+          <h2>Najprv sa pozriem na realitu. Potom až na inzerát.</h2>
         </div>
       </section>
 
       <section class="section principles">
         <div class="principle-lead" data-reveal>
           <p class="eyebrow">Ako pracujem</p>
-          <h2>Od prvého stretnutia musí byť jasné, čo robíme a prečo.</h2>
+          <h2>Od prvého stretnutia musí byť jasné, čo robím a prečo.</h2>
         </div>
         <div class="principle-list">
           {
@@ -296,144 +305,104 @@ const jsonLd = {
 
       <section class="contact-section" id="kontakt">
         <div class="contact-copy" data-reveal>
-          <p class="eyebrow">Začnime bez záväzku</p>
-          <h2>Povedzte mi, čo riešite. Ja vám poviem, čo by bol rozumný ďalší krok.</h2>
+          <p class="eyebrow">Prvý krok bez chaosu</p>
+          <h2>Dohodnite si telefonát alebo nechajte dopyt.</h2>
           <p>
-            Nechajte mi kontakt a preferovaný termín. Ozvem sa vám s návrhom ďalšieho kroku
-            podľa toho, čo práve riešite.
+            Vyberte si voľný termín v kalendári. Ak chcete vec riešiť hneď, môžete Jakubovi
+            zavolať priamo.
           </p>
-          <div class="direct-contact">
+          <div class="direct-contact" aria-label="Priamy kontakt">
+            <p>Rýchly kontakt</p>
             {
               hasPhone ? (
-                <a href={`tel:${cleanPhone}`}>{site.contact.phone}</a>
-              ) : (
-                <span>Telefón doplniť pred spustením</span>
-              )
-            }
-            {
-              hasEmail ? (
-                <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>
-              ) : (
-                <span>Email doplniť pred spustením</span>
-              )
-            }
-            {
-              hasInstagram ? (
-                <a href={site.contact.instagram}>{site.contact.instagramLabel}</a>
-              ) : (
-                <span>Instagram doplniť pred spustením</span>
-              )
+                <a href={`tel:${cleanPhone}`}>
+                  <span>Telefón</span>
+                  <strong>{site.contact.phone}</strong>
+                </a>
+              ) : null
             }
           </div>
         </div>
 
-        <form
-          class="lead-form"
-          action={hasEmail ? `mailto:${site.contact.email}` : "#kontakt"}
-          method="post"
-          enctype="text/plain"
-          data-email={hasEmail ? site.contact.email : ""}
-          data-endpoint={site.lead.endpoint}
-          data-source={site.lead.source}
-          data-can-submit={canSubmitLead ? "true" : "false"}
-          data-reveal
-        >
-          <label>
-            Meno a priezvisko
-            <input name="meno" autocomplete="name" required />
-          </label>
-          <label>
-            Telefón
-            <input name="telefon" type="tel" autocomplete="tel" required />
-          </label>
-          <label>
-            Email
-            <input name="email" type="email" autocomplete="email" />
-          </label>
-          <div class="field-row">
-            <label>
-              Riešim
-              <select name="zamer" required>
-                <option value="">Vyberte možnosť</option>
-                {formOptions.goals.map((goal) => <option>{goal}</option>)}
-              </select>
-            </label>
-            <label>
-              Čas kontaktu
-              <select name="cas">
-                {formOptions.contactTimes.map((time) => <option>{time}</option>)}
-              </select>
-            </label>
-          </div>
-          <div class="field-row">
-            <label>
-              Preferovaný deň
-              <input name="preferovany-den" type="date" />
-            </label>
-            <label>
-              Preferovaný čas
-              <input name="preferovany-cas" type="time" />
-            </label>
-          </div>
-          <label>
-            Lokalita alebo typ nehnuteľnosti
-            <input name="lokalita" placeholder="napr. 3-izbový byt, Bratislava" />
-          </label>
-          <label>
-            Krátka poznámka
-            <textarea
-              name="poznamka"
-              rows="4"
-              placeholder="Čo je dôležité vedieť pred prvým telefonátom?"
-            ></textarea>
-          </label>
-          <fieldset>
-            <legend>Preferovaný kontakt</legend>
-            <div class="radio-grid">
-              {
-                formOptions.contactMethods.map((method) => (
-                  <label>
-                    <input type="radio" name="kontakt" value={method} />
-                    {method}
-                  </label>
-                ))
-              }
-            </div>
-          </fieldset>
-          <label class="consent">
-            <input type="checkbox" name="suhlas" required />
-            <span>
-              Súhlasím so spracovaním údajov za účelom kontaktovania k môjmu dopytu.
-              <a href="/ochrana-osobnych-udajov/">Ochrana osobných údajov</a>
-            </span>
-          </label>
+        <div class="booking-panel" data-reveal>
           {
-            !canSubmitLead && (
-              <p class="preview-note">
-                Preview režim: odosielanie zapneme po doplnení Jakubovho emailu alebo CRM
-                endpointu.
-              </p>
+            hasBooking ? (
+              <>
+                <p class="eyebrow">Rezervácia</p>
+                <h3>Vyberte si čas telefonátu s Jakubom.</h3>
+                <p>
+                  Rezervácia sa otvorí v Google Kalendári, kde si vyberiete dostupný termín a
+                  doplníte kontakt.
+                </p>
+                <a class="button primary" href={site.bookingUrl} target="_blank" rel="noreferrer">
+                  Rezervovať telefonát
+                </a>
+              </>
+            ) : (
+              <>
+                <p class="eyebrow">Telefonát</p>
+                <h3>Zavolajte Jakubovi priamo.</h3>
+                <p>Ak rezervačný kalendár ešte nie je pripojený, najrýchlejšia cesta je telefonát.</p>
+                <a class="button primary" href={fallbackContactHref}>
+                  Zavolať Jakubovi
+                </a>
+              </>
             )
           }
-          <button class="button primary form-button" type="submit" disabled={!canSubmitLead}>
-            {canSubmitLead ? "Odoslať žiadosť" : "Doplniť kontakt pre odoslanie"}
-          </button>
-          <p class="form-status" role="status" aria-live="polite">
-            {canSubmitLead ? site.lead.responseLabel : "Formulár je pripravený, čaká na kontakt."}
-          </p>
-        </form>
+        </div>
       </section>
     </main>
 
-      <a class="mobile-cta" href="#kontakt">Dohodnúť rozhovor</a>
+    {
+      hasBooking ? (
+        <a class="mobile-cta" href={site.bookingUrl} target="_blank" rel="noreferrer">
+          Dohodnúť rozhovor
+        </a>
+      ) : (
+        <a class="mobile-cta" href={fallbackContactHref}>Dohodnúť rozhovor</a>
+      )
+    }
 
     <footer>
       <div class="footer-brand">
         <img src={site.logoImage} alt="" />
+        {
+          hasInstagram ? (
+            <a
+              class="social-icon"
+              href={site.contact.instagram}
+              target="_blank"
+              rel="noreferrer"
+              aria-label={site.contact.instagramLabel}
+              title={site.contact.instagramLabel}
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="3" y="3" width="18" height="18" rx="5" />
+                <circle cx="12" cy="12" r="4" />
+                <circle cx="17.5" cy="6.5" r="1.2" />
+              </svg>
+            </a>
+          ) : (
+            <span
+              class="social-icon is-disabled"
+              aria-label="Instagram doplniť pred spustením"
+              title="Instagram doplniť pred spustením"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="3" y="3" width="18" height="18" rx="5" />
+                <circle cx="12" cy="12" r="4" />
+                <circle cx="17.5" cy="6.5" r="1.2" />
+              </svg>
+            </span>
+          )
+        }
         <p>{site.brand}</p>
       </div>
       <p>{site.shortPromise}</p>
-      <a href={contactHref}>{contactLabel}</a>
+      <div class="footer-links">
+        <a href="#ponuky">Pozrieť ponuky</a>
+        <a href="/ochrana-osobnych-udajov/">Ochrana údajov a cookies</a>
+      </div>
     </footer>
 
     <script>
@@ -452,63 +421,19 @@ const jsonLd = {
           { threshold: 0.12 },
         );
 
-        revealItems.forEach((item) => observer.observe(item));
+        revealItems.forEach((item) => {
+          const rect = item.getBoundingClientRect();
+
+          if (rect.top < window.innerHeight * 0.9) {
+            item.classList.add("is-visible");
+            return;
+          }
+
+          observer.observe(item);
+        });
       } else {
         revealItems.forEach((item) => item.classList.add("is-visible"));
       }
-
-      const form = document.querySelector(".lead-form");
-      const status = document.querySelector(".form-status");
-
-      form?.addEventListener("submit", async (event) => {
-        event.preventDefault();
-
-        const data = new FormData(form);
-        const payload = Object.fromEntries(data.entries());
-        const endpoint = form.getAttribute("data-endpoint");
-        const email = form.getAttribute("data-email") || "";
-        const canSubmit = form.getAttribute("data-can-submit") === "true";
-
-        if (!canSubmit) {
-          status.textContent = "Najprv treba doplniť email alebo CRM endpoint.";
-          return;
-        }
-
-        status.textContent = "Pripravujem odoslanie...";
-
-        if (endpoint) {
-          try {
-            const response = await fetch(endpoint, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                ...payload,
-                source: form.getAttribute("data-source"),
-                createdAt: new Date().toISOString(),
-              }),
-            });
-
-            if (!response.ok) {
-              throw new Error("Lead endpoint rejected the request.");
-            }
-
-            form.reset();
-            status.textContent = "Ďakujem. Dopyt odišiel, ozvem sa vám.";
-            return;
-          } catch {
-            status.textContent = "CRM odoslanie zlyhalo, otváram email ako zálohu.";
-          }
-        }
-
-        const subject = `Dopyt z webu: ${payload.meno || "nový kontakt"}`;
-        const body = Object.entries(payload)
-          .filter(([, value]) => Boolean(value))
-          .map(([key, value]) => `${key}: ${value}`)
-          .join("\n");
-
-      window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-      status.textContent = "Otvoril sa email s predvyplneným dopytom.";
-      });
 
       const carouselTrack = document.querySelector("[data-carousel-track]");
       const carouselPrev = document.querySelector("[data-carousel-prev]");
@@ -675,9 +600,10 @@ const jsonLd = {
 
       nav {
         display: flex;
-        gap: 20px;
+        gap: clamp(24px, 2.2vw, 34px);
         color: rgba(255, 250, 242, 0.8);
-        font-size: 14px;
+        font-size: 15.5px;
+        font-weight: 650;
       }
 
       nav a,
@@ -713,12 +639,10 @@ const jsonLd = {
       .hero {
         display: grid;
         min-height: 100svh;
-        grid-template-columns: minmax(0, 0.9fr) minmax(420px, 1.1fr);
-        grid-template-rows: auto 1fr;
-        column-gap: 48px;
-        row-gap: 34px;
+        grid-template-columns: minmax(0, 0.95fr) minmax(430px, 1.05fr);
+        gap: 54px;
         align-items: center;
-        padding: 112px max(28px, calc((100vw - 1180px) / 2)) 52px;
+        padding: 112px max(28px, calc((100vw - 1180px) / 2)) 64px;
         background:
           linear-gradient(110deg, rgba(11, 11, 10, 0.98) 0%, rgba(27, 27, 25, 0.92) 48%, rgba(11, 11, 10, 0.82) 100%),
           radial-gradient(circle at 18% 24%, rgba(216, 184, 120, 0.22), transparent 34%),
@@ -726,25 +650,12 @@ const jsonLd = {
         color: var(--white);
       }
 
-      .hero-brand {
-        display: flex;
-        grid-column: 1 / -1;
-        align-items: center;
-        justify-content: center;
-      }
-
       .hero-copy {
         display: flex;
-        max-width: 560px;
+        max-width: 650px;
         flex-direction: column;
         justify-content: center;
-        padding: 18px 0 42px;
-      }
-
-      .hero-logo {
-        width: min(460px, 64vw);
-        height: auto;
-        filter: drop-shadow(0 22px 42px rgba(0, 0, 0, 0.32));
+        padding: 30px 0 18px;
       }
 
       .eyebrow {
@@ -774,7 +685,7 @@ const jsonLd = {
 
       h1 {
         margin-bottom: 18px;
-        font-size: 86px;
+        font-size: clamp(74px, 8vw, 116px);
       }
 
       .hero h1 {
@@ -796,7 +707,7 @@ const jsonLd = {
         margin-bottom: 22px;
         color: var(--brass);
         font-family: var(--font-display);
-        font-size: 38px;
+        font-size: clamp(34px, 3.1vw, 48px);
         font-weight: 500;
         line-height: 1.06;
       }
@@ -830,6 +741,15 @@ const jsonLd = {
         transform: translateY(-2px);
       }
 
+      a:focus-visible,
+      button:focus-visible,
+      input:focus-visible,
+      select:focus-visible,
+      textarea:focus-visible {
+        outline: 2px solid var(--brass);
+        outline-offset: 4px;
+      }
+
       .button.primary {
         border-color: var(--brass);
         background: var(--brass);
@@ -848,7 +768,7 @@ const jsonLd = {
 
       .hero-visual {
         position: relative;
-        height: clamp(560px, 74svh, 760px);
+        height: clamp(560px, 72svh, 720px);
         min-height: 0;
         align-self: center;
         overflow: hidden;
@@ -945,6 +865,36 @@ const jsonLd = {
         flex: 0 0 auto;
         border-radius: 999px;
         background: var(--brass);
+      }
+
+      .city-panorama {
+        position: relative;
+        min-height: clamp(118px, 13vw, 178px);
+        overflow: hidden;
+        border-top: 1px solid rgba(255, 250, 242, 0.08);
+        background: var(--city-panorama-image) center 66% / 100% auto no-repeat;
+      }
+
+      .city-panorama::after {
+        position: absolute;
+        right: 0;
+        left: 0;
+        z-index: 1;
+        content: "";
+        pointer-events: none;
+      }
+
+      .city-panorama::after {
+        bottom: -22px;
+        height: 42%;
+        background: linear-gradient(
+          180deg,
+          rgba(246, 241, 232, 0),
+          rgba(246, 241, 232, 0.22) 36%,
+          rgba(246, 241, 232, 0.68) 68%,
+          var(--paper) 88%,
+          var(--paper)
+        );
       }
 
       .track-record {
@@ -1270,11 +1220,18 @@ const jsonLd = {
         border: 1px solid var(--line);
         border-radius: 8px;
         background: var(--white);
+        transition: border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
       }
 
       .listing a {
         display: grid;
         height: 100%;
+      }
+
+      .listing:hover {
+        border-color: rgba(154, 92, 50, 0.42);
+        box-shadow: 0 18px 44px rgba(11, 11, 10, 0.11);
+        transform: translateY(-2px);
       }
 
       .listing img {
@@ -1386,101 +1343,76 @@ const jsonLd = {
 
       .direct-contact {
         display: grid;
-        gap: 12px;
-        margin-top: 34px;
-        color: rgba(255, 250, 242, 0.88);
+        gap: 10px;
+        margin-top: 32px;
+        max-width: 420px;
+      }
+
+      .direct-contact p {
+        margin: 0 0 4px;
+        color: #e7c385;
+        font-size: 13px;
+        font-weight: 800;
+      }
+
+      .direct-contact a {
+        display: grid;
+        gap: 2px;
+        border: 1px solid rgba(255, 250, 242, 0.14);
+        border-radius: 8px;
+        padding: 12px 14px;
+        background: rgba(255, 250, 242, 0.05);
       }
 
       .direct-contact span {
-        color: rgba(255, 250, 242, 0.62);
+        color: rgba(255, 250, 242, 0.58);
+        font-size: 12px;
+        font-weight: 800;
       }
 
-      .lead-form {
+      .direct-contact strong {
+        color: rgba(255, 250, 242, 0.9);
+        font-size: 15px;
+        font-weight: 750;
+      }
+
+      .booking-panel {
         display: grid;
+        align-self: start;
         gap: 18px;
-        padding: 26px;
         border: 1px solid rgba(255, 250, 242, 0.18);
         border-radius: 8px;
+        padding: clamp(26px, 4vw, 42px);
         background: rgba(255, 250, 242, 0.07);
       }
 
-      label,
-      fieldset {
-        display: grid;
-        gap: 8px;
+      .booking-panel .eyebrow,
+      .booking-panel h3,
+      .booking-panel p {
         margin: 0;
-        border: 0;
-        padding: 0;
-        color: rgba(255, 250, 242, 0.86);
-        font-size: 14px;
-        font-weight: 700;
       }
 
-      input,
-      select,
-      textarea {
-        width: 100%;
-        min-height: 48px;
-        border: 1px solid rgba(255, 250, 242, 0.2);
-        border-radius: 6px;
-        padding: 12px 14px;
-        background: rgba(255, 250, 242, 0.94);
-        color: var(--ink);
-        font: inherit;
+      .booking-panel .eyebrow {
+        color: #e7c385;
       }
 
-      textarea {
-        min-height: 120px;
-        resize: vertical;
+      .booking-panel h3 {
+        max-width: 520px;
+        font-family: var(--font-display);
+        font-size: clamp(36px, 4vw, 58px);
+        font-weight: 650;
+        line-height: 0.98;
       }
 
-      .field-row,
-      .radio-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 14px;
-      }
-
-      .radio-grid label,
-      .consent {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        font-weight: 500;
-      }
-
-      .radio-grid input,
-      .consent input {
-        width: 18px;
-        min-height: 18px;
-        flex: 0 0 auto;
-      }
-
-      .form-button {
-        width: 100%;
-        border-color: var(--brass);
-        background: var(--brass);
-        color: var(--ink);
-      }
-
-      .form-button:disabled {
-        cursor: not-allowed;
-        border-color: rgba(255, 250, 242, 0.24);
-        background: rgba(255, 250, 242, 0.18);
-        color: rgba(255, 250, 242, 0.66);
-        transform: none;
-      }
-
-      .form-status,
-      .preview-note {
-        margin: 0;
+      .booking-panel p:not(.eyebrow) {
+        max-width: 460px;
         color: rgba(255, 250, 242, 0.7);
-        font-size: 14px;
+        font-size: 17px;
       }
 
-      .preview-note {
-        border-left: 3px solid var(--brass);
-        padding-left: 12px;
+      .booking-panel .button {
+        width: min(100%, 340px);
+        margin-top: 6px;
       }
 
       footer {
@@ -1488,7 +1420,7 @@ const jsonLd = {
         align-items: center;
         justify-content: space-between;
         gap: 24px;
-        padding: 26px max(28px, calc((100vw - 1180px) / 2));
+        padding: 26px max(28px, calc((100vw - 1180px) / 2)) 110px;
         background: #0b0b0a;
         color: rgba(255, 250, 242, 0.72);
       }
@@ -1500,7 +1432,51 @@ const jsonLd = {
       .footer-brand {
         display: flex;
         align-items: center;
-        gap: 14px;
+        gap: 16px;
+      }
+
+      .footer-links {
+        display: grid;
+        justify-items: end;
+        gap: 8px;
+      }
+
+      .social-icon {
+        display: inline-grid;
+        width: 38px;
+        height: 38px;
+        place-items: center;
+        border: 1px solid rgba(255, 250, 242, 0.2);
+        border-radius: 999px;
+        color: rgba(255, 250, 242, 0.78);
+        transition: border-color 160ms ease, color 160ms ease, transform 160ms ease;
+      }
+
+      .social-icon svg {
+        width: 19px;
+        height: 19px;
+        fill: none;
+        stroke: currentColor;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 1.8;
+      }
+
+      .social-icon:hover {
+        border-color: var(--brass);
+        color: var(--brass);
+        transform: translateY(-1px);
+      }
+
+      .social-icon.is-disabled {
+        cursor: default;
+        opacity: 0.42;
+        transform: none;
+      }
+
+      .social-icon.is-disabled:hover {
+        border-color: rgba(255, 250, 242, 0.2);
+        color: rgba(255, 250, 242, 0.78);
       }
 
       .footer-brand img {
@@ -1526,9 +1502,68 @@ const jsonLd = {
         transition: opacity 700ms ease, transform 700ms ease;
       }
 
+      :global(html.js) [data-reveal] {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+
+      :global(html.js) [data-reveal].is-visible,
       [data-reveal].is-visible {
         opacity: 1;
         transform: translateY(0);
+      }
+
+      :global(html.js) .hero [data-reveal] {
+        opacity: 1;
+        transform: none;
+        transition: none;
+      }
+
+      @media (prefers-reduced-motion: no-preference) {
+        :global(html.js) .hero-visual {
+          animation: heroVisualIn 900ms cubic-bezier(0.2, 0.75, 0.24, 1) 120ms both;
+        }
+
+        :global(html.js) .hero-visual > img {
+          animation: heroImageSettle 1400ms cubic-bezier(0.2, 0.75, 0.24, 1) 120ms both;
+          transform-origin: center top;
+        }
+
+        :global(html.js) .proof-strip p {
+          transition-delay: 0ms;
+          transition-duration: 620ms;
+          transition-timing-function: cubic-bezier(0.2, 0.75, 0.24, 1);
+        }
+
+        :global(html.js) .proof-strip p:nth-child(2) {
+          transition-delay: 90ms;
+        }
+
+        :global(html.js) .proof-strip p:nth-child(3) {
+          transition-delay: 180ms;
+        }
+      }
+
+      @keyframes heroVisualIn {
+        from {
+          opacity: 0;
+          transform: translateY(18px) scale(0.985);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      @keyframes heroImageSettle {
+        from {
+          transform: scale(1.035);
+        }
+
+        to {
+          transform: scale(1);
+        }
       }
 
       @media (max-width: 980px) {
@@ -1562,14 +1597,9 @@ const jsonLd = {
           padding-top: 102px;
         }
 
-        .hero-brand,
         .hero-copy,
         .hero-visual {
           grid-column: 1;
-        }
-
-        .hero-logo {
-          width: min(420px, 76vw);
         }
 
         .hero-copy {
@@ -1609,6 +1639,11 @@ const jsonLd = {
           border-bottom: 1px solid rgba(255, 250, 242, 0.14);
         }
 
+        .city-panorama {
+          min-height: 138px;
+          background-position: center 66%;
+        }
+
         .service {
           grid-template-columns: 1fr;
           gap: 10px;
@@ -1635,10 +1670,6 @@ const jsonLd = {
 
         .contact-copy {
           position: static;
-        }
-
-        .mobile-cta {
-          display: none;
         }
 
         .mobile-cta.is-visible {
@@ -1672,11 +1703,12 @@ const jsonLd = {
 
         .hero {
           min-height: auto;
-          padding-bottom: 32px;
+          padding-top: 96px;
+          padding-bottom: 40px;
         }
 
         h1 {
-          font-size: 46px;
+          font-size: 48px;
         }
 
         h2 {
@@ -1685,7 +1717,7 @@ const jsonLd = {
         }
 
         .promise {
-          font-size: 27px;
+          font-size: 28px;
         }
 
         .intro {
@@ -1706,8 +1738,6 @@ const jsonLd = {
         }
 
         .hero-actions,
-        .field-row,
-        .radio-grid,
         footer {
           grid-template-columns: 1fr;
         }
@@ -1736,6 +1766,12 @@ const jsonLd = {
         .contact-section {
           padding-top: 72px;
           padding-bottom: 72px;
+        }
+
+        .city-panorama {
+          min-height: 116px;
+          background-position: center center;
+          background-size: auto 100%;
         }
 
         .process-item {
@@ -1796,12 +1832,39 @@ const jsonLd = {
           grid-template-columns: 1fr;
         }
 
-        .lead-form {
-          padding: 18px;
+        .booking-panel .button {
+          width: 100%;
+        }
+
+        .mobile-cta {
+          position: fixed;
+          right: 18px;
+          bottom: 16px;
+          left: 18px;
+          z-index: 60;
+          display: inline-flex;
+          min-height: 52px;
+          align-items: center;
+          justify-content: center;
+          border: 1px solid rgba(11, 11, 10, 0.16);
+          border-radius: 6px;
+          background: var(--brass);
+          color: var(--ink);
+          box-shadow: 0 18px 36px rgba(11, 11, 10, 0.22);
+          font-weight: 800;
+          opacity: 0;
+          pointer-events: none;
+          transform: translateY(12px);
+          transition: opacity 180ms ease, transform 180ms ease;
         }
 
         footer {
           display: grid;
+          padding-bottom: 150px;
+        }
+
+        .footer-links {
+          justify-items: start;
         }
 
         .brand-mark {
@@ -1811,10 +1874,6 @@ const jsonLd = {
         .header-phone {
           padding: 0 10px;
           font-size: 13px;
-        }
-
-        .hero-logo {
-          width: min(300px, 82vw);
         }
       }
 
