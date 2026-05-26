@@ -28,6 +28,7 @@ npm run build
 - `src/pages/index.astro` - homepage layout, styles, booking behavior
 - `src/data/site.ts` - broker content, contact data, listings, services
 - `src/pages/ochrana-osobnych-udajov.astro` - privacy page draft
+- `docs/PROJECT_STATUS.md` - internal status, launch checklist, deployment notes
 - `ops/telegram-worker` - minimal Telegram notification endpoint without n8n
 - `ops/n8n` - optional local n8n Docker setup for heavier lead automation and CRM handoff
 - `source-assets/originals` - archived original photos and uploads kept outside the public build

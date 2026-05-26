@@ -16,6 +16,7 @@ Deliver a modern Astro website for Jakub, a real-estate broker.
 - local path: `/Users/xvadur_mac/Workspace/02_Projects/Jakub_Astro`
 - framework: Astro
 - branch: `main`
+- current implementation and launch checklist live in `docs/PROJECT_STATUS.md`
 - source on MacBook also had `/Users/_xvadur/Jakub_astroweb-visual-refresh`, but that branch is older than the dirty `main` working tree
 - the local migration intentionally preserved the MacBook working tree state, including uncommitted edits and staged asset moves
 
