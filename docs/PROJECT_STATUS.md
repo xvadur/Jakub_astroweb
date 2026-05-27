@@ -21,10 +21,10 @@ V1 je statická Astro stránka. Nepoužíva vlastný backend, databázu ani CRM.
 - Hero komunikuje Jakubovu osobnú cestu: hokej, financie, reality.
 - Pridaný vizuálny realitný charakter: portrét, logo, panoráma Bratislavy, tmavý prémiový vizuál.
 - Referenčné predaje sú spracované ako samostatné detail stránky.
-- Kontakt sekcia už nepoužíva formulár. Aktuálne ponúka telefonát a rezerváciu termínu.
+- Kontakt sekcia ponúka telefonát a emailový formulár. Keď je nastavený booking link, pravý panel sa prepne na rezerváciu termínu.
 - Primárne CTA `Dohodnúť rozhovor` a `Rezervovať telefonát` smerujú na booking URL, ak je nastavené.
 - V produkcii sa booking URL berie z `PUBLIC_BOOKING_URL`.
-- V lokálnom dev režime je dočasný fallback na Adamov testovací Google Calendar link.
+- Ak `PUBLIC_BOOKING_URL` nie je nastavené, lokál aj produkcia zobrazia emailový fallback namiesto rezervácie.
 - Footer obsahuje logo, Instagram a link na ochranu údajov.
 - Pridané jemné reveal animácie a carousel ovládanie referenčných predajov.
 - Privacy stránka bola upravená podľa aktuálneho kontakt/booking modelu.
@@ -34,7 +34,7 @@ V1 je statická Astro stránka. Nepoužíva vlastný backend, databázu ani CRM.
 ## Rozhodnutia
 
 - n8n sa v prvej verzii nepoužíva.
-- Vlastný formulár sa v prvej verzii nepoužíva, aby sme neriešili backend, CRM, deliverability a GDPR navyše.
+- V prvej verzii sa používa iba jednoduchý emailový formulár cez `mailto:`, aby sme neriešili backend, CRM a deliverability navyše.
 - Booking rieši Google Calendar appointment schedule, pretože Jakub vie dostať rezerváciu bez toho, aby web musel držať kalendár, obsadenosť alebo duplicity.
 - CRM nie je súčasť V1. Ak bude treba, pridá sa neskôr cez Cloudflare Worker, Google Sheet/Notion, OpenClaw alebo iný backend.
 - Telefonický kontakt zostáva na webe, pretože Jakub ho má aj na Instagrame a pre jeho typ práce dáva zmysel.
@@ -77,14 +77,14 @@ Poznámka: ak by sa projekt prepol na Cloudflare Pages namiesto Worker assets de
 - V `Workers & Pages` pripojiť custom domains:
   - `jakubolsa.sk`
   - `www.jakubolsa.sk`
-- Získať Jakubov reálny Google Calendar appointment schedule link.
+- Získať Jakubov reálny Google Calendar appointment schedule link, ak má web používať rezerváciu namiesto emailového fallbacku.
 - V Cloudflare nastaviť produkčnú env premennú:
 
 ```bash
 PUBLIC_BOOKING_URL=<Jakubov realny Google Calendar booking link>
 ```
 
-- Overiť, že všetky CTA na produkcii smerujú na Jakubov reálny booking, nie na testovací link.
+- Overiť, že všetky CTA na produkcii buď smerujú na Jakubov reálny booking, alebo zámerne používajú emailový fallback.
 - Skontrolovať stránku na mobile po nasadení na reálnej doméne.
 - Skontrolovať SSL/TLS v Cloudflare, ideálne `Full`.
 - Potvrdiť s Jakubom telefónne číslo, email, Instagram a povolenie použiť fotky/referencie.

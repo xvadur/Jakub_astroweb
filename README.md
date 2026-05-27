@@ -53,12 +53,13 @@ Legal/privacy:
 The main conversation CTA links to Jakub's Google Calendar appointment schedule. Visitors book a
 phone call in Google's booking flow, while the website stays static and mobile-friendly.
 
-For local preview, the site falls back to Adam's test booking link in dev mode. For production,
-set `PUBLIC_BOOKING_URL` to Jakub's real appointment schedule URL before deployment.
+If `PUBLIC_BOOKING_URL` is not set, the contact section shows the email form and phone fallback.
+For booking preview or production booking, set `PUBLIC_BOOKING_URL` to Jakub's real appointment
+schedule URL before deployment.
 
-This does not create a local CRM record by itself. Lead storage, Telegram notifications, or agent
-handoff can be added later through a backend such as Cloudflare Worker, OpenClaw, n8n, or another
-API.
+The email form currently prepares a `mailto:` email in the visitor's email client. It does not
+create a local CRM record by itself. Lead storage, Telegram notifications, or agent handoff can be
+added later through a backend such as Cloudflare Worker, OpenClaw, n8n, or another API.
 
 ## Asset hygiene
 

@@ -14,9 +14,7 @@ export const site = {
     instagram: "https://www.instagram.com/jakubolsa_reality?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==",
     instagramLabel: "@jakubolsa_reality",
   },
-  bookingUrl:
-    import.meta.env.PUBLIC_BOOKING_URL ??
-    (import.meta.env.DEV ? "https://calendar.app.google/tcGGfjMwk13YnE417" : ""),
+  bookingUrl: import.meta.env.PUBLIC_BOOKING_URL ?? "",
   logoImage: "/images/brand/jakub-logo-mark-transparent.png",
   heroImage: "/images/brand/jakub-official-clean.jpg",
   cityPanoramaImage: "/images/brand/bratislava-panorama.jpg",

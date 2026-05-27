@@ -306,11 +306,20 @@ const jsonLd = {
       <section class="contact-section" id="kontakt">
         <div class="contact-copy" data-reveal>
           <p class="eyebrow">Kontakt</p>
-          <h2>Zavolajte mi alebo si rezervujte termín.</h2>
-          <p>
-            Vyberte si voľný termín v kalendári. Ak chcete vec riešiť hneď, môžete mi
-            zavolať priamo.
-          </p>
+          <h2>{hasBooking ? "Zavolajte mi alebo si rezervujte termín." : "Zavolajte mi alebo mi napíšte."}</h2>
+          {
+            hasBooking ? (
+              <p>
+                Vyberte si voľný termín v kalendári. Ak chcete vec riešiť hneď, môžete mi
+                zavolať priamo.
+              </p>
+            ) : (
+              <p>
+                Ak chcete vec riešiť hneď, zavolajte mi. Ak je lepší email, pošlite mi základné
+                informácie a ozvem sa s ďalším krokom.
+              </p>
+            )
+          }
           <div class="direct-contact" aria-label="Priamy kontakt">
             <p>Rýchly kontakt</p>
             {
@@ -340,12 +349,45 @@ const jsonLd = {
               </>
             ) : (
               <>
-                <p class="eyebrow">Telefonát</p>
-                <h3>Zavolajte mi priamo.</h3>
-                <p>Ak chcete vec prebrať bez čakania, najrýchlejšia cesta je krátky telefonát.</p>
-                <a class="button primary" href={fallbackContactHref}>
-                  Zavolať mi
-                </a>
+                <p class="eyebrow">Email</p>
+                <h3>Napíšte mi, čo riešite.</h3>
+                <p>Vyplňte základné údaje a pripravím vám email, ktorý pošlete priamo mne.</p>
+                <form class="contact-form" data-contact-form data-email={site.contact.email}>
+                  <div class="form-grid">
+                    <label>
+                      <span>Meno</span>
+                      <input name="meno" autocomplete="name" required />
+                    </label>
+                    <label>
+                      <span>Email</span>
+                      <input name="email" type="email" autocomplete="email" required />
+                    </label>
+                    <label>
+                      <span>Telefón</span>
+                      <input name="telefon" type="tel" autocomplete="tel" />
+                    </label>
+                    <label>
+                      <span>Preferovaný dátum</span>
+                      <input name="datum" type="date" />
+                    </label>
+                    <label>
+                      <span>Preferovaný čas</span>
+                      <select name="cas">
+                        <option value="">Vyberte možnosť</option>
+                        <option value="Dopoludnia">Dopoludnia</option>
+                        <option value="Okolo obeda">Okolo obeda</option>
+                        <option value="Popoludní">Popoludní</option>
+                        <option value="Podvečer">Podvečer</option>
+                        <option value="Dohodneme sa">Dohodneme sa</option>
+                      </select>
+                    </label>
+                    <label class="full">
+                      <span>Správa</span>
+                      <textarea name="sprava" rows="4" placeholder="Predaj, kúpa, prenájom alebo odhad ceny..."></textarea>
+                    </label>
+                  </div>
+                  <button class="button primary" type="submit">Pripraviť email</button>
+                </form>
               </>
             )
           }
@@ -472,6 +514,39 @@ const jsonLd = {
 
       toggleMobileCta();
       window.addEventListener("scroll", toggleMobileCta, { passive: true });
+
+      const contactForm = document.querySelector("[data-contact-form]");
+
+      contactForm?.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        if (!(contactForm instanceof HTMLFormElement)) return;
+
+        const targetEmail = contactForm.getAttribute("data-email");
+        if (!targetEmail) return;
+
+        const formData = new FormData(contactForm);
+        const value = (name) => String(formData.get(name) || "").trim();
+        const subjectName = value("meno") || "novy kontakt";
+        const body = [
+          "Dopyt z webu Jakuba Olsu",
+          "",
+          `Meno: ${value("meno")}`,
+          `Email: ${value("email")}`,
+          `Telefon: ${value("telefon") || "-"}`,
+          `Preferovany datum: ${value("datum") || "-"}`,
+          `Preferovany cas: ${value("cas") || "-"}`,
+          "",
+          "Sprava:",
+          value("sprava") || "-",
+        ].join("\n");
+
+        const href = `mailto:${encodeURIComponent(targetEmail)}?subject=${encodeURIComponent(
+          `Dopyt z webu - ${subjectName}`,
+        )}&body=${encodeURIComponent(body)}`;
+
+        window.location.href = href;
+      });
 
     </script>
 
@@ -1415,6 +1490,80 @@ const jsonLd = {
         margin-top: 6px;
       }
 
+      .contact-form {
+        display: grid;
+        gap: 16px;
+        margin-top: 4px;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .contact-form label {
+        display: grid;
+        gap: 7px;
+      }
+
+      .contact-form label.full {
+        grid-column: 1 / -1;
+      }
+
+      .contact-form span {
+        color: rgba(255, 250, 242, 0.62);
+        font-size: 12px;
+        font-weight: 800;
+      }
+
+      .contact-form input,
+      .contact-form select,
+      .contact-form textarea {
+        width: 100%;
+        border: 1px solid rgba(255, 250, 242, 0.16);
+        border-radius: 6px;
+        background: rgba(11, 11, 10, 0.28);
+        color: var(--white);
+        font: inherit;
+      }
+
+      .contact-form input,
+      .contact-form select {
+        min-height: 48px;
+        padding: 0 13px;
+      }
+
+      .contact-form select {
+        appearance: none;
+        background-image:
+          linear-gradient(45deg, transparent 50%, rgba(255, 250, 242, 0.72) 50%),
+          linear-gradient(135deg, rgba(255, 250, 242, 0.72) 50%, transparent 50%);
+        background-position:
+          calc(100% - 18px) 20px,
+          calc(100% - 13px) 20px;
+        background-repeat: no-repeat;
+        background-size: 5px 5px, 5px 5px;
+      }
+
+      .contact-form textarea {
+        min-height: 118px;
+        padding: 12px 13px;
+        resize: vertical;
+      }
+
+      .contact-form input::placeholder,
+      .contact-form textarea::placeholder {
+        color: rgba(255, 250, 242, 0.36);
+      }
+
+      .contact-form input:focus,
+      .contact-form select:focus,
+      .contact-form textarea:focus {
+        border-color: rgba(216, 184, 120, 0.72);
+        outline: none;
+      }
+
       footer {
         display: flex;
         align-items: center;
@@ -1834,6 +1983,10 @@ const jsonLd = {
 
         .booking-panel .button {
           width: 100%;
+        }
+
+        .form-grid {
+          grid-template-columns: 1fr;
         }
 
         .mobile-cta {
