@@ -233,11 +233,11 @@ const isSold = listing.group === "sold";
 
       .detail-hero {
         display: grid;
-        min-height: 92svh;
-        grid-template-columns: minmax(0, 0.9fr) minmax(420px, 1.1fr);
+        min-height: auto;
+        grid-template-columns: minmax(0, 1fr) minmax(420px, 1fr);
         gap: 54px;
         align-items: center;
-        padding-top: 118px;
+        padding-top: 150px;
         padding-bottom: 72px;
         background:
           radial-gradient(circle at 84% 18%, rgba(216, 184, 120, 0.16), transparent 30%),
@@ -246,6 +246,7 @@ const isSold = listing.group === "sold";
 
       .detail-hero > div {
         max-width: 650px;
+        min-width: 0;
       }
 
       .back-link {
@@ -277,7 +278,8 @@ const isSold = listing.group === "sold";
 
       h1 {
         margin-bottom: 22px;
-        font-size: clamp(54px, 7vw, 94px);
+        font-size: clamp(52px, 5.9vw, 88px);
+        overflow-wrap: anywhere;
       }
 
       h2 {
