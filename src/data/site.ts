@@ -93,11 +93,100 @@ export const site = {
   },
   listingsIntro: {
     eyebrow: "Nehnuteľnosti",
-    title: "Vybrané predaje, ktoré ukazujú môj spôsob práce.",
+    title: "Aktuálne ponuky a predaje, ktoré ukazujú môj spôsob práce.",
     text:
-      "Toto je výber predajov, pri ktorých rozhodovalo správne nastavenie ceny, marketingu, vyjednávania a práce s dopytom.",
+      "Pozrite si aktuálne nehnuteľnosti v ponuke a referenčné predaje, pri ktorých rozhodovalo správne nastavenie ceny, marketingu, vyjednávania a práce s dopytom.",
   },
   listings: [
+    {
+      slug: "byt-mamateyova",
+      group: "available",
+      status: "V ponuke",
+      title: "Byt na Mamateyovej ulici",
+      place: "Mamateyova ulica, Bratislava",
+      price: "cena na vyžiadanie",
+      image: "/images/listings/mamateyova-byt/01-obyvacka.jpg",
+      gallery: [
+        "/images/listings/mamateyova-byt/01-obyvacka.jpg",
+        "/images/listings/mamateyova-byt/02-izba.jpg",
+        "/images/listings/mamateyova-byt/03-kuchyna.jpg",
+        "/images/listings/mamateyova-byt/04-spalna.jpg",
+        "/images/listings/mamateyova-byt/05-kupelna.jpg",
+      ],
+      note: "Byt s priestrannou dennou časťou a klasickým zariadením. Detaily ponuky doplním po potvrdení parametrov.",
+      summary:
+        "Aktuálna ponuka bytu na Mamateyovej ulici v Bratislave. Detaily, cenu a obhliadku riešim individuálne podľa záujmu.",
+      specs: [
+        { label: "Typ", value: "byt" },
+        { label: "Lokalita", value: "Mamateyova ulica, Bratislava" },
+        { label: "Cena", value: "na vyžiadanie" },
+        { label: "Status", value: "v ponuke" },
+      ],
+      highlights: ["Mamateyova ulica", "byt", "Bratislava", "cena na vyžiadanie"],
+      detail:
+        "Ponuka je pripravená ako aktuálny inzerát s fotogalériou. Presné parametre, cenu a možnosti obhliadky odporúčam riešiť priamo v krátkom telefonáte alebo emaile, aby ste dostali informácie podľa vašej situácie.",
+      href: "/nehnutelnosti/byt-mamateyova/",
+      cta: "Pozrieť ponuku",
+    },
+    {
+      slug: "byt-martincekova",
+      group: "available",
+      status: "V ponuke",
+      title: "Byt na Martinčekovej ulici",
+      place: "Martinčekova ulica, Bratislava",
+      price: "cena na vyžiadanie",
+      image: "/images/listings/martincekova-byt/01-obyvacka.jpg",
+      gallery: [
+        "/images/listings/martincekova-byt/01-obyvacka.jpg",
+        "/images/listings/martincekova-byt/02-izba.jpg",
+        "/images/listings/martincekova-byt/03-kuchyna.jpg",
+        "/images/listings/martincekova-byt/04-spalna.jpg",
+        "/images/listings/martincekova-byt/05-kupelna.jpg",
+      ],
+      note: "Svetlý byt s čistým interiérom a príjemnou prezentáciou. Detaily ponuky doplním po potvrdení parametrov.",
+      summary:
+        "Aktuálna ponuka bytu na Martinčekovej ulici v Bratislave. Detaily, cenu a obhliadku riešim individuálne podľa záujmu.",
+      specs: [
+        { label: "Typ", value: "byt" },
+        { label: "Lokalita", value: "Martinčekova ulica, Bratislava" },
+        { label: "Cena", value: "na vyžiadanie" },
+        { label: "Status", value: "v ponuke" },
+      ],
+      highlights: ["Martinčekova ulica", "byt", "Bratislava", "cena na vyžiadanie"],
+      detail:
+        "Ponuka je pripravená ako aktuálny inzerát s fotogalériou. Presné parametre, cenu a možnosti obhliadky odporúčam riešiť priamo v krátkom telefonáte alebo emaile, aby ste dostali informácie podľa vašej situácie.",
+      href: "/nehnutelnosti/byt-martincekova/",
+      cta: "Pozrieť ponuku",
+    },
+    {
+      slug: "byt-salviova",
+      group: "available",
+      status: "V ponuke",
+      title: "Byt na Šalviovej ulici",
+      place: "Šalviová ulica, Bratislava",
+      price: "cena na vyžiadanie",
+      image: "/images/listings/salviova-byt/01-obyvacka.jpg",
+      gallery: [
+        "/images/listings/salviova-byt/01-obyvacka.jpg",
+        "/images/listings/salviova-byt/02-izba.jpg",
+        "/images/listings/salviova-byt/03-kuchyna.jpg",
+        "/images/listings/salviova-byt/04-spalna.jpg",
+      ],
+      note: "Byt so svetlým interiérom a upravenou dennou časťou. Detaily ponuky doplním po potvrdení parametrov.",
+      summary:
+        "Aktuálna ponuka bytu na Šalviovej ulici v Bratislave. Detaily, cenu a obhliadku riešim individuálne podľa záujmu.",
+      specs: [
+        { label: "Typ", value: "byt" },
+        { label: "Lokalita", value: "Šalviová ulica, Bratislava" },
+        { label: "Cena", value: "na vyžiadanie" },
+        { label: "Status", value: "v ponuke" },
+      ],
+      highlights: ["Šalviová ulica", "byt", "Bratislava", "cena na vyžiadanie"],
+      detail:
+        "Ponuka je pripravená ako aktuálny inzerát s fotogalériou. Presné parametre, cenu a možnosti obhliadky odporúčam riešiť priamo v krátkom telefonáte alebo emaile, aby ste dostali informácie podľa vašej situácie.",
+      href: "/nehnutelnosti/byt-salviova/",
+      cta: "Pozrieť ponuku",
+    },
     {
       slug: "polyfunkcny-objekt-orenburska",
       group: "sold",
