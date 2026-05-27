@@ -532,17 +532,17 @@ const jsonLd = {
 
         const formData = new FormData(contactForm);
         const value = (name) => String(formData.get(name) || "").trim();
-        const subjectName = value("meno") || "novy kontakt";
+        const subjectName = value("meno") || "nový kontakt";
         const body = [
-          "Dopyt z webu Jakuba Olsu",
+          "Dopyt z webu Jakuba Olšu",
           "",
           `Meno: ${value("meno")}`,
           `Email: ${value("email")}`,
-          `Telefon: ${value("telefon") || "-"}`,
-          `Preferovany datum: ${value("datum") || "-"}`,
-          `Preferovany cas: ${value("cas") || "-"}`,
+          `Telefón: ${value("telefon") || "-"}`,
+          `Preferovaný dátum: ${value("datum") || "-"}`,
+          `Preferovaný čas: ${value("cas") || "-"}`,
           "",
-          "Sprava:",
+          "Správa:",
           value("sprava") || "-",
         ].join("\n");
 
