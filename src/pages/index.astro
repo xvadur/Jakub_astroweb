@@ -9,6 +9,14 @@ const hasBooking = site.bookingUrl.startsWith("https://");
 const fallbackContactHref = hasPhone ? `tel:${cleanPhone}` : "#kontakt";
 const availableListings = site.listings.filter((listing) => listing.group === "available");
 const soldListings = site.listings.filter((listing) => listing.group === "sold");
+const availableListingsLabel =
+  availableListings.length === 1
+    ? "1 aktuálna ponuka"
+    : availableListings.length > 1 && availableListings.length < 5
+      ? `${availableListings.length} aktuálne ponuky`
+      : availableListings.length > 0
+        ? `${availableListings.length} aktuálnych ponúk`
+        : "pripravené na doplnenie";
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "RealEstateAgent",
@@ -166,43 +174,51 @@ const jsonLd = {
           <p>{site.listingsIntro.text}</p>
         </div>
         <div class="listing-groups">
-          {
-            availableListings.length > 0 && (
-              <div class="listing-group" data-reveal>
-                <div class="listing-group-heading">
-                  <h3 class="listing-section-title">Aktuálne v ponuke</h3>
-                  <span>{`${availableListings.length} ponuka`}</span>
-                </div>
+          <div class="listing-group available-listings" data-reveal>
+            <div class="listing-group-heading">
+              <div>
+                <h3 class="listing-section-title">Aktuálne ponúkané byty</h3>
+                <span>{availableListingsLabel}</span>
+              </div>
+            </div>
+            {
+              availableListings.length > 0 ? (
                 <div class="listing-grid">
                   {
-                  availableListings.map((listing) => (
-                    <article class="listing">
-                      <a href={listing.href} aria-label={`Detail: ${listing.title}`}>
-                        <img src={listing.image} alt="" loading="lazy" />
-                        <div>
-                          <p>{listing.status}</p>
-                          <h3>{listing.title}</h3>
-                          <dl>
-                            <div>
-                              <dt>Lokalita</dt>
-                              <dd>{listing.place}</dd>
-                            </div>
-                            <div>
-                              <dt>Cena</dt>
-                              <dd>{listing.price}</dd>
-                            </div>
-                          </dl>
-                          <span>{listing.note}</span>
-                          <strong>{listing.cta}</strong>
-                        </div>
-                      </a>
-                    </article>
-                  ))
+                    availableListings.map((listing) => (
+                      <article class="listing">
+                        <a href={listing.href} aria-label={`Detail: ${listing.title}`}>
+                          <img src={listing.image} alt="" loading="lazy" />
+                          <div>
+                            <p>{listing.status}</p>
+                            <h3>{listing.title}</h3>
+                            <dl>
+                              <div>
+                                <dt>Lokalita</dt>
+                                <dd>{listing.place}</dd>
+                              </div>
+                              <div>
+                                <dt>Cena</dt>
+                                <dd>{listing.price}</dd>
+                              </div>
+                            </dl>
+                            <span>{listing.note}</span>
+                            <strong>{listing.cta}</strong>
+                          </div>
+                        </a>
+                      </article>
+                    ))
                   }
                 </div>
-              </div>
-            )
-          }
+              ) : (
+                <article class="listing-empty">
+                  <p>Aktuálne nie je zverejnený žiadny byt v ponuke.</p>
+                  <span>Ak hľadáte konkrétny byt alebo chcete vedieť, čo sa pripravuje, najrýchlejšie je ozvať sa priamo.</span>
+                  <a class="button primary" href="#kontakt">Prejsť na kontakt</a>
+                </article>
+              )
+            }
+          </div>
 
           <div class="listing-group sold-listings" data-reveal>
             <div class="listing-group-heading">
@@ -1397,6 +1413,11 @@ const jsonLd = {
 
       .listing-empty span {
         color: var(--muted);
+      }
+
+      .listing-empty .button {
+        justify-self: start;
+        margin-top: 12px;
       }
 
       .contact-section {

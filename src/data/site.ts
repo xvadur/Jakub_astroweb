@@ -93,9 +93,9 @@ export const site = {
   },
   listingsIntro: {
     eyebrow: "Nehnuteľnosti",
-    title: "Vybrané predaje, ktoré ukazujú môj spôsob práce.",
+    title: "Aktuálne ponuky a predaje, ktoré ukazujú môj spôsob práce.",
     text:
-      "Toto je výber predajov, pri ktorých rozhodovalo správne nastavenie ceny, marketingu, vyjednávania a práce s dopytom.",
+      "Ponúkané byty držím oddelene od referenčných predajov, aby bolo hneď jasné, čo je aktuálne na trhu a čo je už uzavretý výsledok.",
   },
   listings: [
     {
