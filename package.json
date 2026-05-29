@@ -9,7 +9,9 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "deploy:production": "npm run build && npx wrangler deploy --assets=dist --name=jakubastroweb --compatibility-date=2026-05-26",
+    "deploy:staging": "PUBLIC_SITE_ENV=staging npm run build && npx wrangler deploy --assets=dist --name=jakubastroweb-staging --compatibility-date=2026-05-26"
   },
   "dependencies": {
     "astro": "^6.1.9"

@@ -6,6 +6,8 @@ const hasPhone = cleanPhone.length >= 10;
 const hasEmail = site.contact.email.includes("@") && !site.contact.email.includes("example.");
 const hasInstagram = site.contact.instagram.startsWith("http");
 const hasBooking = site.bookingUrl.startsWith("https://");
+const siteEnv = import.meta.env.PUBLIC_SITE_ENV ?? "production";
+const isStaging = siteEnv !== "production";
 const availableListings = site.listings.filter((listing) => listing.group === "available");
 const soldListings = site.listings.filter((listing) => listing.group === "sold");
 const availableListingsLabel =
@@ -48,6 +50,7 @@ const jsonLd = {
     />
     <meta property="og:type" content="website" />
     <meta property="og:image" content={site.heroImage} />
+    {isStaging ? <meta name="robots" content="noindex,nofollow,noarchive" /> : null}
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -62,6 +65,7 @@ const jsonLd = {
   </head>
   <body>
     <a class="skip-link" href="#kontakt">Prejsť na kontakt</a>
+    {isStaging ? <div class="staging-ribbon" aria-hidden="true">STAGING</div> : null}
 
     <header class="site-header">
       <a class="brand" href="#top" aria-label={`${site.brand}, úvod`}>
@@ -654,6 +658,22 @@ const jsonLd = {
 
       .skip-link:focus {
         transform: translateY(0);
+      }
+
+      .staging-ribbon {
+        position: fixed;
+        right: 18px;
+        bottom: 18px;
+        z-index: 1200;
+        border: 1px solid rgba(11, 11, 10, 0.16);
+        border-radius: 999px;
+        padding: 8px 12px;
+        background: #f3cf74;
+        color: var(--ink);
+        box-shadow: 0 12px 30px rgba(11, 11, 10, 0.22);
+        font-size: 12px;
+        font-weight: 900;
+        letter-spacing: 0;
       }
 
       .site-header {

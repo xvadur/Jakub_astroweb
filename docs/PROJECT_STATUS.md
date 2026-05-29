@@ -69,6 +69,25 @@ npx wrangler deploy --assets=dist --name=jakubastroweb --compatibility-date=2026
 
 Poznámka: ak by sa projekt prepol na Cloudflare Pages namiesto Worker assets deployu, deploy command má byť prázdny a používa sa len output directory `dist`.
 
+## Staging prostredie
+
+Staging workflow je zdokumentovaný v `docs/STAGING_DEPLOYMENT.md`.
+
+Pravidlo:
+
+- `main` je produkcia pre `jakubolsa.sk`,
+- `staging` je testovacia vetva,
+- staging deploy musí ísť do samostatného workeru `jakubastroweb-staging`,
+- staging build má mať `PUBLIC_SITE_ENV=staging`, aby mal `noindex` a viditeľný `STAGING` badge,
+- experimentálne zmeny, OpenClaw mutácie, booking wizard, tracking a lead formuláre sa najprv kontrolujú na stagingu.
+
+Staging deploy command:
+
+```bash
+PUBLIC_SITE_ENV=staging npm run build
+npx wrangler deploy --assets=dist --name=jakubastroweb-staging --compatibility-date=2026-05-26
+```
+
 ## Čo treba dokončiť pred ostrým spustením
 
 - Počkať, kým Cloudflare označí `jakubolsa.sk` ako `Active`.
