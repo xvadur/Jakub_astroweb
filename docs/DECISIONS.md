@@ -38,3 +38,27 @@ Lead magnet:
 - predajný audit / predajná stratégia
 - goal: turn anonymous visitors into serious consultations
 - target user: owner deciding whether to sell, rent, wait, buy another property, or solve a complex transaction
+
+## 2026-05-30: One canonical local project folder
+
+Canonical folder:
+
+```text
+/Users/xvadur_mac/Jakub_Astro
+```
+
+Compatibility aliases point to the same folder:
+
+```text
+/Users/xvadur_mac/Projects/Jakub_Astro
+/Users/xvadur_mac/Workspace/legacy/code/Jakub_Astro
+/Users/xvadur_mac/Workspace/projects/jakub-astro
+```
+
+Rules:
+
+- Do not create separate Jakub web copies elsewhere in `/Users/xvadur_mac`.
+- Keep project docs, source assets, ops templates, OpenClaw architecture notes, and deployment notes inside `/Users/xvadur_mac/Jakub_Astro`.
+- If old external notes are found, move or archive them under `docs/archive/`.
+- Generated folders such as `dist/`, `.astro/`, `.wrangler/`, `node_modules/`, and `output/` are not source of truth.
+- Do not copy raw Obsidian/personal/client-sensitive notes into tracked GitHub files. Distill them into sanitized decisions or keep them in ignored `private/` paths.

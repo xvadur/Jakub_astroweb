@@ -3,6 +3,7 @@ dist/
 output/
 # generated types
 .astro/
+.wrangler/
 
 # dependencies
 node_modules/
@@ -17,6 +18,10 @@ pnpm-debug.log*
 # environment variables
 .env
 .env.production
+
+# local private notes and client-sensitive material
+private/
+docs/private/
 
 # macOS-specific files
 .DS_Store
