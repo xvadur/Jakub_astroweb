@@ -6,7 +6,6 @@ const hasPhone = cleanPhone.length >= 10;
 const hasEmail = site.contact.email.includes("@") && !site.contact.email.includes("example.");
 const hasInstagram = site.contact.instagram.startsWith("http");
 const hasBooking = site.bookingUrl.startsWith("https://");
-const fallbackContactHref = hasPhone ? `tel:${cleanPhone}` : "#kontakt";
 const availableListings = site.listings.filter((listing) => listing.group === "available");
 const soldListings = site.listings.filter((listing) => listing.group === "sold");
 const availableListingsLabel =
@@ -40,12 +39,12 @@ const jsonLd = {
     <meta name="generator" content={Astro.generator} />
     <meta
       name="description"
-      content={`${site.brand} je ${site.role}. ${site.shortPromise} Dohodnite si krátky rozhovor o predaji, kúpe alebo prenájme.`}
+      content={`${site.brand} je ${site.role}. ${site.shortPromise} Dohodnite si predajný audit nehnuteľnosti.`}
     />
     <meta property="og:title" content={`${site.brand} | ${site.shortPromise}`} />
     <meta
       property="og:description"
-      content="Osobný web realitného makléra so zrozumiteľným procesom, referenčnými predajmi a rýchlym kontaktom."
+      content="Osobný maklér so servisným zázemím BOSEN pre predaj, kúpu, prenájom a stratégiu hodnotnej nehnuteľnosti."
     />
     <meta property="og:type" content="website" />
     <meta property="og:image" content={site.heroImage} />
@@ -73,7 +72,7 @@ const jsonLd = {
         </span>
       </a>
       <nav aria-label="Hlavná navigácia">
-        <a href="#sluzby">Služby</a>
+        <a href="#servis">Servis</a>
         <a href="#ponuky">Ponuky</a>
         <a href="#proces">Proces</a>
       </nav>
@@ -83,29 +82,21 @@ const jsonLd = {
     <main id="top">
       <section class="hero" aria-labelledby="hero-title">
         <div class="hero-copy" data-reveal>
-          <p class="eyebrow">Realitný maklér s neštandardnou cestou</p>
+          <p class="eyebrow">Osobný maklér s kompletným zázemím BOSEN</p>
           <h1 id="hero-title">{site.brand}</h1>
           <p class="promise">{site.shortPromise}</p>
           <p class="intro">{site.intro}</p>
           <div class="hero-actions" aria-label="Hlavné akcie">
-            {
-              hasBooking ? (
-                <a class="button primary" href={site.bookingUrl} target="_blank" rel="noreferrer">
-                  Dohodnúť rozhovor
-                </a>
-              ) : (
-                <a class="button primary" href={fallbackContactHref}>Dohodnúť rozhovor</a>
-              )
-            }
-            <a class="button secondary" href="#ponuky">Pozrieť ponuky</a>
+            <a class="button primary" href="#kontakt">Chcem predajnú stratégiu</a>
+            <a class="button secondary" href="#servis">Čo za vás prevezmem</a>
           </div>
         </div>
         <div class="hero-visual" data-reveal>
           <img src={site.heroImage} alt="Portrét realitného makléra Jakuba Olšu" />
           <div class="portrait-note">
             <p>
-              <strong>Osobne a napriamo.</strong>
-              Najprv krátky rozhovor, potom jasný ďalší krok.
+              <strong>Jeden človek na vašej strane.</strong>
+              Za mnou je marketing, právo, financovanie a realitné zázemie BOSEN.
             </p>
           </div>
         </div>
@@ -128,10 +119,28 @@ const jsonLd = {
         style={`--city-panorama-image: url('${site.cityPanoramaImage}')`}
       ></div>
 
+      <section class="section backing" id="servis" aria-labelledby="backing-title">
+        <div class="backing-lead" data-reveal>
+          <p class="eyebrow">{site.backing.eyebrow}</p>
+          <h2 id="backing-title">{site.backing.title}</h2>
+          <p>{site.backing.text}</p>
+        </div>
+        <div class="backing-grid">
+          {
+            site.backing.items.map((item) => (
+              <article class="backing-item" data-reveal>
+                <h3>{item.title}</h3>
+                <p>{item.text}</p>
+              </article>
+            ))
+          }
+        </div>
+      </section>
+
       <section class="section split" id="sluzby">
         <div class="section-heading" data-reveal>
-          <p class="eyebrow">Čo pre vás viem urobiť</p>
-          <h2>Predaj, kúpa, prenájom alebo odhad ceny. Začnem tým, čo práve riešite.</h2>
+          <p class="eyebrow">Čo pre vás prevezmem</p>
+          <h2>Nie každá situácia potrebuje rovnaké riešenie. Najprv vyberieme správnu stratégiu.</h2>
         </div>
         <div class="service-list">
           {
@@ -322,21 +331,9 @@ const jsonLd = {
 
       <section class="contact-section" id="kontakt">
         <div class="contact-copy" data-reveal>
-          <p class="eyebrow">Kontakt</p>
-          <h2>{hasBooking ? "Zavolajte mi alebo si rezervujte termín." : "Zavolajte mi alebo mi napíšte."}</h2>
-          {
-            hasBooking ? (
-              <p>
-                Vyberte si voľný termín v kalendári. Ak chcete vec riešiť hneď, môžete mi
-                zavolať priamo.
-              </p>
-            ) : (
-              <p>
-                Ak chcete vec riešiť hneď, zavolajte mi. Ak je lepší email, pošlite mi základné
-                informácie a ozvem sa s ďalším krokom.
-              </p>
-            )
-          }
+          <p class="eyebrow">{site.leadMagnet.eyebrow}</p>
+          <h2>{site.leadMagnet.title}</h2>
+          <p>{site.leadMagnet.text}</p>
           <div class="direct-contact" aria-label="Priamy kontakt">
             <p>Rýchly kontakt</p>
             {
@@ -347,83 +344,94 @@ const jsonLd = {
                 </a>
               ) : null
             }
+            {
+              hasBooking ? (
+                <a href={site.bookingUrl} target="_blank" rel="noreferrer">
+                  <span>Kalendár</span>
+                  <strong>Rezervovať telefonát</strong>
+                </a>
+              ) : null
+            }
           </div>
         </div>
 
         <div class="booking-panel" data-reveal>
-          {
-            hasBooking ? (
-              <>
-                <p class="eyebrow">Rezervácia</p>
-                <h3>Vyberte si čas telefonátu so mnou.</h3>
-                <p>
-                  Rezervácia sa otvorí v Google Kalendári, kde si vyberiete dostupný termín a
-                  doplníte kontakt.
-                </p>
-                <a class="button primary" href={site.bookingUrl} target="_blank" rel="noreferrer">
-                  Rezervovať telefonát
-                </a>
-              </>
-            ) : (
-              <>
-                <p class="eyebrow">Email</p>
-                <h3>Napíšte mi, čo riešite.</h3>
-                <p>Vyplňte základné údaje a pripravím vám email, ktorý pošlete priamo mne.</p>
-                <form class="contact-form" data-contact-form data-email={site.contact.email}>
-                  <div class="form-grid">
-                    <label>
-                      <span>Meno</span>
-                      <input name="meno" autocomplete="name" required />
-                    </label>
-                    <label>
-                      <span>Email</span>
-                      <input name="email" type="email" autocomplete="email" required />
-                    </label>
-                    <label>
-                      <span>Telefón</span>
-                      <input name="telefon" type="tel" autocomplete="tel" />
-                    </label>
-                    <label>
-                      <span>Preferovaný dátum</span>
-                      <input name="datum" type="date" />
-                    </label>
-                    <label>
-                      <span>Preferovaný čas</span>
-                      <select name="cas">
-                        <option value="">Vyberte čas</option>
-                        <option value="08:00">08:00</option>
-                        <option value="09:00">09:00</option>
-                        <option value="10:00">10:00</option>
-                        <option value="11:00">11:00</option>
-                        <option value="12:00">12:00</option>
-                        <option value="13:00">13:00</option>
-                        <option value="14:00">14:00</option>
-                        <option value="15:00">15:00</option>
-                        <option value="16:00">16:00</option>
-                        <option value="17:00">17:00</option>
-                      </select>
-                    </label>
-                    <label class="full">
-                      <span>Správa</span>
-                      <textarea name="sprava" rows="4" placeholder="Predaj, kúpa, prenájom alebo odhad ceny..."></textarea>
-                    </label>
-                  </div>
-                  <button class="button primary" type="submit">Pripraviť email</button>
-                </form>
-              </>
-            )
-          }
+          <p class="eyebrow">Audit nehnuteľnosti</p>
+          <h3>Pošlite základ. Ozvem sa s konkrétnym ďalším krokom.</h3>
+          <p>
+            Formulár pripraví podklady k vašej situácii. Následne viem povedať, či dáva zmysel
+            klasický predaj, rýchle riešenie, prenájom alebo iný postup.
+          </p>
+          <form class="contact-form" data-contact-form data-email={site.contact.email}>
+            <div class="form-grid">
+              <label>
+                <span>Meno</span>
+                <input name="meno" autocomplete="name" required />
+              </label>
+              <label>
+                <span>Telefón</span>
+                <input name="telefon" type="tel" autocomplete="tel" required />
+              </label>
+              <label>
+                <span>Email</span>
+                <input name="email" type="email" autocomplete="email" />
+              </label>
+              <label>
+                <span>Čo riešite?</span>
+                <select name="zamer" required>
+                  <option value="">Vyberte možnosť</option>
+                  <option value="Predaj za čo najlepšiu cenu">Predaj za čo najlepšiu cenu</option>
+                  <option value="Rýchly predaj alebo výkup">Rýchly predaj alebo výkup</option>
+                  <option value="Prenájom alebo správa">Prenájom alebo správa</option>
+                  <option value="Kúpa nového a predaj starej nehnuteľnosti">Kúpa nového a predaj starej</option>
+                  <option value="Konzultácia / neviem vybrať postup">Konzultácia / neviem vybrať postup</option>
+                </select>
+              </label>
+              <label>
+                <span>Typ nehnuteľnosti</span>
+                <select name="typ">
+                  <option value="">Vyberte typ</option>
+                  <option value="Byt">Byt</option>
+                  <option value="Dom">Dom</option>
+                  <option value="Pozemok">Pozemok</option>
+                  <option value="Komerčný priestor">Komerčný priestor</option>
+                  <option value="Investičná nehnuteľnosť">Investičná nehnuteľnosť</option>
+                </select>
+              </label>
+              <label>
+                <span>Lokalita</span>
+                <input name="lokalita" placeholder="Mesto, časť alebo ulica" />
+              </label>
+              <label>
+                <span>Časový horizont</span>
+                <select name="horizont">
+                  <option value="">Vyberte horizont</option>
+                  <option value="Ihneď">Ihneď</option>
+                  <option value="1-3 mesiace">1-3 mesiace</option>
+                  <option value="3-6 mesiacov">3-6 mesiacov</option>
+                  <option value="Zatiaľ len zisťujem možnosti">Zatiaľ len zisťujem možnosti</option>
+                </select>
+              </label>
+              <label>
+                <span>Výmera / izby</span>
+                <input name="parametre" placeholder="napr. 4 izby, 156 m², terasa" />
+              </label>
+              <label class="full">
+                <span>Čo je pre vás dôležité?</span>
+                <textarea name="sprava" rows="4" placeholder="Cena, rýchlosť, diskrétnosť, kúpa nového bývania, investícia..."></textarea>
+              </label>
+            </div>
+            <button class="button primary" type="submit">Pripraviť predajný audit</button>
+          </form>
         </div>
       </section>
     </main>
 
     {
       hasBooking ? (
-        <a class="mobile-cta" href={site.bookingUrl} target="_blank" rel="noreferrer">
-          Dohodnúť rozhovor
-        </a>
+        <a class="mobile-cta" href="#kontakt">Chcem predajnú stratégiu</a>
       ) : (
-        <a class="mobile-cta" href={fallbackContactHref}>Dohodnúť rozhovor</a>
+        <a class="mobile-cta" href="#kontakt">Chcem predajnú stratégiu</a>
       )
     }
 
@@ -550,21 +558,25 @@ const jsonLd = {
         const formData = new FormData(contactForm);
         const value = (name) => String(formData.get(name) || "").trim();
         const subjectName = value("meno") || "nový kontakt";
+        const intentName = value("zamer") || "predajný audit";
         const body = [
-          "Dopyt z webu Jakuba Olšu",
+          "Predajný audit z webu Jakuba Olšu",
           "",
           `Meno: ${value("meno")}`,
-          `Email: ${value("email")}`,
-          `Telefón: ${value("telefon") || "-"}`,
-          `Preferovaný dátum: ${value("datum") || "-"}`,
-          `Preferovaný čas: ${value("cas") || "-"}`,
+          `Telefón: ${value("telefon")}`,
+          `Email: ${value("email") || "-"}`,
+          `Zámer: ${intentName}`,
+          `Typ nehnuteľnosti: ${value("typ") || "-"}`,
+          `Lokalita: ${value("lokalita") || "-"}`,
+          `Časový horizont: ${value("horizont") || "-"}`,
+          `Výmera / izby: ${value("parametre") || "-"}`,
           "",
-          "Správa:",
+          "Čo je dôležité:",
           value("sprava") || "-",
         ].join("\n");
 
         const href = `mailto:${encodeURIComponent(targetEmail)}?subject=${encodeURIComponent(
-          `Dopyt z webu - ${subjectName}`,
+          `Predajný audit - ${subjectName} - ${intentName}`,
         )}&body=${encodeURIComponent(body)}`;
 
         window.location.href = href;
@@ -992,6 +1004,49 @@ const jsonLd = {
           var(--paper) 88%,
           var(--paper)
         );
+      }
+
+      .backing {
+        display: grid;
+        grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr);
+        gap: 70px;
+        background: var(--paper);
+      }
+
+      .backing-lead {
+        align-self: start;
+      }
+
+      .backing-lead p:not(.eyebrow) {
+        max-width: 600px;
+        margin: 0;
+        color: var(--muted);
+        font-size: 18px;
+      }
+
+      .backing-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .backing-item {
+        min-height: 238px;
+        padding: 24px;
+        border: 1px solid rgba(11, 11, 10, 0.16);
+        border-radius: 8px;
+        background: rgba(255, 250, 242, 0.62);
+      }
+
+      .backing-item h3 {
+        font-family: var(--font-display);
+        font-size: clamp(27px, 2.5vw, 34px);
+        font-weight: 650;
+      }
+
+      .backing-item p {
+        margin: 0;
+        color: var(--muted);
       }
 
       .track-record {
@@ -1759,6 +1814,7 @@ const jsonLd = {
         }
 
         .hero,
+        .backing,
         .split,
         .track-record,
         .positioning-panel,
@@ -1823,6 +1879,10 @@ const jsonLd = {
         .service {
           grid-template-columns: 1fr;
           gap: 10px;
+        }
+
+        .backing {
+          gap: 38px;
         }
 
         .track-record,
@@ -1978,6 +2038,14 @@ const jsonLd = {
 
         .listing-grid {
           grid-template-columns: 1fr;
+        }
+
+        .backing-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .backing-item {
+          min-height: 0;
         }
 
         .listing-group-heading {

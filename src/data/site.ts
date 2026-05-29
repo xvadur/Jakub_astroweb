@@ -1,11 +1,11 @@
 export const site = {
   brand: "Jakub Olša",
-  role: "realitný maklér",
+  role: "realitný maklér | BOSEN",
   locale: "sk-SK",
   cityLabel: "Slovensko",
-  shortPromise: "Predaj, kúpu aj prenájom držím pokope.",
+  shortPromise: "Osobne vás prevediem predajom. So servisom BOSEN za chrbtom.",
   intro:
-    "Hral som hokej na profesionálnej úrovni, potom som pracoval s klientmi vo financiách a dnes tieto skúsenosti používam v realitách. Pri predaji alebo kúpe nejde len o inzerát. Ide o prípravu, čísla, komunikáciu a človeka, ktorý proces dotiahne.",
+    "Hral som hokej na profesionálnej úrovni, potom som pracoval s klientmi vo financiách a dnes tieto skúsenosti používam v realitách. Pri predaji hodnotnej nehnuteľnosti nejde len o inzerát. Ide o stratégiu, prezentáciu, čísla, právny a finančný servis a človeka, ktorý drží celý proces pokope.",
   contact: {
     phone: "+421 944 844 489",
     whatsapp: "+421 944 844 489",
@@ -21,9 +21,9 @@ export const site = {
   posterImage: "/images/brand/jakub-poster.jpg",
   handshakeImage: "/images/jakub-handshake.png",
   proofPoints: [
-    "disciplína z hokeja, pokoj pri tlaku",
-    "presnosť z bankovníctva a práca s číslami",
-    "osobná komunikácia od prvého hovoru po podpis",
+    "osobný maklér, ktorý drží proces od stratégie po podpis",
+    "prémiová prezentácia, marketing a servisné zázemie BOSEN",
+    "právny, finančný a obchodný servis bez zbytočného presúvania práce na klienta",
   ],
   trackRecord: {
     eyebrow: "Skúsenosť bez pózy",
@@ -46,26 +46,50 @@ export const site = {
     ],
   },
   positioning: {
-    title: "Dobrý predaj nie je čakanie na portáli. Je to práca s ľuďmi, cenou a načasovaním.",
+    title: "Nie ste v tom sami. Ja som váš jeden kontakt, BOSEN je aparát za celým procesom.",
     text:
-      "Pripravím prezentáciu, nastavím cenu a aktívne pracujem s dopytom. Komunikácia má byť jednoduchá: keď niečo viem, poviem to; keď treba rozhodnúť, pomenujem možnosti.",
+      "Klient potrebuje pokoj, nie zoznam úloh. Preto riešim stratégiu, komunikáciu, obhliadky a rozhodnutia osobne, pričom za mnou stojí marketing, právny servis, financovanie a realitné know-how BOSEN.",
+  },
+  backing: {
+    eyebrow: "Servis BOSEN",
+    title: "Osobná starostlivosť makléra, servisné zázemie silnej realitnej agentúry.",
+    text:
+      "Jakub je človek, s ktorým riešite predaj priamo. BOSEN je domovská agentúra, ktorá mu dáva do ruky kompletný servis: od ocenenia a prípravy stratégie cez prémiový marketing až po právne, finančné a investičné riešenia.",
+    items: [
+      {
+        title: "Stratégia ceny a predaja",
+        text: "Najprv treba vedieť, či je cieľom maximálna cena, rýchlosť, diskrétnosť, prenájom alebo nadväzujúca kúpa. Až potom dáva zmysel vybrať spôsob predaja.",
+      },
+      {
+        title: "Prezentácia na úrovni",
+        text: "Fotky, video, 3D prehliadka, dron, vlastná stránka nehnuteľnosti a marketing majú ukázať hodnotu, nie iba zaplniť inzerát.",
+      },
+      {
+        title: "Právo, financovanie, kataster",
+        text: "Zmluvy, advokátska úschova, hypotéka, znalec, poistenie a kataster sa riešia koordinovane, aby obchod nestál na slabom administratívnom článku.",
+      },
+      {
+        title: "Špeciálne scenáre",
+        text: "Výkup, prenájom bez starostí, kúpa nového bývania alebo investičná nehnuteľnosť nie sú bokom od predaja. Sú to možné stratégie, ktoré treba pomenovať včas.",
+      },
+    ],
   },
   services: [
     {
-      title: "Predaj nehnuteľnosti",
-      text: "Ak chcete predať byt, dom alebo investičnú nehnuteľnosť, pripravím cenu, prezentáciu, marketing, obhliadky, vyjednávanie aj právny servis.",
+      title: "Predaj hodnotnej nehnuteľnosti",
+      text: "Ak chcete predať byt, dom alebo investičnú nehnuteľnosť, začnem stratégiou. Pripravím cenu, prezentáciu, marketing, obhliadky, vyjednávanie aj nadväzujúci servis.",
     },
     {
-      title: "Kúpa bývania",
-      text: "Pri kúpe vám pomôžem čítať trh prakticky: čo dáva zmysel, kde sú riziká, čo si preveriť a kedy sa oplatí konať rýchlo.",
+      title: "Kúpa alebo výmena bývania",
+      text: "Pri kúpe alebo prechode zo starého bývania do nového pomôžem čítať trh prakticky: čo dáva zmysel, kde sú riziká, čo si preveriť a ako načasovať predaj a kúpu.",
     },
     {
-      title: "Prenájom",
-      text: "Pri prenájme nastavím ponuku, prefiltrujem záujemcov a podržím proces tak, aby bol pre majiteľa aj nájomcu zrozumiteľný.",
+      title: "Prenájom a správa",
+      text: "Pri prenájme nastavím ponuku, prefiltrujem záujemcov a nastavím proces tak, aby majiteľ nemusel riešiť každý detail sám.",
     },
     {
-      title: "Odhad a konzultácia",
-      text: "Ak ešte neviete, či predávať, čakať alebo len preveriť cenu, začnem krátkym rozhovorom a realistickým pohľadom na vašu situáciu.",
+      title: "Predajný audit",
+      text: "Ak ešte neviete, či predávať, čakať, prenajímať alebo riešiť výkup, začnem auditom situácie a poviem, ktorá cesta dáva najväčší zmysel.",
     },
   ],
   process: [
@@ -86,10 +110,16 @@ export const site = {
     },
   ],
   saleTime: {
-    eyebrow: "Ako dlho trvá predaj?",
-    title: "Rýchlosť je dobrá. Dôležitejší je však výsledok.",
+    eyebrow: "Predajná stratégia",
+    title: "Najlepšia cesta nemusí byť vždy okamžitý inzerát na portáli.",
     text:
-      "Každá nehnuteľnosť je iná, ale ak je správne nastavená cena a marketing, výsledok sa dá dosiahnuť v horizonte niekoľkých týždňov. Mojím cieľom je najlepší možný výsledok pre klienta.",
+      "Niekedy má zmysel klasický predaj s dôrazom na cenu. Niekedy rýchle riešenie, prenájom, kúpa nového bývania alebo najprv úprava prezentácie. Dobrý maklér nemá tlačiť jeden scenár na každého klienta.",
+  },
+  leadMagnet: {
+    eyebrow: "Predajný audit",
+    title: "Zistite, ako by som postupoval pri vašej nehnuteľnosti.",
+    text:
+      "Pošlite základné informácie a pripravím prvý pohľad na cenu, riziká a najvhodnejší postup. Cieľom nie je lacný automatický odhad, ale praktická stratégia predaja s človekom, ktorý vie proces dotiahnuť.",
   },
   listingsIntro: {
     eyebrow: "Nehnuteľnosti",
