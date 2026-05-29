@@ -32,6 +32,8 @@ npm run build
 - `docs/STAGING_DEPLOYMENT.md` - staging workflow and Cloudflare Worker setup
 - `docs/DECISIONS.md` - project decision log
 - `docs/FILESYSTEM_LAYOUT.md` - canonical folder and compatibility aliases
+- `docs/CONVERSION_FUNNEL_RESEARCH.md` - sales funnel and booking research
+- `docs/WEDNESDAY_PREP.md` - meeting prep for Jakub
 - `ops/telegram-worker` - minimal Telegram notification endpoint without n8n
 - `ops/n8n` - optional local n8n Docker setup for heavier lead automation and CRM handoff
 - `source-assets/originals` - archived original photos and uploads kept outside the public build

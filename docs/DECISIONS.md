@@ -62,3 +62,22 @@ Rules:
 - If old external notes are found, move or archive them under `docs/archive/`.
 - Generated folders such as `dist/`, `.astro/`, `.wrangler/`, `node_modules/`, and `output/` are not source of truth.
 - Do not copy raw Obsidian/personal/client-sensitive notes into tracked GitHub files. Distill them into sanitized decisions or keep them in ignored `private/` paths.
+
+## 2026-05-30: Booking funnel before calendar integration
+
+The primary CTA should lead to a guided booking/seller-audit funnel, not only to a generic contact form.
+
+Decision:
+
+- Add a 4-step booking funnel on the website.
+- Current version collects context and preferred date/time, then prepares a structured email.
+- The selected date/time is explicitly preliminary until a real calendar integration exists.
+- Do not add OpenClaw to this layer yet.
+
+Reason:
+
+Jakub needs to see a practical sales flow before the automation layer. The website should prove the business mechanism first: qualify intent, collect useful context, and make the next call feel natural.
+
+Next step:
+
+- After Jakub confirms his calendar behavior, replace or augment the preferred date/time step with Google Calendar appointment scheduling, Calendly, or a custom Cloudflare Worker + Calendar API endpoint.

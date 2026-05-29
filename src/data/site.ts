@@ -121,6 +121,26 @@ export const site = {
     text:
       "Pošlite základné informácie a pripravím prvý pohľad na cenu, riziká a najvhodnejší postup. Cieľom nie je lacný automatický odhad, ale praktická stratégia predaja s človekom, ktorý vie proces dotiahnuť.",
   },
+  bookingFunnel: {
+    eyebrow: "Rezervácia hovoru",
+    title: "Vyberte si termín a pošlite Jakubovi kontext ešte pred prvým telefonátom.",
+    text:
+      "Toto je prvá verzia predajného funnelu. Termín je zatiaľ predbežný, aby sme mohli overiť záujem, kvalitu leadov a otázky pred napojením na kalendár.",
+    promise: [
+      "2 minúty na vyplnenie",
+      "Jakub uvidí zámer, lokalitu a časový rámec",
+      "neskôr sa tento krok napojí na kalendár a CRM",
+    ],
+    intents: [
+      "Predaj za čo najlepšiu cenu",
+      "Najprv zistiť možnosti",
+      "Rýchly predaj alebo výkup",
+      "Prenájom alebo správa",
+      "Kúpa nového a predaj starej nehnuteľnosti",
+    ],
+    propertyTypes: ["Byt", "Dom", "Pozemok", "Komerčný priestor", "Investičná nehnuteľnosť"],
+    timeSlots: ["09:00", "11:30", "14:30", "17:00"],
+  },
   listingsIntro: {
     eyebrow: "Nehnuteľnosti",
     title: "Aktuálne ponuky a predaje, ktoré ukazujú môj spôsob práce.",

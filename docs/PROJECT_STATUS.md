@@ -34,6 +34,7 @@ Aktuálna obchodná stratégia je postavená na tom, že Jakub je osobný maklé
 - Build lokálne prechádza cez `npm run build`.
 - Zmeny sú commitnuté a pushnuté do GitHub repozitára `xvadur/Jakub_astroweb`.
 - Staging prostredie je aktívne a slúži ako povinný medzikrok pre nové úpravy webu.
+- Pripravený je prvý statický `Rezervovať hovor` funnel: zámer, typ nehnuteľnosti, lokalita, preferovaný dátum/čas a kontakt.
 
 ## Rozhodnutia
 
@@ -44,6 +45,7 @@ Aktuálna obchodná stratégia je postavená na tom, že Jakub je osobný maklé
 - Telefonický kontakt zostáva na webe, pretože Jakub ho má aj na Instagrame a pre jeho typ práce dáva zmysel.
 - Produkcia sa chráni cez staging workflow: experimenty, OpenClaw mutácie, tracking, booking a lead magnet úpravy idú najprv na `https://staging.jakubolsa.sk/`.
 - Cloudflare API tokeny a iné tajomstvá sa nesmú ukladať do repozitára.
+- Booking funnel zatiaľ nepredstiera reálne voľné sloty v kalendári. Zvolený termín je predbežný, kým Jakub nepotvrdí používaný kalendár a spôsob integrácie.
 
 ## Cloudflare a doména
 
@@ -143,6 +145,8 @@ PUBLIC_BOOKING_URL=<Jakubov realny Google Calendar booking link>
 - CRM-lite: ukladať dopyty/rezervácie do Google Sheet, Notion alebo vlastnej databázy.
 - Notifikácie: Telegram alebo WhatsApp po odoslaní formulára/rezervácie.
 - OpenClaw agent pre Jakuba: návrh full broker suite je zdokumentovaný v `docs/JAKUB_OPENCLAW_SUITE_ARCHITECTURE.md`.
+- Conversion funnel research: `docs/CONVERSION_FUNNEL_RESEARCH.md`.
+- Príprava na stretnutie s Jakubom: `docs/WEDNESDAY_PREP.md`.
 - Aktuálne ponuky: doplniť živé nehnuteľnosti, nielen referenčné predaje.
 - SEO: doplniť lokálne landing texty pre Bratislavu a okolie, ak bude cieľ organická návštevnosť.
 - Analytics/cookies: ak sa pridá meranie alebo remarketing, doplniť cookie consent.
