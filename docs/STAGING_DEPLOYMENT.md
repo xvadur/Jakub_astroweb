@@ -25,7 +25,7 @@ Staging is deployed as a separate Cloudflare Worker:
 - Custom route: `staging.jakubolsa.sk/*`
 - Public staging URL: `https://staging.jakubolsa.sk/`
 - Workers.dev fallback: `https://jakubastroweb-staging.yksvadur-ja.workers.dev/`
-- Last verified: 29 May 2026
+- Last verified: 30 May 2026
 
 The staging page currently returns:
 
