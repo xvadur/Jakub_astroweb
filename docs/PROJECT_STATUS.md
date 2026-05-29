@@ -15,7 +15,8 @@ V1 je statická Astro stránka. Nepoužíva vlastný backend, databázu ani CRM.
 
 ## Čo je hotové
 
-- Migrovaný a uprataný Astro projekt v lokálnej ceste `/Users/xvadur_mac/Workspace/02_Projects/Jakub_Astro`.
+- Migrovaný a uprataný Astro projekt v lokálnej ceste `/Users/xvadur_mac/Jakub_Astro`.
+- Stará cesta `/Users/xvadur_mac/Workspace/legacy/code/Jakub_Astro` zostáva ako symlink na hlavnú lokálnu cestu, aby sa nerozbili existujúce odkazy.
 - Homepage má novú štruktúru: hero, proof strip, služby, referenčné predaje, proces, princípy práce, kontakt.
 - Copywriting bol prepísaný do Jakubovho hlasu, nie ako text od developera alebo tretia osoba.
 - Hero komunikuje Jakubovu osobnú cestu: hokej, financie, reality.

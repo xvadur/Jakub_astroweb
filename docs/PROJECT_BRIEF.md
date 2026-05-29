@@ -13,7 +13,8 @@ Deliver a modern Astro website for Jakub, a real-estate broker.
 
 ## Current Local State
 
-- local path: `/Users/xvadur_mac/Workspace/02_Projects/Jakub_Astro`
+- local path: `/Users/xvadur_mac/Jakub_Astro`
+- compatibility symlink: `/Users/xvadur_mac/Workspace/legacy/code/Jakub_Astro`
 - framework: Astro
 - branch: `main`
 - current implementation and launch checklist live in `docs/PROJECT_STATUS.md`
