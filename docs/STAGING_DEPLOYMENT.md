@@ -11,12 +11,28 @@ main
 
 staging
   -> test environment
-  -> staging.jakubolsa.sk or a Cloudflare preview URL
+  -> https://staging.jakubolsa.sk/
+  -> fallback: https://jakubastroweb-staging.yksvadur-ja.workers.dev/
 ```
 
 Use `main` only for approved production changes. Use `staging` for work that needs browser review, client review, or OpenClaw testing.
 
-## Required Cloudflare setup
+## Active Cloudflare setup
+
+Staging is deployed as a separate Cloudflare Worker:
+
+- Worker: `jakubastroweb-staging`
+- Custom route: `staging.jakubolsa.sk/*`
+- Public staging URL: `https://staging.jakubolsa.sk/`
+- Workers.dev fallback: `https://jakubastroweb-staging.yksvadur-ja.workers.dev/`
+- Last verified: 29 May 2026
+
+The staging page currently returns:
+
+- `<meta name="robots" content="noindex,nofollow,noarchive">`
+- visible `STAGING` badge in the browser
+
+## Deploy setup
 
 The staging deploy must not use the production worker name.
 
@@ -35,10 +51,10 @@ npx wrangler deploy --assets=dist --name=jakubastroweb-staging --compatibility-d
 
 Recommended Cloudflare setup:
 
-- Create a separate Worker/Build target named `jakubastroweb-staging`.
-- Connect it to the same GitHub repo.
+- Keep a separate Worker/Build target named `jakubastroweb-staging`.
+- Connect it to the same GitHub repo if automatic deploys are enabled.
 - Set its production branch to `staging`.
-- Add custom domain `staging.jakubolsa.sk`.
+- Keep the custom route `staging.jakubolsa.sk/*`.
 - Set `PUBLIC_SITE_ENV=staging` for staging builds.
 - Keep `PUBLIC_BOOKING_URL` empty on staging unless testing the real booking flow intentionally.
 
@@ -77,4 +93,4 @@ npm run deploy:staging
 npm run deploy:production
 ```
 
-Wrangler needs a Cloudflare login or `CLOUDFLARE_API_TOKEN`. This local machine currently does not have Wrangler authenticated, so Cloudflare dashboard/token setup is required before direct CLI deploys work.
+Wrangler needs a Cloudflare login or `CLOUDFLARE_API_TOKEN`. Do not store the token in the repository. Use it only through the shell environment or Cloudflare dashboard secrets.

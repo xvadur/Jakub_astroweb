@@ -1,6 +1,6 @@
 # Stav projektu Jakub Olša web
 
-Posledná aktualizácia: 27. máj 2026
+Posledná aktualizácia: 29. máj 2026
 
 ## Aktuálny stav
 
@@ -72,6 +72,13 @@ Poznámka: ak by sa projekt prepol na Cloudflare Pages namiesto Worker assets de
 ## Staging prostredie
 
 Staging workflow je zdokumentovaný v `docs/STAGING_DEPLOYMENT.md`.
+
+Aktívny staging:
+
+- URL: `https://staging.jakubolsa.sk/`
+- Worker: `jakubastroweb-staging`
+- fallback: `https://jakubastroweb-staging.yksvadur-ja.workers.dev/`
+- overené 29. mája 2026: stránka má `noindex,nofollow,noarchive` a viditeľný `STAGING` badge.
 
 Pravidlo:
 
