@@ -94,7 +94,7 @@ PUBLIC_BOOKING_URL=<Jakubov realny Google Calendar booking link>
 
 - CRM-lite: ukladať dopyty/rezervácie do Google Sheet, Notion alebo vlastnej databázy.
 - Notifikácie: Telegram alebo WhatsApp po odoslaní formulára/rezervácie.
-- OpenClaw agent pre Jakuba: jednoduchý admin/agent, ktorý vie zapisovať poznámky, meniť obsah a pracovať s klientmi.
+- OpenClaw agent pre Jakuba: návrh full broker suite je zdokumentovaný v `docs/JAKUB_OPENCLAW_SUITE_ARCHITECTURE.md`.
 - Aktuálne ponuky: doplniť živé nehnuteľnosti, nielen referenčné predaje.
 - SEO: doplniť lokálne landing texty pre Bratislavu a okolie, ak bude cieľ organická návštevnosť.
 - Analytics/cookies: ak sa pridá meranie alebo remarketing, doplniť cookie consent.
