@@ -436,8 +436,12 @@ const jsonLd = {
                 </select>
               </label>
               <label>
-                <span>Výmera / izby</span>
-                <input name="parametre" placeholder="napr. 4 izby, 156 m², terasa" />
+                <span>Izby</span>
+                <input name="izby" placeholder="napr. 4 izby" />
+              </label>
+              <label>
+                <span>Výmera</span>
+                <input name="vymera" placeholder="napr. 156 m²" />
               </label>
               <label class="full">
                 <span>Čo je pre vás dôležité?</span>
@@ -586,7 +590,8 @@ const jsonLd = {
           `Typ nehnuteľnosti: ${value("typ") || "-"}`,
           `Lokalita: ${value("lokalita") || "-"}`,
           `Časový horizont: ${value("horizont") || "-"}`,
-          `Výmera / izby: ${value("parametre") || "-"}`,
+          `Izby: ${value("izby") || "-"}`,
+          `Výmera: ${value("vymera") || "-"}`,
           "",
           "Čo je dôležité:",
           value("sprava") || "-",

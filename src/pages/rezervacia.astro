@@ -88,8 +88,12 @@ const cleanPhone = site.contact.phone.replace(/[^\d+]/g, "");
               <input name="lokalita" placeholder="Mesto, časť alebo ulica" data-required data-label="lokalita" />
             </label>
             <label>
-              <span>Výmera / izby</span>
-              <input name="parametre" placeholder="napr. 4 izby, 156 m², terasa" />
+              <span>Izby</span>
+              <input name="izby" placeholder="napr. 4 izby" />
+            </label>
+            <label>
+              <span>Výmera</span>
+              <input name="vymera" placeholder="napr. 156 m²" />
             </label>
           </div>
         </section>
@@ -322,7 +326,8 @@ const cleanPhone = site.contact.phone.replace(/[^\d+]/g, "");
             `Zámer: ${intentName}`,
             `Typ nehnuteľnosti: ${funnelValue("typ")}`,
             `Lokalita: ${funnelValue("lokalita")}`,
-            `Výmera / izby: ${funnelValue("parametre") || "-"}`,
+            `Izby: ${funnelValue("izby") || "-"}`,
+            `Výmera: ${funnelValue("vymera") || "-"}`,
             `Preferovaný dátum: ${funnelValue("datum")}`,
             `Preferovaný čas: ${funnelValue("cas")}`,
             `Časový horizont: ${funnelValue("horizont") || "-"}`,
