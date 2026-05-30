@@ -132,13 +132,13 @@ export const site = {
       "neskôr sa tento krok napojí na kalendár a CRM",
     ],
     intents: [
-      "Predaj za čo najlepšiu cenu",
-      "Najprv zistiť možnosti",
-      "Rýchly predaj alebo výkup",
+      "Zistiť možnosti",
+      "Predať byt",
+      "Predať dom",
+      "Predať pozemok",
+      "Predať komerčný priestor",
       "Prenájom alebo správa",
-      "Kúpa nového a predaj starej nehnuteľnosti",
     ],
-    propertyTypes: ["Byt", "Dom", "Pozemok", "Komerčný priestor", "Investičná nehnuteľnosť"],
     timeSlots: ["09:00", "11:30", "14:30", "17:00"],
   },
   listingsIntro: {

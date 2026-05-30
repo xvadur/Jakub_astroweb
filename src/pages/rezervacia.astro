@@ -62,7 +62,7 @@ const googleMapsScriptUrl = googleMapsApiKey
         <section class="wizard-step" data-funnel-step>
           <p class="step-kicker">Krok 1</p>
           <h2>Čo chcete riešiť?</h2>
-          <p>Vyberte najbližší dôvod konzultácie. Pomôže to pripraviť správny prvý postup.</p>
+          <p>Vyberte najbližšiu akciu alebo typ nehnuteľnosti. Každá vetva otvorí iné parametre.</p>
           <input type="hidden" name="zamer" data-required data-label="zámer" />
           <div class="choice-grid">
             {
@@ -73,27 +73,13 @@ const googleMapsScriptUrl = googleMapsApiKey
               ))
             }
           </div>
-          <div class="intent-action" data-intent-action hidden>
-            <p>Ďalší krok</p>
-            <strong data-intent-action-title></strong>
-            <span data-intent-action-text></span>
-          </div>
         </section>
 
         <section class="wizard-step" data-funnel-step hidden>
           <p class="step-kicker">Krok 2</p>
-          <h2 data-route-title="property">O akej nehnuteľnosti sa bavíme?</h2>
-          <p data-route-text="property">Stačí základ. Detaily sa doriešia v hovore.</p>
-          <input type="hidden" name="typ" data-required data-label="typ nehnuteľnosti" />
-          <div class="choice-grid compact">
-            {
-              site.bookingFunnel.propertyTypes.map((type) => (
-                <button type="button" class="choice-button" data-choice="typ" data-value={type} aria-pressed="false">
-                  {type}
-                </button>
-              ))
-            }
-          </div>
+          <h2 data-route-title="property">Základné parametre</h2>
+          <p data-route-text="property">Vyplňte len to, čo viete. Detaily sa doriešia v hovore.</p>
+          <input type="hidden" name="typ" data-route-type />
           <div class="wizard-fields two">
             <label class="location-field" data-location-field>
               <span>Lokalita</span>
@@ -113,13 +99,98 @@ const googleMapsScriptUrl = googleMapsApiKey
                 {googleMapsApiKey ? "Začnite písať a vyberte overenú adresu z Google." : "Google overenie adresy sa zapne po doplnení API kľúča."}
               </small>
             </label>
-            <label>
+            <label data-param-field="property_kind">
+              <span>Typ nehnuteľnosti</span>
+              <select name="typ_detail">
+                <option value="">Vyberte typ</option>
+                <option value="Byt">Byt</option>
+                <option value="Dom">Dom</option>
+                <option value="Pozemok">Pozemok</option>
+                <option value="Komerčný priestor">Komerčný priestor</option>
+                <option value="Investičná nehnuteľnosť">Investičná nehnuteľnosť</option>
+              </select>
+            </label>
+            <label data-param-field="rooms">
               <span>Izby</span>
               <input name="izby" placeholder="napr. 4 izby" />
             </label>
-            <label>
+            <label data-param-field="area">
               <span>Výmera</span>
               <input name="vymera" placeholder="napr. 156 m²" />
+            </label>
+            <label data-param-field="floor">
+              <span>Poschodie</span>
+              <input name="poschodie" placeholder="napr. 3/6" />
+            </label>
+            <label data-param-field="condition">
+              <span>Stav</span>
+              <select name="stav">
+                <option value="">Vyberte stav</option>
+                <option value="Pôvodný stav">Pôvodný stav</option>
+                <option value="Čiastočná rekonštrukcia">Čiastočná rekonštrukcia</option>
+                <option value="Kompletná rekonštrukcia">Kompletná rekonštrukcia</option>
+                <option value="Novostavba">Novostavba</option>
+                <option value="Na dokončenie">Na dokončenie</option>
+              </select>
+            </label>
+            <label data-param-field="extras">
+              <span>Doplnky</span>
+              <input name="doplnky" placeholder="balkón, terasa, pivnica, parkovanie" />
+            </label>
+            <label data-param-field="house_area">
+              <span>Úžitková plocha</span>
+              <input name="uzitkova_plocha" placeholder="napr. 180 m²" />
+            </label>
+            <label data-param-field="land_area">
+              <span>Výmera pozemku</span>
+              <input name="vymera_pozemku" placeholder="napr. 620 m²" />
+            </label>
+            <label data-param-field="land_type">
+              <span>Typ pozemku</span>
+              <select name="typ_pozemku">
+                <option value="">Vyberte typ</option>
+                <option value="Stavebný pozemok">Stavebný pozemok</option>
+                <option value="Záhrada">Záhrada</option>
+                <option value="Rekreačný pozemok">Rekreačný pozemok</option>
+                <option value="Orná pôda">Orná pôda</option>
+                <option value="Iné">Iné</option>
+              </select>
+            </label>
+            <label data-param-field="utilities">
+              <span>Siete</span>
+              <input name="siete" placeholder="voda, elektrina, plyn, kanalizácia" />
+            </label>
+            <label data-param-field="access">
+              <span>Prístup</span>
+              <input name="pristup" placeholder="asfaltová cesta, podiel, vecné bremeno..." />
+            </label>
+            <label data-param-field="commercial_type">
+              <span>Typ priestoru</span>
+              <select name="typ_komercneho_priestoru">
+                <option value="">Vyberte typ</option>
+                <option value="Kancelárie">Kancelárie</option>
+                <option value="Obchod">Obchod</option>
+                <option value="Sklad / hala">Sklad / hala</option>
+                <option value="Gastro">Gastro</option>
+                <option value="Polyfunkčný objekt">Polyfunkčný objekt</option>
+                <option value="Iné">Iné</option>
+              </select>
+            </label>
+            <label data-param-field="occupancy">
+              <span>Obsadenosť</span>
+              <input name="obsadenost" placeholder="voľné, nájomca, vlastné užívanie" />
+            </label>
+            <label data-param-field="rent_target">
+              <span>Očakávaný nájom</span>
+              <input name="ocakavany_najom" placeholder="napr. 950 € / mesiac" />
+            </label>
+            <label data-param-field="available_from">
+              <span>Dostupné od</span>
+              <input name="dostupne_od" placeholder="napr. ihneď, od septembra" />
+            </label>
+            <label data-param-field="management_scope">
+              <span>Rozsah správy</span>
+              <input name="rozsah_spravy" placeholder="iba nájomca, správa, servis, vyúčtovania" />
             </label>
           </div>
         </section>
@@ -234,9 +305,8 @@ const googleMapsScriptUrl = googleMapsApiKey
         const locationLng = funnelForm.querySelector("[data-location-lng]");
         const locationVerified = funnelForm.querySelector("[data-location-verified]");
         const locationHint = funnelForm.querySelector("[data-location-hint]");
-        const intentAction = funnelForm.querySelector("[data-intent-action]");
-        const intentActionTitle = funnelForm.querySelector("[data-intent-action-title]");
-        const intentActionText = funnelForm.querySelector("[data-intent-action-text]");
+        const routeTypeField = funnelForm.querySelector("[data-route-type]");
+        const paramFields = Array.from(funnelForm.querySelectorAll("[data-param-field]"));
         const routeTitles = {
           property: funnelForm.querySelector('[data-route-title="property"]'),
           date: funnelForm.querySelector('[data-route-title="date"]'),
@@ -252,67 +322,101 @@ const googleMapsScriptUrl = googleMapsApiKey
         };
         let activeStep = 0;
 
+        const parameterLabels = {
+          typ_detail: "Typ nehnuteľnosti",
+          izby: "Izby",
+          vymera: "Výmera",
+          poschodie: "Poschodie",
+          stav: "Stav",
+          doplnky: "Doplnky",
+          uzitkova_plocha: "Úžitková plocha",
+          vymera_pozemku: "Výmera pozemku",
+          typ_pozemku: "Typ pozemku",
+          siete: "Siete",
+          pristup: "Prístup",
+          typ_komercneho_priestoru: "Typ priestoru",
+          obsadenost: "Obsadenosť",
+          ocakavany_najom: "Očakávaný nájom",
+          dostupne_od: "Dostupné od",
+          rozsah_spravy: "Rozsah správy",
+        };
+
         const defaultRoute = {
-          actionTitle: "Konzultácia možností",
-          actionText: "Najprv si ujasníme situáciu a potom Jakub navrhne najlepší ďalší krok.",
-          propertyTitle: "O akej nehnuteľnosti sa bavíme?",
-          propertyText: "Stačí základ. Detaily sa doriešia v hovore.",
+          propertyType: "",
+          paramFields: ["property_kind", "rooms", "area", "condition"],
+          propertyTitle: "K akej nehnuteľnosti chcete zistiť možnosti?",
+          propertyText: "Vyberte typ a doplňte základné údaje. Jakub z toho pripraví najrozumnejší prvý postup.",
           dateTitle: "Kedy sa vám hodí hovor?",
-          dateText: "Kým nie je napojený kalendár, ide o preferovaný termín. Jakub ho potvrdí späť.",
-          contactTitle: "Kam má Jakub poslať potvrdenie?",
-          contactText: "Po odoslaní sa otvorí email s vyplneným kontextom. Neskôr tento krok nahradí backend a kalendár.",
-          messagePlaceholder: "Cena, rýchlosť, diskrétnosť, kúpa nového bývania, investícia...",
-          leadTitle: "Rezervácia konzultácie z webu Jakuba Olšu",
-          subjectPrefix: "Rezervácia konzultácie",
-          submitLabel: "Odoslať a rezervovať",
+          dateText: "Vyberte čas na krátky orientačný hovor bez tlaku na okamžité rozhodnutie.",
+          contactTitle: "Kam má Jakub poslať potvrdenie konzultácie?",
+          contactText: "Po odoslaní dostane Jakub základný kontext a pripraví otázky k možnostiam.",
+          messagePlaceholder: "Čo zvažujete, čo vás brzdí, čo by bol dobrý výsledok...",
+          leadTitle: "Konzultácia možností z webu Jakuba Olšu",
+          subjectPrefix: "Konzultácia možností",
+          submitLabel: "Požiadať o konzultáciu",
         };
 
         const intentRoutes = {
-          "Predaj za čo najlepšiu cenu": {
-            actionTitle: "Predajná stratégia",
-            actionText: "Jakub pripraví prvý pohľad na cenu, prezentáciu, riziká a postup predaja.",
-            propertyTitle: "Čo ideme predávať?",
-            propertyText: "Zadajte lokalitu a základné parametre, aby sa dal odhadnúť potenciál predaja.",
-            dateTitle: "Kedy chcete riešiť predajnú stratégiu?",
-            dateText: "Vyberte preferovaný termín hovoru k cene, príprave a predajnému postupu.",
+          "Zistiť možnosti": defaultRoute,
+          "Predať byt": {
+            propertyType: "Byt",
+            paramFields: ["rooms", "area", "floor", "condition", "extras"],
+            propertyTitle: "Aký byt chcete predať?",
+            propertyText: "Pri byte sú dôležité lokalita, dispozícia, výmera, poschodie, stav a doplnky ako balkón, pivnica alebo parkovanie.",
+            dateTitle: "Kedy chcete prejsť predaj bytu?",
+            dateText: "Vyberte termín hovoru k cene, príprave, prezentácii a predajnému postupu.",
             contactTitle: "Kam má Jakub poslať potvrdenie predajnej konzultácie?",
-            contactText: "Po odoslaní dostane Jakub kontext k nehnuteľnosti a pripraví sa na predajný rozhovor.",
-            messagePlaceholder: "Očakávaná cena, dôvod predaja, stav nehnuteľnosti, termín, diskrétnosť...",
-            leadTitle: "Predajná stratégia z webu Jakuba Olšu",
-            subjectPrefix: "Predajná stratégia",
-            submitLabel: "Odoslať predajnú stratégiu",
+            contactText: "Po odoslaní bude mať Jakub základné parametre bytu a pripraví sa na konkrétny rozhovor.",
+            messagePlaceholder: "Očakávaná cena, dôvod predaja, časový tlak, parkovanie, pivnica, právny stav...",
+            leadTitle: "Predaj bytu z webu Jakuba Olšu",
+            subjectPrefix: "Predaj bytu",
+            submitLabel: "Odoslať predaj bytu",
           },
-          "Najprv zistiť možnosti": {
-            actionTitle: "Konzultácia možností",
-            actionText: "Najprv porovnáme, či dáva zmysel predaj, prenájom, počkať alebo pripraviť iný postup.",
-            propertyTitle: "K akej nehnuteľnosti chcete zistiť možnosti?",
-            propertyText: "Stačia základné údaje. Cieľom je zistiť, aké scenáre dávajú zmysel.",
-            dateTitle: "Kedy si chcete prejsť možnosti?",
-            dateText: "Vyberte čas na krátky orientačný hovor bez tlaku na okamžité rozhodnutie.",
-            contactTitle: "Kam má Jakub poslať potvrdenie konzultácie?",
-            contactText: "Po odoslaní dostane Jakub základný kontext a pripraví otázky k možnostiam.",
-            messagePlaceholder: "Čo zvažujete, čo vás brzdí, čo by bol dobrý výsledok...",
-            leadTitle: "Konzultácia možností z webu Jakuba Olšu",
-            subjectPrefix: "Konzultácia možností",
-            submitLabel: "Požiadať o konzultáciu",
+          "Predať dom": {
+            propertyType: "Dom",
+            paramFields: ["rooms", "house_area", "land_area", "condition", "extras"],
+            propertyTitle: "Aký dom chcete predať?",
+            propertyText: "Pri dome potrebujeme oddeliť úžitkovú plochu, pozemok, stav a veci ako garáž, terasa, bazén alebo technické zázemie.",
+            dateTitle: "Kedy chcete prejsť predaj domu?",
+            dateText: "Vyberte termín hovoru k cene, prezentácii, marketingu a servisnému postupu.",
+            contactTitle: "Kam má Jakub poslať potvrdenie konzultácie k domu?",
+            contactText: "Po odoslaní bude mať Jakub základ pre prvý odhad situácie a prípravu otázok.",
+            messagePlaceholder: "Rok výstavby, rekonštrukcia, technický stav, garáž, záhrada, dôvod predaja...",
+            leadTitle: "Predaj domu z webu Jakuba Olšu",
+            subjectPrefix: "Predaj domu",
+            submitLabel: "Odoslať predaj domu",
           },
-          "Rýchly predaj alebo výkup": {
-            actionTitle: "Rýchle riešenie / výkup",
-            actionText: "Jakub preverí, či je vhodný rýchly predaj, výkup alebo štandardný predaj s kratším plánom.",
-            propertyTitle: "Čo treba vyriešiť rýchlo?",
-            propertyText: "Pri rýchlom riešení sú dôležité lokalita, stav, časový tlak a právna čistota.",
-            dateTitle: "Kedy treba riešenie otvoriť?",
-            dateText: "Vyberte najbližší vhodný termín. Rýchle situácie majú prioritu v následnom kontakte.",
-            contactTitle: "Kam má Jakub poslať potvrdenie rýchleho riešenia?",
-            contactText: "Po odoslaní bude jasné, či ide o výkup, urgentný predaj alebo inú cestu.",
-            messagePlaceholder: "Prečo je predaj urgentný, dokedy treba peniaze/riešenie, stav vlastníctva...",
-            leadTitle: "Rýchly predaj alebo výkup z webu Jakuba Olšu",
-            subjectPrefix: "Rýchle riešenie",
-            submitLabel: "Odoslať rýchle riešenie",
+          "Predať pozemok": {
+            propertyType: "Pozemok",
+            paramFields: ["land_area", "land_type", "utilities", "access"],
+            propertyTitle: "Aký pozemok chcete predať?",
+            propertyText: "Pri pozemku rozhoduje výmera, typ pozemku, siete, prístup a regulácia. Detaily sa preveria následne.",
+            dateTitle: "Kedy chcete prejsť predaj pozemku?",
+            dateText: "Vyberte termín hovoru k potenciálu pozemku, prevereniu rizík a predajnému postupu.",
+            contactTitle: "Kam má Jakub poslať potvrdenie konzultácie k pozemku?",
+            contactText: "Po odoslaní bude mať Jakub kontext k pozemku a pripraví si ďalšie otázky.",
+            messagePlaceholder: "Územný plán, list vlastníctva, prístup, siete, či už máte cenovú predstavu...",
+            leadTitle: "Predaj pozemku z webu Jakuba Olšu",
+            subjectPrefix: "Predaj pozemku",
+            submitLabel: "Odoslať predaj pozemku",
+          },
+          "Predať komerčný priestor": {
+            propertyType: "Komerčný priestor",
+            paramFields: ["commercial_type", "area", "condition", "occupancy", "extras"],
+            propertyTitle: "Aký komerčný priestor chcete predať?",
+            propertyText: "Pri komerčnej nehnuteľnosti sú podstatné typ priestoru, výmera, stav, obsadenosť a investičný potenciál.",
+            dateTitle: "Kedy chcete prejsť predaj komerčného priestoru?",
+            dateText: "Vyberte termín hovoru k stratégii predaja, číslam, nájomcom a prezentácii.",
+            contactTitle: "Kam má Jakub poslať potvrdenie komerčnej konzultácie?",
+            contactText: "Po odoslaní bude mať Jakub základ pre obchodný a investičný pohľad na nehnuteľnosť.",
+            messagePlaceholder: "Nájomca, výnos, prevádzka, stav zmlúv, parkovanie, technické špecifiká...",
+            leadTitle: "Predaj komerčného priestoru z webu Jakuba Olšu",
+            subjectPrefix: "Predaj komerčného priestoru",
+            submitLabel: "Odoslať komerčný predaj",
           },
           "Prenájom alebo správa": {
-            actionTitle: "Prenájom / správa nehnuteľnosti",
-            actionText: "Jakub preverí nájomný potenciál, cieľového nájomcu, riziká a rozsah správy.",
+            propertyType: "Prenájom / správa",
+            paramFields: ["property_kind", "rooms", "area", "condition", "rent_target", "available_from", "management_scope"],
             propertyTitle: "Čo chcete prenajať alebo spravovať?",
             propertyText: "Pri prenájme rozhoduje lokalita, dispozícia, stav, zariadenie a očakávaný typ nájomcu.",
             dateTitle: "Kedy chcete prejsť prenájom alebo správu?",
@@ -323,20 +427,6 @@ const googleMapsScriptUrl = googleMapsApiKey
             leadTitle: "Prenájom alebo správa z webu Jakuba Olšu",
             subjectPrefix: "Prenájom alebo správa",
             submitLabel: "Odoslať prenájom/správu",
-          },
-          "Kúpa nového a predaj starej nehnuteľnosti": {
-            actionTitle: "Prechod z jednej nehnuteľnosti do druhej",
-            actionText: "Jakub pomôže zosúladiť predaj, kúpu, financovanie, termíny a riziko dvojitého tlaku.",
-            propertyTitle: "Akú nehnuteľnosť budete predávať?",
-            propertyText: "Začnime nehnuteľnosťou, ktorú vlastníte. V hovore sa prejde aj kúpa nového bývania.",
-            dateTitle: "Kedy chcete prejsť plán kúpa + predaj?",
-            dateText: "Vyberte termín hovoru k časovaniu, financovaniu a postupu bez zbytočného rizika.",
-            contactTitle: "Kam má Jakub poslať potvrdenie prechodu bývania?",
-            contactText: "Po odoslaní bude mať Jakub kontext k predaju starej aj kúpe novej nehnuteľnosti.",
-            messagePlaceholder: "Čo chcete kúpiť, čo predávate, hypotéka, časovanie, či už máte vybrané nové bývanie...",
-            leadTitle: "Kúpa nového a predaj starej nehnuteľnosti z webu Jakuba Olšu",
-            subjectPrefix: "Kúpa + predaj",
-            submitLabel: "Odoslať plán kúpa + predaj",
           },
         };
 
@@ -364,13 +454,55 @@ const googleMapsScriptUrl = googleMapsApiKey
 
         const currentRoute = () => intentRoutes[funnelValue("zamer")] || defaultRoute;
 
-        const applyIntentRoute = () => {
+        const setParamFieldState = (field, isActive) => {
+          if (!(field instanceof HTMLElement)) return;
+
+          field.hidden = !isActive;
+          field.querySelectorAll("input, select, textarea").forEach((control) => {
+            if (
+              control instanceof HTMLInputElement ||
+              control instanceof HTMLTextAreaElement ||
+              control instanceof HTMLSelectElement
+            ) {
+              control.disabled = !isActive;
+              if (!isActive) control.value = "";
+            }
+          });
+        };
+
+        const routeParameterLines = () => {
           const route = currentRoute();
 
-          if (intentAction instanceof HTMLElement) intentAction.hidden = !funnelValue("zamer");
-          if (intentActionTitle) intentActionTitle.textContent = route.actionTitle;
-          if (intentActionText) intentActionText.textContent = route.actionText;
+          return (route.paramFields || [])
+            .map((fieldKey) => {
+              const field = paramFields.find((item) => item instanceof HTMLElement && item.dataset.paramField === fieldKey);
+              if (!(field instanceof HTMLElement)) return "";
 
+              const control = field.querySelector("input, select, textarea");
+              if (
+                !(control instanceof HTMLInputElement) &&
+                !(control instanceof HTMLTextAreaElement) &&
+                !(control instanceof HTMLSelectElement)
+              ) {
+                return "";
+              }
+
+              const value = control.value.trim();
+              if (!value) return "";
+
+              const label = parameterLabels[control.name] || field.querySelector("span")?.textContent?.trim() || control.name;
+              return `${label}: ${value}`;
+            })
+            .filter(Boolean);
+        };
+
+        const applyIntentRoute = () => {
+          const route = currentRoute();
+          const activeParamFields = new Set(route.paramFields || []);
+
+          if (routeTypeField instanceof HTMLInputElement) {
+            routeTypeField.value = funnelValue("zamer") ? route.propertyType || "" : "";
+          }
           if (routeTitles.property) routeTitles.property.textContent = route.propertyTitle;
           if (routeTitles.date) routeTitles.date.textContent = route.dateTitle;
           if (routeTitles.contact) routeTitles.contact.textContent = route.contactTitle;
@@ -383,6 +515,11 @@ const googleMapsScriptUrl = googleMapsApiKey
           if (funnelSubmit instanceof HTMLButtonElement) {
             funnelSubmit.textContent = route.submitLabel;
           }
+
+          paramFields.forEach((field) => {
+            const key = field instanceof HTMLElement ? field.dataset.paramField || "" : "";
+            setParamFieldState(field, activeParamFields.has(key));
+          });
         };
 
         const setLocationHint = (message = "") => {
@@ -472,7 +609,7 @@ const googleMapsScriptUrl = googleMapsApiKey
 
           const items = [
             funnelValue("zamer"),
-            funnelValue("typ"),
+            funnelValue("typ_detail") || funnelValue("typ"),
             funnelValue("lokalita"),
             funnelValue("datum") && funnelValue("cas") ? `${funnelValue("datum")} o ${funnelValue("cas")}` : "",
           ].filter(Boolean);
@@ -589,6 +726,7 @@ const googleMapsScriptUrl = googleMapsApiKey
           const subjectName = funnelValue("meno") || "nový kontakt";
           const intentName = funnelValue("zamer") || "rezervácia konzultácie";
           const route = currentRoute();
+          const parameterLines = routeParameterLines();
           const body = [
             route.leadTitle,
             "",
@@ -596,7 +734,7 @@ const googleMapsScriptUrl = googleMapsApiKey
             `Telefón: ${funnelValue("telefon")}`,
             `Email: ${funnelValue("email") || "-"}`,
             `Zámer: ${intentName}`,
-            `Typ nehnuteľnosti: ${funnelValue("typ")}`,
+            `Typ nehnuteľnosti / vetva: ${funnelValue("typ") || "-"}`,
             `Lokalita: ${funnelValue("lokalita")}`,
             `Lokalita overená Google: ${funnelValue("lokalita_overena") === "true" ? "áno" : "nie"}`,
             `Google Place ID: ${funnelValue("lokalita_place_id") || "-"}`,
@@ -605,8 +743,10 @@ const googleMapsScriptUrl = googleMapsApiKey
                 ? `${funnelValue("lokalita_lat")}, ${funnelValue("lokalita_lng")}`
                 : "-"
             }`,
-            `Izby: ${funnelValue("izby") || "-"}`,
-            `Výmera: ${funnelValue("vymera") || "-"}`,
+            "",
+            "Parametre:",
+            ...(parameterLines.length > 0 ? parameterLines : ["-"]),
+            "",
             `Preferovaný dátum: ${funnelValue("datum")}`,
             `Preferovaný čas: ${funnelValue("cas")}`,
             `Časový horizont: ${funnelValue("horizont") || "-"}`,
@@ -900,43 +1040,6 @@ const googleMapsScriptUrl = googleMapsApiKey
         transform: translateY(-1px);
       }
 
-      .intent-action {
-        display: grid;
-        gap: 5px;
-        border: 1px solid rgba(216, 184, 120, 0.34);
-        border-radius: 8px;
-        padding: 14px 16px;
-        background: rgba(216, 184, 120, 0.1);
-      }
-
-      .intent-action[hidden] {
-        display: none;
-      }
-
-      .intent-action p,
-      .intent-action strong,
-      .intent-action span {
-        margin: 0;
-      }
-
-      .intent-action p {
-        color: var(--brass);
-        font-size: 12px;
-        font-weight: 900;
-      }
-
-      .intent-action strong {
-        color: var(--white);
-        font-size: 18px;
-        line-height: 1.18;
-      }
-
-      .intent-action span {
-        color: rgba(255, 250, 242, 0.7);
-        font-size: 14px;
-        font-weight: 700;
-      }
-
       .wizard-fields {
         display: grid;
         gap: 12px;
@@ -949,6 +1052,10 @@ const googleMapsScriptUrl = googleMapsApiKey
       .wizard-fields label {
         display: grid;
         gap: 7px;
+      }
+
+      .wizard-fields [data-param-field][hidden] {
+        display: none;
       }
 
       .wizard-fields .location-field {
