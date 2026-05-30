@@ -874,6 +874,8 @@ const googleMapsScriptUrl = googleMapsApiKey
       }
 
       .button {
+        appearance: none;
+        -webkit-appearance: none;
         display: inline-flex;
         min-height: 50px;
         align-items: center;
@@ -902,9 +904,45 @@ const googleMapsScriptUrl = googleMapsApiKey
         color: var(--ink);
       }
 
+      .button.secondary {
+        border-color: rgba(255, 250, 242, 0.18);
+        background: rgba(255, 250, 242, 0.1);
+        color: rgba(255, 250, 242, 0.78);
+        -webkit-text-fill-color: rgba(255, 250, 242, 0.78);
+      }
+
+      .button.secondary:hover {
+        border-color: rgba(255, 250, 242, 0.26);
+        background: rgba(255, 250, 242, 0.14);
+        color: rgba(255, 250, 242, 0.9);
+        -webkit-text-fill-color: rgba(255, 250, 242, 0.9);
+      }
+
       .button:disabled {
+        border-color: rgba(255, 250, 242, 0.12);
+        background: rgba(255, 250, 242, 0.08);
+        color: rgba(255, 250, 242, 0.42);
+        -webkit-text-fill-color: rgba(255, 250, 242, 0.42);
         cursor: not-allowed;
-        opacity: 0.42;
+        transform: none;
+      }
+
+      .button.secondary:disabled {
+        border-color: rgba(255, 250, 242, 0.12);
+        background-color: rgba(255, 250, 242, 0.08);
+        color: rgba(255, 250, 242, 0.42);
+        -webkit-text-fill-color: rgba(255, 250, 242, 0.42);
+      }
+
+      .wizard-actions .button:disabled {
+        border-color: rgba(255, 250, 242, 0.12) !important;
+        background: rgba(255, 250, 242, 0.08) !important;
+        background-color: rgba(255, 250, 242, 0.08) !important;
+        color: rgba(255, 250, 242, 0.42) !important;
+        -webkit-text-fill-color: rgba(255, 250, 242, 0.42) !important;
+      }
+
+      .button:disabled:hover {
         transform: none;
       }
 
