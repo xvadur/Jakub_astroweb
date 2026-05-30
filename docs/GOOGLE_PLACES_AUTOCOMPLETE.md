@@ -45,6 +45,21 @@ PUBLIC_GOOGLE_MAPS_API_KEY=...
 
 Do not commit the real key. Use local `.env` for development and Cloudflare environment variables for staging/production.
 
+## Related Google OAuth secret
+
+The downloaded `google_secrets.json` OAuth client is not the browser Places API key. It is useful later for server-side Google Calendar integration.
+
+Local processing convention:
+
+- store the JSON copy in ignored path `private/secrets/google_oauth_client.json`
+- expose local env keys in ignored `.env`:
+  - `GOOGLE_PROJECT_ID`
+  - `GOOGLE_CLIENT_ID`
+  - `GOOGLE_CLIENT_SECRET`
+  - `GOOGLE_OAUTH_CLIENT_JSON`
+
+These values must stay out of Git.
+
 ## Cost notes
 
 Google Maps Platform requires billing to be enabled.
