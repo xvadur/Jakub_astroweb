@@ -4,6 +4,12 @@ import { site } from "../data/site";
 const siteEnv = import.meta.env.PUBLIC_SITE_ENV ?? "production";
 const isStaging = siteEnv !== "production";
 const cleanPhone = site.contact.phone.replace(/[^\d+]/g, "");
+const googleMapsApiKey = import.meta.env.PUBLIC_GOOGLE_MAPS_API_KEY?.trim() ?? "";
+const googleMapsScriptUrl = googleMapsApiKey
+  ? `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(
+      googleMapsApiKey,
+    )}&libraries=places&v=weekly&language=sk&region=SK&loading=async`
+  : "";
 ---
 
 <!doctype html>
@@ -26,6 +32,7 @@ const cleanPhone = site.contact.phone.replace(/[^\d+]/g, "");
       href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,650;6..72,700&display=swap"
       rel="stylesheet"
     />
+    {googleMapsScriptUrl ? <script is:inline async defer src={googleMapsScriptUrl}></script> : null}
     <title>Rezervácia konzultácie | {site.brand}</title>
   </head>
   <body>
@@ -49,7 +56,7 @@ const cleanPhone = site.contact.phone.replace(/[^\d+]/g, "");
         <p>{site.bookingFunnel.text}</p>
       </section>
 
-      <form class="wizard-card" data-funnel-form data-email={site.contact.email}>
+      <form class="wizard-card" data-funnel-form data-email={site.contact.email} data-google-places-key={googleMapsApiKey ? "true" : "false"}>
         <p class="wizard-error" data-funnel-error aria-live="polite"></p>
 
         <section class="wizard-step" data-funnel-step>
@@ -83,9 +90,23 @@ const cleanPhone = site.contact.phone.replace(/[^\d+]/g, "");
             }
           </div>
           <div class="wizard-fields two">
-            <label>
+            <label class="location-field" data-location-field>
               <span>Lokalita</span>
-              <input name="lokalita" placeholder="Mesto, časť alebo ulica" data-required data-label="lokalita" />
+              <input
+                name="lokalita"
+                placeholder="Mesto, časť alebo ulica"
+                autocomplete="off"
+                data-required
+                data-label="lokalita"
+                data-location-input
+              />
+              <input type="hidden" name="lokalita_place_id" data-location-place-id />
+              <input type="hidden" name="lokalita_lat" data-location-lat />
+              <input type="hidden" name="lokalita_lng" data-location-lng />
+              <input type="hidden" name="lokalita_overena" data-location-verified />
+              <small class="field-note" data-location-hint>
+                {googleMapsApiKey ? "Začnite písať a vyberte overenú adresu z Google." : "Google overenie adresy sa zapne po doplnení API kľúča."}
+              </small>
             </label>
             <label>
               <span>Izby</span>
@@ -196,6 +217,13 @@ const cleanPhone = site.contact.phone.replace(/[^\d+]/g, "");
         const funnelSubmit = funnelForm.querySelector("[data-funnel-submit]");
         const funnelSummary = funnelForm.querySelector("[data-funnel-summary]");
         const dateInput = funnelForm.querySelector("[data-funnel-date]");
+        const locationField = funnelForm.querySelector("[data-location-field]");
+        const locationInput = funnelForm.querySelector("[data-location-input]");
+        const locationPlaceId = funnelForm.querySelector("[data-location-place-id]");
+        const locationLat = funnelForm.querySelector("[data-location-lat]");
+        const locationLng = funnelForm.querySelector("[data-location-lng]");
+        const locationVerified = funnelForm.querySelector("[data-location-verified]");
+        const locationHint = funnelForm.querySelector("[data-location-hint]");
         let activeStep = 0;
 
         if (dateInput instanceof HTMLInputElement) {
@@ -218,6 +246,88 @@ const cleanPhone = site.contact.phone.replace(/[^\d+]/g, "");
 
         const setFunnelError = (message = "") => {
           if (funnelError) funnelError.textContent = message;
+        };
+
+        const setLocationHint = (message = "") => {
+          if (locationHint) locationHint.textContent = message;
+        };
+
+        const clearLocationVerification = () => {
+          if (locationPlaceId instanceof HTMLInputElement) locationPlaceId.value = "";
+          if (locationLat instanceof HTMLInputElement) locationLat.value = "";
+          if (locationLng instanceof HTMLInputElement) locationLng.value = "";
+          if (locationVerified instanceof HTMLInputElement) locationVerified.value = "";
+          if (locationField instanceof HTMLElement) locationField.classList.remove("is-verified");
+        };
+
+        const waitForGooglePlaces = () =>
+          new Promise((resolve, reject) => {
+            const startedAt = Date.now();
+            const timer = window.setInterval(async () => {
+              if (window.google?.maps?.importLibrary) {
+                window.clearInterval(timer);
+                await window.google.maps.importLibrary("places");
+                resolve(window.google.maps.places);
+                return;
+              }
+
+              if (Date.now() - startedAt > 8000) {
+                window.clearInterval(timer);
+                reject(new Error("Google Places sa nenačítal."));
+              }
+            }, 120);
+          });
+
+        const setupLocationAutocomplete = async () => {
+          if (
+            funnelForm.dataset.googlePlacesKey !== "true" ||
+            !(locationInput instanceof HTMLInputElement)
+          ) {
+            return;
+          }
+
+          try {
+            await waitForGooglePlaces();
+            const autocomplete = new window.google.maps.places.Autocomplete(locationInput, {
+              componentRestrictions: { country: "sk" },
+              fields: ["formatted_address", "geometry", "name", "place_id"],
+              types: ["geocode"],
+            });
+
+            locationInput.dataset.googleEnforced = "true";
+            locationInput.classList.add("has-google-autocomplete");
+            setLocationHint("Vyberte adresu z Google návrhov, aby bola lokalita overená.");
+
+            autocomplete.addListener("place_changed", () => {
+              const place = autocomplete.getPlace();
+
+              if (!place?.place_id || !place.formatted_address) {
+                clearLocationVerification();
+                setLocationHint("Vyberte prosím konkrétnu adresu z Google návrhov.");
+                return;
+              }
+
+              const location = place.geometry?.location;
+              const latitude = typeof location?.lat === "function" ? location.lat() : "";
+              const longitude = typeof location?.lng === "function" ? location.lng() : "";
+
+              locationInput.value = place.formatted_address;
+              locationInput.dataset.selectedLocation = place.formatted_address;
+
+              if (locationPlaceId instanceof HTMLInputElement) locationPlaceId.value = place.place_id;
+              if (locationLat instanceof HTMLInputElement) locationLat.value = latitude ? String(latitude) : "";
+              if (locationLng instanceof HTMLInputElement) locationLng.value = longitude ? String(longitude) : "";
+              if (locationVerified instanceof HTMLInputElement) locationVerified.value = "true";
+              if (locationField instanceof HTMLElement) locationField.classList.add("is-verified");
+
+              setLocationHint("Overená adresa z Google.");
+              updateFunnelSummary();
+              setFunnelError();
+            });
+          } catch {
+            if (locationInput instanceof HTMLInputElement) locationInput.dataset.googleEnforced = "false";
+            setLocationHint("Google overenie adresy sa nenačítalo. Lokalitu môžete dopísať ručne.");
+          }
         };
 
         const updateFunnelSummary = () => {
@@ -268,6 +378,18 @@ const cleanPhone = site.contact.phone.replace(/[^\d+]/g, "");
 
               return false;
             }
+
+            if (
+              field instanceof HTMLInputElement &&
+              field.dataset.locationInput !== undefined &&
+              field.dataset.googleEnforced === "true" &&
+              locationVerified instanceof HTMLInputElement &&
+              locationVerified.value !== "true"
+            ) {
+              setFunnelError("Vyberte prosím lokalitu z Google návrhov.");
+              field.focus();
+              return false;
+            }
           }
 
           setFunnelError();
@@ -293,6 +415,17 @@ const cleanPhone = site.contact.phone.replace(/[^\d+]/g, "");
             updateFunnelSummary();
             setFunnelError();
           });
+        });
+
+        locationInput?.addEventListener("input", () => {
+          if (!(locationInput instanceof HTMLInputElement)) return;
+
+          if (locationInput.value !== locationInput.dataset.selectedLocation) {
+            clearLocationVerification();
+            if (locationInput.dataset.googleEnforced === "true") {
+              setLocationHint("Vyberte adresu z Google návrhov, aby bola lokalita overená.");
+            }
+          }
         });
 
         funnelForm.addEventListener("input", updateFunnelSummary);
@@ -326,6 +459,13 @@ const cleanPhone = site.contact.phone.replace(/[^\d+]/g, "");
             `Zámer: ${intentName}`,
             `Typ nehnuteľnosti: ${funnelValue("typ")}`,
             `Lokalita: ${funnelValue("lokalita")}`,
+            `Lokalita overená Google: ${funnelValue("lokalita_overena") === "true" ? "áno" : "nie"}`,
+            `Google Place ID: ${funnelValue("lokalita_place_id") || "-"}`,
+            `GPS: ${
+              funnelValue("lokalita_lat") && funnelValue("lokalita_lng")
+                ? `${funnelValue("lokalita_lat")}, ${funnelValue("lokalita_lng")}`
+                : "-"
+            }`,
             `Izby: ${funnelValue("izby") || "-"}`,
             `Výmera: ${funnelValue("vymera") || "-"}`,
             `Preferovaný dátum: ${funnelValue("datum")}`,
@@ -343,6 +483,7 @@ const cleanPhone = site.contact.phone.replace(/[^\d+]/g, "");
           )}&body=${encodeURIComponent(body)}`;
         });
 
+        setupLocationAutocomplete();
         setFunnelStep(0);
       }
     </script>
@@ -633,6 +774,10 @@ const cleanPhone = site.contact.phone.replace(/[^\d+]/g, "");
         gap: 7px;
       }
 
+      .wizard-fields .location-field {
+        grid-column: span 2;
+      }
+
       .wizard-fields label.full {
         grid-column: 1 / -1;
       }
@@ -670,6 +815,37 @@ const cleanPhone = site.contact.phone.replace(/[^\d+]/g, "");
       .wizard-fields input::placeholder,
       .wizard-fields textarea::placeholder {
         color: rgba(255, 250, 242, 0.36);
+      }
+
+      .field-note {
+        color: rgba(255, 250, 242, 0.48);
+        font-size: 12px;
+        font-weight: 750;
+        line-height: 1.35;
+      }
+
+      .location-field.is-verified input[data-location-input] {
+        border-color: rgba(216, 184, 120, 0.72);
+      }
+
+      :global(.pac-container) {
+        z-index: 10000;
+        border: 1px solid rgba(11, 11, 10, 0.14);
+        border-radius: 8px;
+        margin-top: 6px;
+        background: var(--white);
+        box-shadow: 0 18px 44px rgba(0, 0, 0, 0.24);
+        font-family: var(--font-body);
+      }
+
+      :global(.pac-item) {
+        padding: 9px 12px;
+        cursor: pointer;
+      }
+
+      :global(.pac-item-query) {
+        color: var(--ink);
+        font-size: 14px;
       }
 
       .wizard-fields input:focus,
@@ -802,6 +978,10 @@ const cleanPhone = site.contact.phone.replace(/[^\d+]/g, "");
           grid-template-columns: repeat(2, minmax(0, 1fr));
         }
 
+        .wizard-fields .location-field {
+          grid-column: 1 / -1;
+        }
+
         .wizard-footer {
           width: min(760px, calc(100% - 36px));
           align-items: flex-start;
@@ -846,6 +1026,10 @@ const cleanPhone = site.contact.phone.replace(/[^\d+]/g, "");
         .slot-grid,
         .wizard-fields.two {
           grid-template-columns: 1fr;
+        }
+
+        .wizard-fields .location-field {
+          grid-column: auto;
         }
 
         .wizard-actions {

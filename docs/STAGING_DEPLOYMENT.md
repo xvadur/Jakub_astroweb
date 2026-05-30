@@ -94,3 +94,11 @@ npm run deploy:production
 ```
 
 Wrangler needs a Cloudflare login or `CLOUDFLARE_API_TOKEN`. Do not store the token in the repository. Use it only through the shell environment or Cloudflare dashboard secrets.
+
+## Environment variables
+
+- `PUBLIC_SITE_ENV=staging` for staging builds.
+- `PUBLIC_BOOKING_URL` optional external calendar link.
+- `PUBLIC_GOOGLE_MAPS_API_KEY` optional browser key for Google Places autocomplete on `/rezervacia/`.
+
+`PUBLIC_GOOGLE_MAPS_API_KEY` must be restricted in Google Cloud to the production and staging domains. Do not store it in Git.

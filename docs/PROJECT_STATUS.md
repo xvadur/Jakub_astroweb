@@ -34,6 +34,7 @@ Aktuálna obchodná stratégia je postavená na tom, že Jakub je osobný maklé
 - Zmeny sú commitnuté a pushnuté do GitHub repozitára `xvadur/Jakub_astroweb`.
 - Staging prostredie je aktívne a slúži ako povinný medzikrok pre nové úpravy webu.
 - Pripravená je samostatná stránka `/rezervacia/` so statickým rezervačným wizardom: zámer, typ nehnuteľnosti, lokalita, preferovaný dátum/čas a kontakt.
+- Rezervačný wizard je pripravený na Google Places autocomplete cez `PUBLIC_GOOGLE_MAPS_API_KEY`, aby sa lokalita vyberala z overených Google návrhov.
 
 ## Rozhodnutia
 
@@ -45,6 +46,7 @@ Aktuálna obchodná stratégia je postavená na tom, že Jakub je osobný maklé
 - Produkcia sa chráni cez staging workflow: experimenty, OpenClaw mutácie, tracking, booking a lead magnet úpravy idú najprv na `https://staging.jakubolsa.sk/`.
 - Cloudflare API tokeny a iné tajomstvá sa nesmú ukladať do repozitára.
 - Booking funnel zatiaľ nepredstiera reálne voľné sloty v kalendári. Zvolený termín je predbežný, kým Jakub nepotvrdí používaný kalendár a spôsob integrácie.
+- Google Maps API kľúč sa nesmie ukladať do repozitára. Musí byť nastavený ako environment variable a obmedzený na povolené domény.
 
 ## Cloudflare a doména
 

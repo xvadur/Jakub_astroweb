@@ -82,3 +82,19 @@ Jakub needs to see a practical sales flow before the automation layer. The websi
 Next step:
 
 - After Jakub confirms his calendar behavior, replace or augment the preferred date/time step with Google Calendar appointment scheduling, Calendly, or a custom Cloudflare Worker + Calendar API endpoint.
+
+## 2026-05-30: Verified locality input uses Google Places
+
+The reservation wizard should not accept nonsense locality values when Google verification is enabled.
+
+Decision:
+
+- Use Google Places Autocomplete on the `/rezervacia/` locality field.
+- Restrict suggestions to Slovakia.
+- Store formatted address, Google Place ID, and GPS coordinates when available.
+- Require a selected Google suggestion only when the Google API key is configured and the widget loads.
+- Keep local development usable without the API key.
+
+Reason:
+
+Lead quality matters more than raw form volume. Verified locality data will make future CRM, calendar, and pricing workflows cleaner.
