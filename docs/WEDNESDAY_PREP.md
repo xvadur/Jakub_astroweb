@@ -11,8 +11,9 @@ Show this path:
 ```text
 visitor lands on web
   -> sees Jakub + BOSEN positioning
-  -> clicks Rezervovať hovor
-  -> answers 4-step funnel
+  -> clicks Rezervácia konzultácie
+  -> lands on `/rezervacia/`
+  -> answers 4-step wizard
   -> selects preferred date/time
   -> structured lead context is prepared
 ```
@@ -28,7 +29,7 @@ Key sentence:
 - Staging workflow documented.
 - BOSEN-backed positioning documented and implemented.
 - Lead magnet direction: predajný audit / predajná stratégia.
-- Static booking funnel prepared in code.
+- Static booking wizard prepared on `/rezervacia/`.
 - Calendar integration path researched.
 
 ## What to ask Jakub
@@ -53,7 +54,7 @@ Key sentence:
 
 ```text
 1. Show current web positioning
-2. Show Rezervovať hovor funnel
+2. Show the separate Rezervácia konzultácie wizard
 3. Explain what data Jakub receives
 4. Ask calendar and notification questions
 5. Decide Phase 2: Cloudflare Worker + notification destination

@@ -45,9 +45,9 @@ Minimum qualifying fields:
 
 Decision for current implementation:
 
-- Build a multi-step booking funnel rather than one long form.
+- Build a multi-step booking wizard rather than one long form.
 - Keep the old audit form as a fallback/contact surface.
-- Use the booking funnel as the primary CTA from hero, mobile CTA, and empty listings state.
+- Use the booking wizard as the primary CTA from hero, mobile CTA, and empty listings state.
 
 ### 3. Date/time choice must be honest before calendar integration
 
@@ -99,12 +99,13 @@ Decision:
 
 ## Current implementation
 
-Implemented in `src/pages/index.astro` and `src/data/site.ts`:
+Implemented in `src/pages/index.astro`, `src/pages/rezervacia.astro`, and `src/data/site.ts`:
 
-- Hero CTA now goes to `#rezervacia`.
-- Mobile sticky CTA goes to `#rezervacia`.
-- Empty listings CTA goes to `#rezervacia`.
-- New `booking-funnel` section has 4 steps:
+- Hero CTA now goes to the dedicated `/rezervacia/` wizard.
+- Mobile sticky CTA goes to `/rezervacia/`.
+- Empty listings CTA goes to `/rezervacia/`.
+- Homepage has only a compact consultation CTA, not the full wizard embedded into the page.
+- The `/rezervacia/` wizard has 4 steps:
   - intent
   - property basics
   - preferred date/time
@@ -119,7 +120,9 @@ Implemented in `src/pages/index.astro` and `src/data/site.ts`:
 Current state.
 
 ```text
-user selects context and preferred slot
+user clicks reservation CTA
+  -> lands on `/rezervacia/`
+  -> selects context and preferred slot
   -> mailto to Jakub
   -> manual confirmation
 ```
@@ -129,7 +132,7 @@ user selects context and preferred slot
 Replace mailto with a Cloudflare Worker endpoint:
 
 ```text
-booking funnel
+booking wizard
   -> POST /api/leads
   -> Telegram/email notification
   -> Google Sheet / Notion / lightweight CRM

@@ -122,10 +122,10 @@ export const site = {
       "Pošlite základné informácie a pripravím prvý pohľad na cenu, riziká a najvhodnejší postup. Cieľom nie je lacný automatický odhad, ale praktická stratégia predaja s človekom, ktorý vie proces dotiahnuť.",
   },
   bookingFunnel: {
-    eyebrow: "Rezervácia hovoru",
+    eyebrow: "Rezervácia konzultácie",
     title: "Vyberte si termín a pošlite Jakubovi kontext ešte pred prvým telefonátom.",
     text:
-      "Toto je prvá verzia predajného funnelu. Termín je zatiaľ predbežný, aby sme mohli overiť záujem, kvalitu leadov a otázky pred napojením na kalendár.",
+      "Toto je prvá verzia rezervačného wizardu. Termín je zatiaľ predbežný, aby sme mohli overiť záujem, kvalitu leadov a otázky pred napojením na kalendár.",
     promise: [
       "2 minúty na vyplnenie",
       "Jakub uvidí zámer, lokalitu a časový rámec",

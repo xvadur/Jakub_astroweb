@@ -63,13 +63,14 @@ Rules:
 - Generated folders such as `dist/`, `.astro/`, `.wrangler/`, `node_modules/`, and `output/` are not source of truth.
 - Do not copy raw Obsidian/personal/client-sensitive notes into tracked GitHub files. Distill them into sanitized decisions or keep them in ignored `private/` paths.
 
-## 2026-05-30: Booking funnel before calendar integration
+## 2026-05-30: Booking wizard before calendar integration
 
 The primary CTA should lead to a guided booking/seller-audit funnel, not only to a generic contact form.
 
 Decision:
 
-- Add a 4-step booking funnel on the website.
+- Add a dedicated `/rezervacia/` page with a 4-step booking wizard.
+- Keep the homepage focused on selling the consultation click; do not embed the full wizard as a large homepage section.
 - Current version collects context and preferred date/time, then prepares a structured email.
 - The selected date/time is explicitly preliminary until a real calendar integration exists.
 - Do not add OpenClaw to this layer yet.
