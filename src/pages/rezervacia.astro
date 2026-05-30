@@ -50,13 +50,6 @@ const cleanPhone = site.contact.phone.replace(/[^\d+]/g, "");
       </section>
 
       <form class="wizard-card" data-funnel-form data-email={site.contact.email}>
-        <div class="wizard-progress" aria-label="Postup rezervácie">
-          <span data-funnel-progress>1 / 4</span>
-          <div aria-hidden="true">
-            <i data-funnel-bar></i>
-          </div>
-        </div>
-
         <p class="wizard-error" data-funnel-error aria-live="polite"></p>
 
         <section class="wizard-step" data-funnel-step>
@@ -163,6 +156,13 @@ const cleanPhone = site.contact.phone.replace(/[^\d+]/g, "");
           <button type="button" class="button secondary" data-funnel-prev>Späť</button>
           <button type="button" class="button primary" data-funnel-next>Pokračovať</button>
           <button type="submit" class="button primary" data-funnel-submit hidden>Odoslať a rezervovať</button>
+        </div>
+
+        <div class="wizard-progress" aria-label="Postup rezervácie">
+          <span data-funnel-progress>1 / 4</span>
+          <div aria-hidden="true">
+            <i data-funnel-bar></i>
+          </div>
         </div>
       </form>
     </main>
@@ -705,6 +705,10 @@ const cleanPhone = site.contact.phone.replace(/[^\d+]/g, "");
         font: inherit;
         font-weight: 800;
         transition: transform 160ms ease, background 160ms ease, color 160ms ease;
+      }
+
+      .button[hidden] {
+        display: none;
       }
 
       .button:hover {
