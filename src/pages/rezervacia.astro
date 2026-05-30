@@ -73,12 +73,17 @@ const googleMapsScriptUrl = googleMapsApiKey
               ))
             }
           </div>
+          <div class="intent-action" data-intent-action hidden>
+            <p>Ďalší krok</p>
+            <strong data-intent-action-title></strong>
+            <span data-intent-action-text></span>
+          </div>
         </section>
 
         <section class="wizard-step" data-funnel-step hidden>
           <p class="step-kicker">Krok 2</p>
-          <h2>O akej nehnuteľnosti sa bavíme?</h2>
-          <p>Stačí základ. Detaily sa doriešia v hovore.</p>
+          <h2 data-route-title="property">O akej nehnuteľnosti sa bavíme?</h2>
+          <p data-route-text="property">Stačí základ. Detaily sa doriešia v hovore.</p>
           <input type="hidden" name="typ" data-required data-label="typ nehnuteľnosti" />
           <div class="choice-grid compact">
             {
@@ -121,8 +126,8 @@ const googleMapsScriptUrl = googleMapsApiKey
 
         <section class="wizard-step" data-funnel-step hidden>
           <p class="step-kicker">Krok 3</p>
-          <h2>Kedy sa vám hodí hovor?</h2>
-          <p>Kým nie je napojený kalendár, ide o preferovaný termín. Jakub ho potvrdí späť.</p>
+          <h2 data-route-title="date">Kedy sa vám hodí hovor?</h2>
+          <p data-route-text="date">Kým nie je napojený kalendár, ide o preferovaný termín. Jakub ho potvrdí späť.</p>
           <div class="wizard-fields">
             <label>
               <span>Preferovaný dátum</span>
@@ -143,8 +148,8 @@ const googleMapsScriptUrl = googleMapsApiKey
 
         <section class="wizard-step" data-funnel-step hidden>
           <p class="step-kicker">Krok 4</p>
-          <h2>Kam má Jakub poslať potvrdenie?</h2>
-          <p>Po odoslaní sa otvorí email s vyplneným kontextom. Neskôr tento krok nahradí backend a kalendár.</p>
+          <h2 data-route-title="contact">Kam má Jakub poslať potvrdenie?</h2>
+          <p data-route-text="contact">Po odoslaní sa otvorí email s vyplneným kontextom. Neskôr tento krok nahradí backend a kalendár.</p>
           <div class="wizard-fields two">
             <label>
               <span>Meno</span>
@@ -170,7 +175,12 @@ const googleMapsScriptUrl = googleMapsApiKey
             </label>
             <label class="full">
               <span>Čo je pre vás dôležité?</span>
-              <textarea name="sprava" rows="4" placeholder="Cena, rýchlosť, diskrétnosť, kúpa nového bývania, investícia..."></textarea>
+              <textarea
+                name="sprava"
+                rows="4"
+                placeholder="Cena, rýchlosť, diskrétnosť, kúpa nového bývania, investícia..."
+                data-route-placeholder="message"
+              ></textarea>
             </label>
           </div>
         </section>
@@ -224,7 +234,111 @@ const googleMapsScriptUrl = googleMapsApiKey
         const locationLng = funnelForm.querySelector("[data-location-lng]");
         const locationVerified = funnelForm.querySelector("[data-location-verified]");
         const locationHint = funnelForm.querySelector("[data-location-hint]");
+        const intentAction = funnelForm.querySelector("[data-intent-action]");
+        const intentActionTitle = funnelForm.querySelector("[data-intent-action-title]");
+        const intentActionText = funnelForm.querySelector("[data-intent-action-text]");
+        const routeTitles = {
+          property: funnelForm.querySelector('[data-route-title="property"]'),
+          date: funnelForm.querySelector('[data-route-title="date"]'),
+          contact: funnelForm.querySelector('[data-route-title="contact"]'),
+        };
+        const routeTexts = {
+          property: funnelForm.querySelector('[data-route-text="property"]'),
+          date: funnelForm.querySelector('[data-route-text="date"]'),
+          contact: funnelForm.querySelector('[data-route-text="contact"]'),
+        };
+        const routePlaceholders = {
+          message: funnelForm.querySelector('[data-route-placeholder="message"]'),
+        };
         let activeStep = 0;
+
+        const defaultRoute = {
+          actionTitle: "Konzultácia možností",
+          actionText: "Najprv si ujasníme situáciu a potom Jakub navrhne najlepší ďalší krok.",
+          propertyTitle: "O akej nehnuteľnosti sa bavíme?",
+          propertyText: "Stačí základ. Detaily sa doriešia v hovore.",
+          dateTitle: "Kedy sa vám hodí hovor?",
+          dateText: "Kým nie je napojený kalendár, ide o preferovaný termín. Jakub ho potvrdí späť.",
+          contactTitle: "Kam má Jakub poslať potvrdenie?",
+          contactText: "Po odoslaní sa otvorí email s vyplneným kontextom. Neskôr tento krok nahradí backend a kalendár.",
+          messagePlaceholder: "Cena, rýchlosť, diskrétnosť, kúpa nového bývania, investícia...",
+          leadTitle: "Rezervácia konzultácie z webu Jakuba Olšu",
+          subjectPrefix: "Rezervácia konzultácie",
+          submitLabel: "Odoslať a rezervovať",
+        };
+
+        const intentRoutes = {
+          "Predaj za čo najlepšiu cenu": {
+            actionTitle: "Predajná stratégia",
+            actionText: "Jakub pripraví prvý pohľad na cenu, prezentáciu, riziká a postup predaja.",
+            propertyTitle: "Čo ideme predávať?",
+            propertyText: "Zadajte lokalitu a základné parametre, aby sa dal odhadnúť potenciál predaja.",
+            dateTitle: "Kedy chcete riešiť predajnú stratégiu?",
+            dateText: "Vyberte preferovaný termín hovoru k cene, príprave a predajnému postupu.",
+            contactTitle: "Kam má Jakub poslať potvrdenie predajnej konzultácie?",
+            contactText: "Po odoslaní dostane Jakub kontext k nehnuteľnosti a pripraví sa na predajný rozhovor.",
+            messagePlaceholder: "Očakávaná cena, dôvod predaja, stav nehnuteľnosti, termín, diskrétnosť...",
+            leadTitle: "Predajná stratégia z webu Jakuba Olšu",
+            subjectPrefix: "Predajná stratégia",
+            submitLabel: "Odoslať predajnú stratégiu",
+          },
+          "Najprv zistiť možnosti": {
+            actionTitle: "Konzultácia možností",
+            actionText: "Najprv porovnáme, či dáva zmysel predaj, prenájom, počkať alebo pripraviť iný postup.",
+            propertyTitle: "K akej nehnuteľnosti chcete zistiť možnosti?",
+            propertyText: "Stačia základné údaje. Cieľom je zistiť, aké scenáre dávajú zmysel.",
+            dateTitle: "Kedy si chcete prejsť možnosti?",
+            dateText: "Vyberte čas na krátky orientačný hovor bez tlaku na okamžité rozhodnutie.",
+            contactTitle: "Kam má Jakub poslať potvrdenie konzultácie?",
+            contactText: "Po odoslaní dostane Jakub základný kontext a pripraví otázky k možnostiam.",
+            messagePlaceholder: "Čo zvažujete, čo vás brzdí, čo by bol dobrý výsledok...",
+            leadTitle: "Konzultácia možností z webu Jakuba Olšu",
+            subjectPrefix: "Konzultácia možností",
+            submitLabel: "Požiadať o konzultáciu",
+          },
+          "Rýchly predaj alebo výkup": {
+            actionTitle: "Rýchle riešenie / výkup",
+            actionText: "Jakub preverí, či je vhodný rýchly predaj, výkup alebo štandardný predaj s kratším plánom.",
+            propertyTitle: "Čo treba vyriešiť rýchlo?",
+            propertyText: "Pri rýchlom riešení sú dôležité lokalita, stav, časový tlak a právna čistota.",
+            dateTitle: "Kedy treba riešenie otvoriť?",
+            dateText: "Vyberte najbližší vhodný termín. Rýchle situácie majú prioritu v následnom kontakte.",
+            contactTitle: "Kam má Jakub poslať potvrdenie rýchleho riešenia?",
+            contactText: "Po odoslaní bude jasné, či ide o výkup, urgentný predaj alebo inú cestu.",
+            messagePlaceholder: "Prečo je predaj urgentný, dokedy treba peniaze/riešenie, stav vlastníctva...",
+            leadTitle: "Rýchly predaj alebo výkup z webu Jakuba Olšu",
+            subjectPrefix: "Rýchle riešenie",
+            submitLabel: "Odoslať rýchle riešenie",
+          },
+          "Prenájom alebo správa": {
+            actionTitle: "Prenájom / správa nehnuteľnosti",
+            actionText: "Jakub preverí nájomný potenciál, cieľového nájomcu, riziká a rozsah správy.",
+            propertyTitle: "Čo chcete prenajať alebo spravovať?",
+            propertyText: "Pri prenájme rozhoduje lokalita, dispozícia, stav, zariadenie a očakávaný typ nájomcu.",
+            dateTitle: "Kedy chcete prejsť prenájom alebo správu?",
+            dateText: "Vyberte čas hovoru k nájomnému, prezentácii, výberu nájomcu a správe.",
+            contactTitle: "Kam má Jakub poslať potvrdenie prenájmovej konzultácie?",
+            contactText: "Po odoslaní bude mať Jakub základ pre návrh prenájmu alebo správy.",
+            messagePlaceholder: "Zariadenie, očakávaný nájom, či chcete iba nájomcu alebo aj správu...",
+            leadTitle: "Prenájom alebo správa z webu Jakuba Olšu",
+            subjectPrefix: "Prenájom alebo správa",
+            submitLabel: "Odoslať prenájom/správu",
+          },
+          "Kúpa nového a predaj starej nehnuteľnosti": {
+            actionTitle: "Prechod z jednej nehnuteľnosti do druhej",
+            actionText: "Jakub pomôže zosúladiť predaj, kúpu, financovanie, termíny a riziko dvojitého tlaku.",
+            propertyTitle: "Akú nehnuteľnosť budete predávať?",
+            propertyText: "Začnime nehnuteľnosťou, ktorú vlastníte. V hovore sa prejde aj kúpa nového bývania.",
+            dateTitle: "Kedy chcete prejsť plán kúpa + predaj?",
+            dateText: "Vyberte termín hovoru k časovaniu, financovaniu a postupu bez zbytočného rizika.",
+            contactTitle: "Kam má Jakub poslať potvrdenie prechodu bývania?",
+            contactText: "Po odoslaní bude mať Jakub kontext k predaju starej aj kúpe novej nehnuteľnosti.",
+            messagePlaceholder: "Čo chcete kúpiť, čo predávate, hypotéka, časovanie, či už máte vybrané nové bývanie...",
+            leadTitle: "Kúpa nového a predaj starej nehnuteľnosti z webu Jakuba Olšu",
+            subjectPrefix: "Kúpa + predaj",
+            submitLabel: "Odoslať plán kúpa + predaj",
+          },
+        };
 
         if (dateInput instanceof HTMLInputElement) {
           const now = new Date();
@@ -246,6 +360,29 @@ const googleMapsScriptUrl = googleMapsApiKey
 
         const setFunnelError = (message = "") => {
           if (funnelError) funnelError.textContent = message;
+        };
+
+        const currentRoute = () => intentRoutes[funnelValue("zamer")] || defaultRoute;
+
+        const applyIntentRoute = () => {
+          const route = currentRoute();
+
+          if (intentAction instanceof HTMLElement) intentAction.hidden = !funnelValue("zamer");
+          if (intentActionTitle) intentActionTitle.textContent = route.actionTitle;
+          if (intentActionText) intentActionText.textContent = route.actionText;
+
+          if (routeTitles.property) routeTitles.property.textContent = route.propertyTitle;
+          if (routeTitles.date) routeTitles.date.textContent = route.dateTitle;
+          if (routeTitles.contact) routeTitles.contact.textContent = route.contactTitle;
+          if (routeTexts.property) routeTexts.property.textContent = route.propertyText;
+          if (routeTexts.date) routeTexts.date.textContent = route.dateText;
+          if (routeTexts.contact) routeTexts.contact.textContent = route.contactText;
+          if (routePlaceholders.message instanceof HTMLTextAreaElement) {
+            routePlaceholders.message.placeholder = route.messagePlaceholder;
+          }
+          if (funnelSubmit instanceof HTMLButtonElement) {
+            funnelSubmit.textContent = route.submitLabel;
+          }
         };
 
         const setLocationHint = (message = "") => {
@@ -412,6 +549,7 @@ const googleMapsScriptUrl = googleMapsApiKey
               item.setAttribute("aria-pressed", item === button ? "true" : "false");
             });
 
+            applyIntentRoute();
             updateFunnelSummary();
             setFunnelError();
           });
@@ -450,8 +588,9 @@ const googleMapsScriptUrl = googleMapsApiKey
 
           const subjectName = funnelValue("meno") || "nový kontakt";
           const intentName = funnelValue("zamer") || "rezervácia konzultácie";
+          const route = currentRoute();
           const body = [
-            "Rezervácia konzultácie z webu Jakuba Olšu",
+            route.leadTitle,
             "",
             `Meno: ${funnelValue("meno")}`,
             `Telefón: ${funnelValue("telefon")}`,
@@ -479,11 +618,12 @@ const googleMapsScriptUrl = googleMapsApiKey
           ].join("\n");
 
           window.location.href = `mailto:${encodeURIComponent(targetEmail)}?subject=${encodeURIComponent(
-            `Rezervácia konzultácie - ${subjectName} - ${intentName}`,
+            `${route.subjectPrefix} - ${subjectName} - ${intentName}`,
           )}&body=${encodeURIComponent(body)}`;
         });
 
         setupLocationAutocomplete();
+        applyIntentRoute();
         setFunnelStep(0);
       }
     </script>
@@ -758,6 +898,43 @@ const googleMapsScriptUrl = googleMapsApiKey
         background: rgba(216, 184, 120, 0.16);
         color: var(--white);
         transform: translateY(-1px);
+      }
+
+      .intent-action {
+        display: grid;
+        gap: 5px;
+        border: 1px solid rgba(216, 184, 120, 0.34);
+        border-radius: 8px;
+        padding: 14px 16px;
+        background: rgba(216, 184, 120, 0.1);
+      }
+
+      .intent-action[hidden] {
+        display: none;
+      }
+
+      .intent-action p,
+      .intent-action strong,
+      .intent-action span {
+        margin: 0;
+      }
+
+      .intent-action p {
+        color: var(--brass);
+        font-size: 12px;
+        font-weight: 900;
+      }
+
+      .intent-action strong {
+        color: var(--white);
+        font-size: 18px;
+        line-height: 1.18;
+      }
+
+      .intent-action span {
+        color: rgba(255, 250, 242, 0.7);
+        font-size: 14px;
+        font-weight: 700;
       }
 
       .wizard-fields {
