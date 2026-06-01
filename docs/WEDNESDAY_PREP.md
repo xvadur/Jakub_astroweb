@@ -73,3 +73,11 @@ Astro funnel submit
 ```
 
 This gives speed-to-lead without building a full CRM.
+
+## Detailed TODO
+
+The working checklist for Wednesday, 3 June 2026 is in:
+
+```text
+docs/TODO_2026-06-03.md
+```
