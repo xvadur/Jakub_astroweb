@@ -410,7 +410,7 @@ function buildEventSummary(payload) {
 
 function buildEventDescription(payload) {
   return [
-    "Rezervácia z webu Jakuba Olšu",
+    "Rezervácia konzultácie",
     "",
     ...leadLines(payload),
     "",
@@ -425,7 +425,7 @@ function buildTelegramMessage(payload, context) {
       : "Prijaté bez Google kalendára";
 
   const lines = [
-    "Nová rezervácia z webu Jakuba Olšu",
+    "Nová rezervácia konzultácie",
     `Status: ${status}`,
     `Režim: ${context.mode}`,
     context.calendarEvent?.htmlLink ? `Kalendár: ${context.calendarEvent.htmlLink}` : "",

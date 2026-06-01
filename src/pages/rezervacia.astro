@@ -46,7 +46,7 @@ const googleMapsScriptUrl = googleMapsApiKey
           <small>{site.role}</small>
         </span>
       </a>
-      <a class="back-link" href="/">Späť na web</a>
+      <a class="back-link" href="/">Späť na úvod</a>
     </header>
 
     <main class="wizard-shell">
@@ -73,7 +73,7 @@ const googleMapsScriptUrl = googleMapsApiKey
         <section class="wizard-step" data-funnel-step>
           <p class="step-kicker">Krok 1</p>
           <h2>Čo chcete riešiť?</h2>
-          <p>Vyberte najbližšiu akciu alebo typ nehnuteľnosti. Každá vetva otvorí iné parametre.</p>
+          <p>Vyberte najbližší dôvod hovoru. Podľa toho sa zobrazia len otázky, ktoré dávajú zmysel pre vašu situáciu.</p>
           <input type="hidden" name="zamer" data-required data-label="zámer" />
           <div class="choice-grid">
             {
@@ -89,7 +89,7 @@ const googleMapsScriptUrl = googleMapsApiKey
         <section class="wizard-step" data-funnel-step hidden>
           <p class="step-kicker">Krok 2</p>
           <h2 data-route-title="property">Základné parametre</h2>
-          <p data-route-text="property">Vyplňte len to, čo viete. Detaily sa doriešia v hovore.</p>
+          <p data-route-text="property">Vyplňte len to, čo viete. Detaily prejdeme spolu v hovore.</p>
           <input type="hidden" name="typ" data-route-type />
           <div class="wizard-fields two">
             <label class="location-field" data-location-field>
@@ -215,7 +215,7 @@ const googleMapsScriptUrl = googleMapsApiKey
         <section class="wizard-step" data-funnel-step hidden>
           <p class="step-kicker">Krok 3</p>
           <h2 data-route-title="date">Kedy sa vám hodí hovor?</h2>
-          <p data-route-text="date">Vyberte dostupný termín hovoru. Pred odoslaním ho ešte raz overíme.</p>
+          <p data-route-text="date">Vyberte dostupný termín hovoru. Pred odoslaním ho ešte raz overím v kalendári.</p>
           <div class="wizard-fields">
             <label>
               <span>Preferovaný dátum</span>
@@ -237,8 +237,8 @@ const googleMapsScriptUrl = googleMapsApiKey
 
         <section class="wizard-step" data-funnel-step hidden>
           <p class="step-kicker">Krok 4</p>
-          <h2 data-route-title="contact">Kam má Jakub poslať potvrdenie?</h2>
-          <p data-route-text="contact">Po odoslaní dostane Jakub podklady a termín sa spracuje cez rezervačný backend.</p>
+          <h2 data-route-title="contact">Na koho sa mám ozvať?</h2>
+          <p data-route-text="contact">Po odoslaní budem mať podklady k hovoru a termín uložený v kalendári.</p>
           <div class="wizard-fields two">
             <label>
               <span>Meno</span>
@@ -278,9 +278,9 @@ const googleMapsScriptUrl = googleMapsApiKey
           <p class="step-kicker">Odoslané</p>
           <h2>Rezervácia je odoslaná.</h2>
           <p data-booking-confirmation-text>
-            Jakub dostal podklady a termín potvrdí podľa dostupnosti.
+            Ďakujem, mám podklady k hovoru a ozvem sa v zvolenom termíne.
           </p>
-          <a class="button secondary" href="/">Späť na web</a>
+          <a class="button secondary" href="/">Späť na úvod</a>
         </section>
 
         <div class="wizard-summary" data-funnel-summary aria-live="polite"></div>
@@ -410,13 +410,13 @@ const googleMapsScriptUrl = googleMapsApiKey
           propertyType: "",
           paramFields: ["property_kind", "rooms", "area", "condition"],
           propertyTitle: "K akej nehnuteľnosti chcete zistiť možnosti?",
-          propertyText: "Vyberte typ a doplňte základné údaje. Jakub z toho pripraví najrozumnejší prvý postup.",
+          propertyText: "Vyberte typ a doplňte základné údaje. Podľa nich pripravím najrozumnejší prvý postup.",
           dateTitle: "Kedy sa vám hodí hovor?",
           dateText: "Vyberte čas na krátky orientačný hovor bez tlaku na okamžité rozhodnutie.",
-          contactTitle: "Kam má Jakub poslať potvrdenie konzultácie?",
-          contactText: "Po odoslaní dostane Jakub základný kontext a pripraví otázky k možnostiam.",
+          contactTitle: "Na koho sa mám ozvať?",
+          contactText: "Po odoslaní budem mať základný kontext a pripravím si otázky k možnostiam.",
           messagePlaceholder: "Čo zvažujete, čo vás brzdí, čo by bol dobrý výsledok...",
-          leadTitle: "Konzultácia možností z webu Jakuba Olšu",
+          leadTitle: "Konzultácia možností",
           subjectPrefix: "Konzultácia možností",
           submitLabel: "Požiadať o konzultáciu",
         };
@@ -436,10 +436,10 @@ const googleMapsScriptUrl = googleMapsApiKey
             propertyText: "Pri byte sú dôležité lokalita, dispozícia, výmera, poschodie, stav a výhody ako balkón, pivnica alebo parkovanie.",
             dateTitle: "Kedy chcete prejsť predaj bytu?",
             dateText: "Vyberte termín hovoru k cene, príprave, prezentácii a predajnému postupu.",
-            contactTitle: "Kam má Jakub poslať potvrdenie predajnej konzultácie?",
-            contactText: "Po odoslaní bude mať Jakub základné parametre bytu a pripraví sa na konkrétny rozhovor.",
+            contactTitle: "Na koho sa mám ozvať k predaju bytu?",
+            contactText: "Po odoslaní budem mať základné parametre bytu a pripravím sa na konkrétny rozhovor.",
             messagePlaceholder: "Očakávaná cena, dôvod predaja, časový tlak, parkovanie, pivnica, právny stav...",
-            leadTitle: "Predaj bytu z webu Jakuba Olšu",
+            leadTitle: "Predaj bytu",
             subjectPrefix: "Predaj bytu",
             submitLabel: "Odoslať predaj bytu",
           },
@@ -453,13 +453,13 @@ const googleMapsScriptUrl = googleMapsApiKey
               },
             },
             propertyTitle: "Aký dom chcete predať?",
-            propertyText: "Pri dome potrebujeme oddeliť úžitkovú plochu, pozemok, stav a veci ako garáž, terasa, bazén alebo technické zázemie.",
+            propertyText: "Pri dome potrebujem oddeliť úžitkovú plochu, pozemok, stav a veci ako garáž, terasa, bazén alebo technické zázemie.",
             dateTitle: "Kedy chcete prejsť predaj domu?",
             dateText: "Vyberte termín hovoru k cene, prezentácii, marketingu a servisnému postupu.",
-            contactTitle: "Kam má Jakub poslať potvrdenie konzultácie k domu?",
-            contactText: "Po odoslaní bude mať Jakub základ pre prvý odhad situácie a prípravu otázok.",
+            contactTitle: "Na koho sa mám ozvať k domu?",
+            contactText: "Po odoslaní budem mať základ pre prvý odhad situácie a prípravu otázok.",
             messagePlaceholder: "Rok výstavby, rekonštrukcia, technický stav, garáž, záhrada, dôvod predaja...",
-            leadTitle: "Predaj domu z webu Jakuba Olšu",
+            leadTitle: "Predaj domu",
             subjectPrefix: "Predaj domu",
             submitLabel: "Odoslať predaj domu",
           },
@@ -470,10 +470,10 @@ const googleMapsScriptUrl = googleMapsApiKey
             propertyText: "Pri pozemku rozhoduje výmera, typ pozemku, siete, prístup a regulácia. Detaily sa preveria následne.",
             dateTitle: "Kedy chcete prejsť predaj pozemku?",
             dateText: "Vyberte termín hovoru k potenciálu pozemku, prevereniu rizík a predajnému postupu.",
-            contactTitle: "Kam má Jakub poslať potvrdenie konzultácie k pozemku?",
-            contactText: "Po odoslaní bude mať Jakub kontext k pozemku a pripraví si ďalšie otázky.",
+            contactTitle: "Na koho sa mám ozvať k pozemku?",
+            contactText: "Po odoslaní budem mať kontext k pozemku a pripravím si ďalšie otázky.",
             messagePlaceholder: "Územný plán, list vlastníctva, prístup, siete, či už máte cenovú predstavu...",
-            leadTitle: "Predaj pozemku z webu Jakuba Olšu",
+            leadTitle: "Predaj pozemku",
             subjectPrefix: "Predaj pozemku",
             submitLabel: "Odoslať predaj pozemku",
           },
@@ -490,10 +490,10 @@ const googleMapsScriptUrl = googleMapsApiKey
             propertyText: "Pri komerčnej nehnuteľnosti sú podstatné typ priestoru, výmera, stav, obsadenosť a investičný potenciál.",
             dateTitle: "Kedy chcete prejsť predaj komerčného priestoru?",
             dateText: "Vyberte termín hovoru k stratégii predaja, číslam, nájomcom a prezentácii.",
-            contactTitle: "Kam má Jakub poslať potvrdenie komerčnej konzultácie?",
-            contactText: "Po odoslaní bude mať Jakub základ pre obchodný a investičný pohľad na nehnuteľnosť.",
+            contactTitle: "Na koho sa mám ozvať ku komerčnému priestoru?",
+            contactText: "Po odoslaní budem mať základ pre obchodný a investičný pohľad na nehnuteľnosť.",
             messagePlaceholder: "Nájomca, výnos, prevádzka, stav zmlúv, parkovanie, technické špecifiká...",
-            leadTitle: "Predaj komerčného priestoru z webu Jakuba Olšu",
+            leadTitle: "Predaj komerčného priestoru",
             subjectPrefix: "Predaj komerčného priestoru",
             submitLabel: "Odoslať komerčný predaj",
           },
@@ -504,10 +504,10 @@ const googleMapsScriptUrl = googleMapsApiKey
             propertyText: "Pri prenájme rozhoduje lokalita, dispozícia, stav, zariadenie a očakávaný typ nájomcu.",
             dateTitle: "Kedy chcete prejsť prenájom alebo správu?",
             dateText: "Vyberte čas hovoru k nájomnému, prezentácii, výberu nájomcu a správe.",
-            contactTitle: "Kam má Jakub poslať potvrdenie prenájmovej konzultácie?",
-            contactText: "Po odoslaní bude mať Jakub základ pre návrh prenájmu alebo správy.",
+            contactTitle: "Na koho sa mám ozvať k prenájmu alebo správe?",
+            contactText: "Po odoslaní budem mať základ pre návrh prenájmu alebo správy.",
             messagePlaceholder: "Zariadenie, očakávaný nájom, či chcete iba nájomcu alebo aj správu...",
-            leadTitle: "Prenájom alebo správa z webu Jakuba Olšu",
+            leadTitle: "Prenájom alebo správa",
             subjectPrefix: "Prenájom alebo správa",
             submitLabel: "Odoslať prenájom/správu",
           },
@@ -760,7 +760,7 @@ const googleMapsScriptUrl = googleMapsApiKey
             return;
           }
 
-          setSlotStatus(mode === "google" ? "Dostupnosť je načítaná z kalendára." : "Testovacie sloty sú pripravené. Google kalendár doplníme cez secrets.");
+          setSlotStatus(mode === "google" ? "Zobrazujem dostupné časy podľa kalendára." : "Vyberte čas, ktorý vám najviac sedí.");
         };
 
         const loadAvailability = async () => {
@@ -792,7 +792,7 @@ const googleMapsScriptUrl = googleMapsApiKey
             if (error instanceof DOMException && error.name === "AbortError") return;
 
             setSlotButtonsDisabled(false);
-            setSlotStatus("Živá dostupnosť teraz nie je dostupná. Vyberte preferovaný čas a Jakub ho potvrdí.");
+            setSlotStatus("Dostupné časy sa teraz nepodarilo načítať. Vyberte preferovaný čas a potvrdím ho späť.");
           }
         };
 
@@ -859,8 +859,8 @@ const googleMapsScriptUrl = googleMapsApiKey
           if (bookingConfirmationText) {
             bookingConfirmationText.textContent =
               result.bookingStatus === "calendar_created"
-                ? "Termín je zapísaný do kalendára a Jakub dostal podklady k hovoru."
-                : "Podklady sú odoslané do rezervačného backendu. Po napojení Google kalendára sa termín bude zapisovať automaticky.";
+                ? "Termín je zapísaný v kalendári a mám podklady k hovoru."
+                : "Ďakujem, mám podklady k hovoru a ozvem sa s potvrdením termínu.";
           }
 
           setFunnelError();
@@ -904,7 +904,7 @@ const googleMapsScriptUrl = googleMapsApiKey
             showBookingConfirmation(data);
           } catch {
             const fallbackHref = buildMailFallbackHref(payload);
-            setFunnelError("Rezervačný backend teraz neodpovedá. Otvorím email fallback, aby sa lead nestratil.");
+            setFunnelError("Rezerváciu sa teraz nepodarilo odoslať. Otvorím email, aby sa správa nestratila.");
 
             if (fallbackHref) {
               window.location.href = fallbackHref;
@@ -969,7 +969,7 @@ const googleMapsScriptUrl = googleMapsApiKey
               locationVerified instanceof HTMLInputElement &&
               locationVerified.value !== "true"
             ) {
-              setFunnelError("Vyberte prosím lokalitu z Google návrhov.");
+              setFunnelError("Vyberte prosím adresu z návrhov.");
               field.focus();
               return false;
             }
