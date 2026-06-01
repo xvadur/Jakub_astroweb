@@ -1,9 +1,9 @@
 export const site = {
   brand: "Jakub Olša",
-  role: "realitný maklér | BOSEN",
+  role: "realitný maklér | BOSEN Group",
   locale: "sk-SK",
   cityLabel: "Slovensko",
-  shortPromise: "Osobne vás prevediem predajom. So servisom BOSEN za chrbtom.",
+  shortPromise: "Osobne vás prevediem predajom. So servisom BOSEN Group za chrbtom.",
   intro:
     "Hral som hokej na profesionálnej úrovni, potom som pracoval s klientmi vo financiách a dnes tieto skúsenosti používam v realitách. Pri predaji hodnotnej nehnuteľnosti nejde len o inzerát. Ide o stratégiu, prezentáciu, čísla, právny a finančný servis a človeka, ktorý drží celý proces pokope.",
   contact: {
@@ -16,13 +16,14 @@ export const site = {
   },
   bookingUrl: import.meta.env.PUBLIC_BOOKING_URL ?? "",
   logoImage: "/images/brand/jakub-logo-mark-transparent.png",
+  bosenGroupLogo: "/images/brand/bosen-group-horizontal.jpg",
   heroImage: "/images/brand/jakub-official-clean.jpg",
   cityPanoramaImage: "/images/brand/bratislava-panorama.jpg",
   posterImage: "/images/brand/jakub-poster.jpg",
   handshakeImage: "/images/jakub-handshake.png",
   proofPoints: [
     "osobný maklér, ktorý drží proces od stratégie po podpis",
-    "prémiová prezentácia, marketing a servisné zázemie BOSEN",
+    "prémiová prezentácia, marketing a servisné zázemie BOSEN Group",
     "právny, finančný a obchodný servis bez zbytočného presúvania práce na klienta",
   ],
   trackRecord: {
@@ -46,15 +47,15 @@ export const site = {
     ],
   },
   positioning: {
-    title: "Nie ste v tom sami. Ja som váš jeden kontakt, BOSEN je aparát za celým procesom.",
+    title: "Nie ste v tom sami. Ja som váš jeden kontakt, BOSEN Group je aparát za celým procesom.",
     text:
-      "Klient potrebuje pokoj, nie zoznam úloh. Preto riešim stratégiu, komunikáciu, obhliadky a rozhodnutia osobne, pričom za mnou stojí marketing, právny servis, financovanie a realitné know-how BOSEN.",
+      "Klient potrebuje pokoj, nie zoznam úloh. Preto riešim stratégiu, komunikáciu, obhliadky a rozhodnutia osobne, pričom za mnou stojí marketing, právny servis, financovanie a realitné know-how BOSEN Group.",
   },
   backing: {
-    eyebrow: "Servis BOSEN",
+    eyebrow: "Servis BOSEN Group",
     title: "Osobná starostlivosť makléra, servisné zázemie silnej realitnej agentúry.",
     text:
-      "Jakub je človek, s ktorým riešite predaj priamo. BOSEN je domovská agentúra, ktorá mu dáva do ruky kompletný servis: od ocenenia a prípravy stratégie cez prémiový marketing až po právne, finančné a investičné riešenia.",
+      "Jakub je človek, s ktorým riešite predaj priamo. BOSEN Group je jeho domovské zázemie, ktoré mu dáva do ruky kompletný servis: od ocenenia a prípravy stratégie cez prémiový marketing až po právne, finančné a investičné riešenia.",
     items: [
       {
         title: "Stratégia ceny a predaja",

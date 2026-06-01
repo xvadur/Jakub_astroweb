@@ -45,7 +45,7 @@ const jsonLd = {
     <meta property="og:title" content={`${site.brand} | ${site.shortPromise}`} />
     <meta
       property="og:description"
-      content="Osobný maklér so servisným zázemím BOSEN pre predaj, kúpu, prenájom a stratégiu hodnotnej nehnuteľnosti."
+      content="Osobný maklér so servisným zázemím BOSEN Group pre predaj, kúpu, prenájom a stratégiu hodnotnej nehnuteľnosti."
     />
     <meta property="og:type" content="website" />
     <meta property="og:image" content={site.heroImage} />
@@ -67,13 +67,17 @@ const jsonLd = {
     {isStaging ? <div class="staging-ribbon" aria-hidden="true">STAGING</div> : null}
 
     <header class="site-header">
-      <a class="brand" href="#top" aria-label={`${site.brand}, úvod`}>
-        <img class="brand-mark" src={site.logoImage} alt="" />
-        <span class="brand-label">
-          <span>{site.brand}</span>
-          <small>{site.role}</small>
-        </span>
-      </a>
+      <div class="brand-cluster">
+        <a class="brand" href="#top" aria-label={`${site.brand}, úvod`}>
+          <img class="brand-mark" src={site.logoImage} alt="" />
+          <span class="brand-label">
+            <span>{site.brand}</span>
+            <small>{site.role}</small>
+          </span>
+        </a>
+        <span class="brand-divider" aria-hidden="true"></span>
+        <img class="bosen-logo header-bosen-logo" src={site.bosenGroupLogo} alt="BOSEN Group" />
+      </div>
       <nav aria-label="Hlavná navigácia">
         <a href="#servis">Servis</a>
         <a href="#ponuky">Ponuky</a>
@@ -86,7 +90,7 @@ const jsonLd = {
     <main id="top">
       <section class="hero" aria-labelledby="hero-title">
         <div class="hero-copy" data-reveal>
-          <p class="eyebrow">Osobný maklér s kompletným zázemím BOSEN</p>
+          <p class="eyebrow">Osobný maklér s kompletným zázemím BOSEN Group</p>
           <h1 id="hero-title">{site.brand}</h1>
           <p class="promise">{site.shortPromise}</p>
           <p class="intro">{site.intro}</p>
@@ -100,7 +104,7 @@ const jsonLd = {
           <div class="portrait-note">
             <p>
               <strong>Jeden človek na vašej strane.</strong>
-              Za mnou je marketing, právo, financovanie a realitné zázemie BOSEN.
+              Za mnou je marketing, právo, financovanie a realitné zázemie BOSEN Group.
             </p>
           </div>
         </div>
@@ -354,6 +358,7 @@ const jsonLd = {
     <footer>
       <div class="footer-brand">
         <img src={site.logoImage} alt="" />
+        <img class="bosen-logo footer-bosen-logo" src={site.bosenGroupLogo} alt="BOSEN Group" />
         {
           hasInstagram ? (
             <a
@@ -576,6 +581,32 @@ const jsonLd = {
         min-width: 0;
         align-items: center;
         gap: 12px;
+      }
+
+      .brand-cluster {
+        display: flex;
+        min-width: 0;
+        align-items: center;
+        gap: 13px;
+      }
+
+      .brand-divider {
+        width: 1px;
+        height: 34px;
+        background: rgba(255, 250, 242, 0.2);
+      }
+
+      .bosen-logo {
+        display: block;
+        object-fit: contain;
+        object-position: center;
+        mix-blend-mode: screen;
+      }
+
+      .header-bosen-logo {
+        width: 164px;
+        height: 36px;
+        opacity: 0.9;
       }
 
       .brand-mark {
@@ -1419,6 +1450,7 @@ const jsonLd = {
         display: flex;
         align-items: center;
         gap: 16px;
+        flex-wrap: wrap;
       }
 
       .footer-links {
@@ -1469,6 +1501,12 @@ const jsonLd = {
         width: 118px;
         height: 52px;
         object-fit: contain;
+      }
+
+      .footer-brand .footer-bosen-logo {
+        width: 170px;
+        height: 42px;
+        opacity: 0.88;
       }
 
       .footer-brand p {
@@ -1681,6 +1719,19 @@ const jsonLd = {
           display: none;
         }
 
+        .brand-cluster {
+          gap: 8px;
+        }
+
+        .brand-divider {
+          height: 28px;
+        }
+
+        .header-bosen-logo {
+          width: 104px;
+          height: 30px;
+        }
+
         .hero,
         .section {
           padding-left: 18px;
@@ -1858,6 +1909,11 @@ const jsonLd = {
 
         .brand-mark {
           width: 82px;
+        }
+
+        .footer-brand .footer-bosen-logo {
+          width: 142px;
+          height: 36px;
         }
 
         .header-phone {
