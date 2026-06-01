@@ -5,7 +5,6 @@ const cleanPhone = site.contact.phone.replace(/[^\d+]/g, "");
 const hasPhone = cleanPhone.length >= 10;
 const hasEmail = site.contact.email.includes("@") && !site.contact.email.includes("example.");
 const hasInstagram = site.contact.instagram.startsWith("http");
-const hasBooking = site.bookingUrl.startsWith("https://");
 const siteEnv = import.meta.env.PUBLIC_SITE_ENV ?? "production";
 const isStaging = siteEnv !== "production";
 const availableListings = site.listings.filter((listing) => listing.group === "available");
@@ -41,7 +40,7 @@ const jsonLd = {
     <meta name="generator" content={Astro.generator} />
     <meta
       name="description"
-      content={`${site.brand} je ${site.role}. ${site.shortPromise} Dohodnite si predajný audit nehnuteľnosti.`}
+      content={`${site.brand} je ${site.role}. ${site.shortPromise} Dohodnite si konzultáciu k predaju, kúpe alebo prenájmu nehnuteľnosti.`}
     />
     <meta property="og:title" content={`${site.brand} | ${site.shortPromise}`} />
     <meta
@@ -64,7 +63,7 @@ const jsonLd = {
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
   </head>
   <body>
-    <a class="skip-link" href="#kontakt">Prejsť na kontakt</a>
+    <a class="skip-link" href="#top">Prejsť na obsah</a>
     {isStaging ? <div class="staging-ribbon" aria-hidden="true">STAGING</div> : null}
 
     <header class="site-header">
@@ -348,110 +347,6 @@ const jsonLd = {
         </div>
       </section>
 
-      <section class="contact-section" id="kontakt">
-        <div class="contact-copy" data-reveal>
-          <p class="eyebrow">{site.leadMagnet.eyebrow}</p>
-          <h2>{site.leadMagnet.title}</h2>
-          <p>{site.leadMagnet.text}</p>
-          <div class="direct-contact" aria-label="Priamy kontakt">
-            <p>Rýchly kontakt</p>
-            {
-              hasPhone ? (
-                <a href={`tel:${cleanPhone}`}>
-                  <span>Telefón</span>
-                  <strong>{site.contact.phone}</strong>
-                </a>
-              ) : null
-            }
-            {
-              hasBooking ? (
-                <a href={site.bookingUrl} target="_blank" rel="noreferrer">
-                  <span>Kalendár</span>
-                  <strong>Rezervovať v kalendári</strong>
-                </a>
-              ) : null
-            }
-            <a href="/rezervacia/">
-              <span>Preferovaný termín</span>
-              <strong>Rezervácia konzultácie</strong>
-            </a>
-          </div>
-        </div>
-
-        <div class="booking-panel" data-reveal>
-          <p class="eyebrow">Audit nehnuteľnosti</p>
-          <h3>Pošlite základ. Ozvem sa s konkrétnym ďalším krokom.</h3>
-          <p>
-            Formulár pripraví podklady k vašej situácii. Následne viem povedať, či dáva zmysel
-            klasický predaj, rýchle riešenie, prenájom alebo iný postup.
-          </p>
-          <form class="contact-form" data-contact-form data-email={site.contact.email}>
-            <div class="form-grid">
-              <label>
-                <span>Meno</span>
-                <input name="meno" autocomplete="name" required />
-              </label>
-              <label>
-                <span>Telefón</span>
-                <input name="telefon" type="tel" autocomplete="tel" required />
-              </label>
-              <label>
-                <span>Email</span>
-                <input name="email" type="email" autocomplete="email" />
-              </label>
-              <label>
-                <span>Čo riešite?</span>
-                <select name="zamer" required>
-                  <option value="">Vyberte možnosť</option>
-                  <option value="Predaj za čo najlepšiu cenu">Predaj za čo najlepšiu cenu</option>
-                  <option value="Rýchly predaj alebo výkup">Rýchly predaj alebo výkup</option>
-                  <option value="Prenájom alebo správa">Prenájom alebo správa</option>
-                  <option value="Kúpa nového a predaj starej nehnuteľnosti">Kúpa nového a predaj starej</option>
-                  <option value="Konzultácia / neviem vybrať postup">Konzultácia / neviem vybrať postup</option>
-                </select>
-              </label>
-              <label>
-                <span>Typ nehnuteľnosti</span>
-                <select name="typ">
-                  <option value="">Vyberte typ</option>
-                  <option value="Byt">Byt</option>
-                  <option value="Dom">Dom</option>
-                  <option value="Pozemok">Pozemok</option>
-                  <option value="Komerčný priestor">Komerčný priestor</option>
-                  <option value="Investičná nehnuteľnosť">Investičná nehnuteľnosť</option>
-                </select>
-              </label>
-              <label>
-                <span>Lokalita</span>
-                <input name="lokalita" placeholder="Mesto, časť alebo ulica" />
-              </label>
-              <label>
-                <span>Časový horizont</span>
-                <select name="horizont">
-                  <option value="">Vyberte horizont</option>
-                  <option value="Ihneď">Ihneď</option>
-                  <option value="1-3 mesiace">1-3 mesiace</option>
-                  <option value="3-6 mesiacov">3-6 mesiacov</option>
-                  <option value="Zatiaľ len zisťujem možnosti">Zatiaľ len zisťujem možnosti</option>
-                </select>
-              </label>
-              <label>
-                <span>Izby</span>
-                <input name="izby" placeholder="napr. 4 izby" />
-              </label>
-              <label>
-                <span>Výmera</span>
-                <input name="vymera" placeholder="napr. 156 m²" />
-              </label>
-              <label class="full">
-                <span>Čo je pre vás dôležité?</span>
-                <textarea name="sprava" rows="4" placeholder="Cena, rýchlosť, diskrétnosť, kúpa nového bývania, investícia..."></textarea>
-              </label>
-            </div>
-            <button class="button primary" type="submit">Pripraviť predajný audit</button>
-          </form>
-        </div>
-      </section>
     </main>
 
     <a class="mobile-cta" href="/rezervacia/">Rezervácia konzultácie</a>
@@ -565,44 +460,6 @@ const jsonLd = {
 
       toggleMobileCta();
       window.addEventListener("scroll", toggleMobileCta, { passive: true });
-
-      const contactForm = document.querySelector("[data-contact-form]");
-
-      contactForm?.addEventListener("submit", (event) => {
-        event.preventDefault();
-
-        if (!(contactForm instanceof HTMLFormElement)) return;
-
-        const targetEmail = contactForm.getAttribute("data-email");
-        if (!targetEmail) return;
-
-        const formData = new FormData(contactForm);
-        const value = (name) => String(formData.get(name) || "").trim();
-        const subjectName = value("meno") || "nový kontakt";
-        const intentName = value("zamer") || "predajný audit";
-        const body = [
-          "Predajný audit z webu Jakuba Olšu",
-          "",
-          `Meno: ${value("meno")}`,
-          `Telefón: ${value("telefon")}`,
-          `Email: ${value("email") || "-"}`,
-          `Zámer: ${intentName}`,
-          `Typ nehnuteľnosti: ${value("typ") || "-"}`,
-          `Lokalita: ${value("lokalita") || "-"}`,
-          `Časový horizont: ${value("horizont") || "-"}`,
-          `Izby: ${value("izby") || "-"}`,
-          `Výmera: ${value("vymera") || "-"}`,
-          "",
-          "Čo je dôležité:",
-          value("sprava") || "-",
-        ].join("\n");
-
-        const href = `mailto:${encodeURIComponent(targetEmail)}?subject=${encodeURIComponent(
-          `Predajný audit - ${subjectName} - ${intentName}`,
-        )}&body=${encodeURIComponent(body)}`;
-
-        window.location.href = href;
-      });
 
     </script>
 
@@ -755,7 +612,6 @@ const jsonLd = {
 
       nav a,
       .header-phone,
-      .direct-contact a,
       footer a {
         text-decoration-line: underline;
         text-decoration-color: transparent;
@@ -766,7 +622,6 @@ const jsonLd = {
 
       nav a:hover,
       .header-phone:hover,
-      .direct-contact a:hover,
       footer a:hover {
         color: var(--brass);
         text-decoration-color: currentColor;
@@ -1175,7 +1030,6 @@ const jsonLd = {
       }
 
       .section-heading p:not(.eyebrow),
-      .contact-copy p,
       .principle-lead + .principle-list p {
         color: var(--muted);
       }
@@ -1547,177 +1401,6 @@ const jsonLd = {
         color: rgba(255, 250, 242, 0.72);
       }
 
-      .contact-section {
-        display: grid;
-        grid-template-columns: 0.9fr 1.1fr;
-        gap: 70px;
-        padding: 110px max(28px, calc((100vw - 1180px) / 2));
-        background: var(--ink);
-        color: var(--white);
-      }
-
-      .contact-copy {
-        align-self: start;
-        position: sticky;
-        top: 120px;
-      }
-
-      .contact-copy .eyebrow {
-        color: #e7c385;
-      }
-
-      .contact-copy p {
-        color: rgba(255, 250, 242, 0.72);
-      }
-
-      .direct-contact {
-        display: grid;
-        gap: 10px;
-        margin-top: 32px;
-        max-width: 420px;
-      }
-
-      .direct-contact p {
-        margin: 0 0 4px;
-        color: #e7c385;
-        font-size: 13px;
-        font-weight: 800;
-      }
-
-      .direct-contact a {
-        display: grid;
-        gap: 2px;
-        border: 1px solid rgba(255, 250, 242, 0.14);
-        border-radius: 8px;
-        padding: 12px 14px;
-        background: rgba(255, 250, 242, 0.05);
-      }
-
-      .direct-contact span {
-        color: rgba(255, 250, 242, 0.58);
-        font-size: 12px;
-        font-weight: 800;
-      }
-
-      .direct-contact strong {
-        color: rgba(255, 250, 242, 0.9);
-        font-size: 15px;
-        font-weight: 750;
-      }
-
-      .booking-panel {
-        display: grid;
-        align-self: start;
-        gap: 18px;
-        border: 1px solid rgba(255, 250, 242, 0.18);
-        border-radius: 8px;
-        padding: clamp(26px, 4vw, 42px);
-        background: rgba(255, 250, 242, 0.07);
-      }
-
-      .booking-panel .eyebrow,
-      .booking-panel h3,
-      .booking-panel p {
-        margin: 0;
-      }
-
-      .booking-panel .eyebrow {
-        color: #e7c385;
-      }
-
-      .booking-panel h3 {
-        max-width: 520px;
-        font-family: var(--font-display);
-        font-size: clamp(36px, 4vw, 58px);
-        font-weight: 650;
-        line-height: 0.98;
-      }
-
-      .booking-panel p:not(.eyebrow) {
-        max-width: 460px;
-        color: rgba(255, 250, 242, 0.7);
-        font-size: 17px;
-      }
-
-      .booking-panel .button {
-        width: 100%;
-        margin-top: 6px;
-      }
-
-      .contact-form {
-        display: grid;
-        gap: 16px;
-        margin-top: 4px;
-      }
-
-      .form-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 12px;
-      }
-
-      .contact-form label {
-        display: grid;
-        gap: 7px;
-      }
-
-      .contact-form label.full {
-        grid-column: 1 / -1;
-      }
-
-      .contact-form span {
-        color: rgba(255, 250, 242, 0.62);
-        font-size: 12px;
-        font-weight: 800;
-      }
-
-      .contact-form input,
-      .contact-form select,
-      .contact-form textarea {
-        width: 100%;
-        border: 1px solid rgba(255, 250, 242, 0.16);
-        border-radius: 6px;
-        background: rgba(11, 11, 10, 0.28);
-        color: var(--white);
-        font: inherit;
-      }
-
-      .contact-form input,
-      .contact-form select {
-        min-height: 48px;
-        padding: 0 13px;
-      }
-
-      .contact-form select {
-        appearance: none;
-        background-image:
-          linear-gradient(45deg, transparent 50%, rgba(255, 250, 242, 0.72) 50%),
-          linear-gradient(135deg, rgba(255, 250, 242, 0.72) 50%, transparent 50%);
-        background-position:
-          calc(100% - 18px) 20px,
-          calc(100% - 13px) 20px;
-        background-repeat: no-repeat;
-        background-size: 5px 5px, 5px 5px;
-      }
-
-      .contact-form textarea {
-        min-height: 118px;
-        padding: 12px 13px;
-        resize: vertical;
-      }
-
-      .contact-form input::placeholder,
-      .contact-form textarea::placeholder {
-        color: rgba(255, 250, 242, 0.36);
-      }
-
-      .contact-form input:focus,
-      .contact-form select:focus,
-      .contact-form textarea:focus {
-        border-color: rgba(216, 184, 120, 0.72);
-        outline: none;
-      }
-
       footer {
         display: flex;
         align-items: center;
@@ -1892,8 +1575,7 @@ const jsonLd = {
         .positioning-panel,
         .principles,
         .sale-time,
-        .consultation-cta,
-        .contact-section {
+        .consultation-cta {
           grid-template-columns: 1fr;
         }
 
@@ -1977,10 +1659,6 @@ const jsonLd = {
           align-self: start;
         }
 
-        .contact-copy {
-          position: static;
-        }
-
         .mobile-cta.is-visible {
           opacity: 1;
           pointer-events: auto;
@@ -2004,8 +1682,7 @@ const jsonLd = {
         }
 
         .hero,
-        .section,
-        .contact-section {
+        .section {
           padding-left: 18px;
           padding-right: 18px;
         }
@@ -2071,8 +1748,7 @@ const jsonLd = {
           padding: 14px;
         }
 
-        .section,
-        .contact-section {
+        .section {
           padding-top: 72px;
           padding-bottom: 72px;
         }
@@ -2146,14 +1822,6 @@ const jsonLd = {
         }
 
         .listing dl {
-          grid-template-columns: 1fr;
-        }
-
-        .booking-panel .button {
-          width: 100%;
-        }
-
-        .form-grid {
           grid-template-columns: 1fr;
         }
 
