@@ -202,11 +202,11 @@ export const site = {
     },
     {
       slug: "byt-martincekova",
-      group: "sold",
-      status: "Predané",
+      group: "available",
+      status: "V predaji",
       title: "1,5-izbový byt na Martinčekovej ulici",
       place: "Martinčekova ulica, Bratislava",
-      price: "predané za 200 000 €",
+      price: "cena na vyžiadanie",
       image: "/images/listings/martincekova-byt/01-obyvacka.jpg",
       gallery: [
         "/images/listings/martincekova-byt/01-obyvacka.jpg",
@@ -215,21 +215,20 @@ export const site = {
         "/images/listings/martincekova-byt/04-spalna.jpg",
         "/images/listings/martincekova-byt/05-kupelna.jpg",
       ],
-      note: "Útulný 1,5-izbový byt po kompletnej rekonštrukcii. Predaj sa uzavrel do jedného mesiaca a novému majiteľovi som následne pomohol nájsť nájomcu.",
+      note: "Útulný 1,5-izbový byt po kompletnej rekonštrukcii. Aktuálne v ponuke na Martinčekovej ulici v Bratislave.",
       summary:
-        "Predaj 1,5-izbového bytu po kompletnej rekonštrukcii na Martinčekovej ulici za 200 000 €. Po predaji som novému majiteľovi pomohol byt obsadiť nájomcom.",
+        "Aktuálne ponúkaný 1,5-izbový byt po kompletnej rekonštrukcii na Martinčekovej ulici v Bratislave.",
       specs: [
         { label: "Typ", value: "1,5-izbový byt" },
         { label: "Stav", value: "kompletná rekonštrukcia" },
         { label: "Lokalita", value: "Martinčekova ulica, Bratislava" },
-        { label: "Výsledok", value: "predané za 200 000 €" },
-        { label: "Následný servis", value: "obsadenie nájomcom" },
+        { label: "Cena", value: "na vyžiadanie" },
       ],
-      highlights: ["1,5-izbový byt", "kompletná rekonštrukcia", "predaj do 1 mesiaca", "výsledok 200 000 €"],
+      highlights: ["aktuálne v ponuke", "1,5-izbový byt", "kompletná rekonštrukcia", "Martinčekova ulica"],
       detail:
-        "Pri menších bytoch rozhoduje presné zacielenie. Tento byt bolo potrebné ukázať ako hotové, útulné bývanie aj ako praktickú investíciu. Predaj sa uzavrel do jedného mesiaca a po transakcii som novému majiteľovi pomohol byt obsadiť nájomcom.",
+        "Tento 1,5-izbový byt po kompletnej rekonštrukcii je aktuálne v ponuke. Je vhodný ako hotové mestské bývanie aj ako praktická investičná nehnuteľnosť v Bratislave.",
       href: "/nehnutelnosti/byt-martincekova/",
-      cta: "Pozrieť predaj",
+      cta: "Pozrieť ponuku",
     },
     {
       slug: "byt-salviova",
