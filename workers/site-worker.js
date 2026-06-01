@@ -12,7 +12,7 @@ const DEFAULT_ALLOWED_ORIGINS = [
 
 const DEFAULT_WORK_START = "09:00";
 const DEFAULT_WORK_END = "19:00";
-const DEFAULT_WORKING_DAYS = [1, 2, 3, 4, 5];
+const DEFAULT_WORKING_DAYS = [0, 1, 2, 3, 4, 5, 6];
 
 export default {
   async fetch(request, env, ctx) {
