@@ -38,13 +38,17 @@ const isSold = listing.group === "sold";
   </head>
   <body>
     <header class="site-header">
-      <a class="brand" href="/">
-        <img class="brand-mark" src={site.logoImage} alt="" />
-        <span class="brand-label">
-          <span>{site.brand}</span>
-          <small>{site.role}</small>
-        </span>
-      </a>
+      <div class="brand-cluster">
+        <a class="brand" href="/">
+          <img class="brand-mark" src={site.logoImage} alt="" />
+          <span class="brand-label">
+            <span>{site.brand}</span>
+            <small>{site.role}</small>
+          </span>
+        </a>
+        <span class="brand-divider" aria-hidden="true"></span>
+        <img class="bosen-logo header-bosen-logo" src={site.bosenGroupLogo} alt="BOSEN Group" />
+      </div>
       <nav aria-label="Navigácia detailu">
         <a href="/#ponuky">Ponuky</a>
         <a href="/#kontakt">Kontakt</a>
@@ -183,6 +187,32 @@ const isSold = listing.group === "sold";
         min-width: 0;
         align-items: center;
         gap: 12px;
+      }
+
+      .brand-cluster {
+        display: flex;
+        min-width: 0;
+        align-items: center;
+        gap: 13px;
+      }
+
+      .brand-divider {
+        width: 1px;
+        height: 34px;
+        background: rgba(255, 250, 242, 0.2);
+      }
+
+      .bosen-logo {
+        display: block;
+        object-fit: contain;
+        object-position: center;
+        mix-blend-mode: screen;
+      }
+
+      .header-bosen-logo {
+        width: 164px;
+        height: 36px;
+        opacity: 0.9;
       }
 
       .brand-mark {
@@ -465,6 +495,19 @@ const isSold = listing.group === "sold";
 
         .brand-label {
           display: none;
+        }
+
+        .brand-cluster {
+          gap: 8px;
+        }
+
+        .brand-divider {
+          height: 28px;
+        }
+
+        .header-bosen-logo {
+          width: 104px;
+          height: 30px;
         }
 
         .brand-mark {
