@@ -10,8 +10,9 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "deploy:production": "npm run build && npx wrangler deploy --assets=dist --name=jakubastroweb --compatibility-date=2026-05-26",
-    "deploy:staging": "PUBLIC_SITE_ENV=staging npm run build && npx wrangler deploy --assets=dist --name=jakubastroweb-staging --compatibility-date=2026-05-26"
+    "worker:dev": "npm run build && npx wrangler dev --config wrangler.toml --local --port 8787",
+    "deploy:production": "npm run build && npx wrangler deploy --config wrangler.toml --name=jakubastroweb",
+    "deploy:staging": "PUBLIC_SITE_ENV=staging npm run build && npx wrangler deploy --config wrangler.toml --name=jakubastroweb-staging"
   },
   "dependencies": {
     "astro": "^6.1.9"

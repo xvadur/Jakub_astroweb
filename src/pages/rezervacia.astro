@@ -56,8 +56,19 @@ const googleMapsScriptUrl = googleMapsApiKey
         <p>{site.bookingFunnel.text}</p>
       </section>
 
-      <form class="wizard-card" data-funnel-form data-email={site.contact.email} data-google-places-key={googleMapsApiKey ? "true" : "false"}>
+      <form
+        class="wizard-card"
+        data-funnel-form
+        data-email={site.contact.email}
+        data-booking-endpoint="/api/book"
+        data-availability-endpoint="/api/availability"
+        data-google-places-key={googleMapsApiKey ? "true" : "false"}
+      >
         <p class="wizard-error" data-funnel-error aria-live="polite"></p>
+        <label class="hp-field" aria-hidden="true" tabindex="-1">
+          <span>Website</span>
+          <input name="website" autocomplete="off" tabindex="-1" />
+        </label>
 
         <section class="wizard-step" data-funnel-step>
           <p class="step-kicker">Krok 1</p>
@@ -204,7 +215,7 @@ const googleMapsScriptUrl = googleMapsApiKey
         <section class="wizard-step" data-funnel-step hidden>
           <p class="step-kicker">Krok 3</p>
           <h2 data-route-title="date">Kedy sa vám hodí hovor?</h2>
-          <p data-route-text="date">Kým nie je napojený kalendár, ide o preferovaný termín. Jakub ho potvrdí späť.</p>
+          <p data-route-text="date">Vyberte dostupný termín hovoru. Pred odoslaním ho ešte raz overíme.</p>
           <div class="wizard-fields">
             <label>
               <span>Preferovaný dátum</span>
@@ -221,12 +232,13 @@ const googleMapsScriptUrl = googleMapsApiKey
               ))
             }
           </div>
+          <p class="slot-status" data-slot-status aria-live="polite"></p>
         </section>
 
         <section class="wizard-step" data-funnel-step hidden>
           <p class="step-kicker">Krok 4</p>
           <h2 data-route-title="contact">Kam má Jakub poslať potvrdenie?</h2>
-          <p data-route-text="contact">Po odoslaní sa otvorí email s vyplneným kontextom. Neskôr tento krok nahradí backend a kalendár.</p>
+          <p data-route-text="contact">Po odoslaní dostane Jakub podklady a termín sa spracuje cez rezervačný backend.</p>
           <div class="wizard-fields two">
             <label>
               <span>Meno</span>
@@ -260,6 +272,15 @@ const googleMapsScriptUrl = googleMapsApiKey
               ></textarea>
             </label>
           </div>
+        </section>
+
+        <section class="booking-confirmation" data-booking-confirmation hidden>
+          <p class="step-kicker">Odoslané</p>
+          <h2>Rezervácia je odoslaná.</h2>
+          <p data-booking-confirmation-text>
+            Jakub dostal podklady a termín potvrdí podľa dostupnosti.
+          </p>
+          <a class="button secondary" href="/">Späť na web</a>
         </section>
 
         <div class="wizard-summary" data-funnel-summary aria-live="polite"></div>
@@ -333,7 +354,13 @@ const googleMapsScriptUrl = googleMapsApiKey
         const funnelNext = funnelForm.querySelector("[data-funnel-next]");
         const funnelSubmit = funnelForm.querySelector("[data-funnel-submit]");
         const funnelSummary = funnelForm.querySelector("[data-funnel-summary]");
+        const wizardActions = funnelForm.querySelector(".wizard-actions");
+        const wizardProgress = funnelForm.querySelector(".wizard-progress");
         const dateInput = funnelForm.querySelector("[data-funnel-date]");
+        const slotStatus = funnelForm.querySelector("[data-slot-status]");
+        const slotButtons = Array.from(funnelForm.querySelectorAll(".slot-button"));
+        const bookingConfirmation = funnelForm.querySelector("[data-booking-confirmation]");
+        const bookingConfirmationText = funnelForm.querySelector("[data-booking-confirmation-text]");
         const locationField = funnelForm.querySelector("[data-location-field]");
         const locationInput = funnelForm.querySelector("[data-location-input]");
         const locationPlaceId = funnelForm.querySelector("[data-location-place-id]");
@@ -356,6 +383,8 @@ const googleMapsScriptUrl = googleMapsApiKey
           message: funnelForm.querySelector('[data-route-placeholder="message"]'),
         };
         let activeStep = 0;
+        let availabilityController;
+        let isSubmitting = false;
 
         const parameterLabels = {
           typ_detail: "Typ nehnuteľnosti",
@@ -682,6 +711,220 @@ const googleMapsScriptUrl = googleMapsApiKey
           funnelSummary.textContent = items.length > 0 ? `Zatiaľ vybrané: ${items.join(" | ")}` : "";
         };
 
+        const setSlotStatus = (message = "") => {
+          if (slotStatus) slotStatus.textContent = message;
+        };
+
+        const selectedTimeField = () => funnelForm.elements.namedItem("cas");
+
+        const clearSelectedTime = () => {
+          const field = selectedTimeField();
+          if (field instanceof HTMLInputElement) field.value = "";
+
+          slotButtons.forEach((button) => {
+            button.classList.remove("is-selected");
+            button.setAttribute("aria-pressed", "false");
+          });
+
+          updateFunnelSummary();
+        };
+
+        const setSlotButtonsDisabled = (isDisabled) => {
+          slotButtons.forEach((button) => {
+            if (button instanceof HTMLButtonElement) button.disabled = isDisabled;
+          });
+        };
+
+        const applySlotAvailability = (slots = [], mode = "mock") => {
+          const availableByTime = new Map(slots.map((slot) => [slot.time, slot]));
+          let availableCount = 0;
+
+          slotButtons.forEach((button) => {
+            if (!(button instanceof HTMLButtonElement)) return;
+
+            const slot = availableByTime.get(button.dataset.value || "");
+            const isAvailable = slot ? slot.available : true;
+            button.disabled = !isAvailable;
+            button.classList.toggle("is-unavailable", !isAvailable);
+            button.title = !isAvailable ? "Tento čas je obsadený." : "";
+
+            if (isAvailable) availableCount += 1;
+
+            if (!isAvailable && button.classList.contains("is-selected")) {
+              clearSelectedTime();
+            }
+          });
+
+          if (availableCount === 0) {
+            setSlotStatus("Na tento deň zatiaľ nie je dostupný žiadny čas. Skúste iný dátum.");
+            return;
+          }
+
+          setSlotStatus(mode === "google" ? "Dostupnosť je načítaná z kalendára." : "Testovacie sloty sú pripravené. Google kalendár doplníme cez secrets.");
+        };
+
+        const loadAvailability = async () => {
+          if (!(dateInput instanceof HTMLInputElement) || !dateInput.value) return;
+
+          if (availabilityController) availabilityController.abort();
+          availabilityController = new AbortController();
+
+          const endpoint = funnelForm.getAttribute("data-availability-endpoint") || "/api/availability";
+          const url = `${endpoint}?date=${encodeURIComponent(dateInput.value)}`;
+
+          setSlotStatus("Načítavam dostupné termíny...");
+          setSlotButtonsDisabled(true);
+
+          try {
+            const response = await fetch(url, {
+              headers: { Accept: "application/json" },
+              signal: availabilityController.signal,
+            });
+
+            const data = await response.json();
+
+            if (!response.ok || !data.ok) {
+              throw new Error(data.error || "Dostupnosť sa nepodarilo načítať.");
+            }
+
+            applySlotAvailability(data.slots || [], data.mode || "mock");
+          } catch (error) {
+            if (error instanceof DOMException && error.name === "AbortError") return;
+
+            setSlotButtonsDisabled(false);
+            setSlotStatus("Živá dostupnosť teraz nie je dostupná. Vyberte preferovaný čas a Jakub ho potvrdí.");
+          }
+        };
+
+        const buildLeadPayload = () => {
+          const payload = {};
+
+          new FormData(funnelForm).forEach((value, key) => {
+            if (typeof value === "string") payload[key] = value.trim();
+          });
+
+          const route = currentRoute();
+          payload.parametre = routeParameterLines();
+          payload.lead_title = route.leadTitle;
+          payload.subject_prefix = route.subjectPrefix;
+          payload.page_url = window.location.href;
+          payload.created_at = new Date().toISOString();
+
+          return payload;
+        };
+
+        const buildMailFallbackHref = (payload) => {
+          const targetEmail = funnelForm.getAttribute("data-email");
+          if (!targetEmail) return "";
+
+          const route = currentRoute();
+          const subjectName = payload.meno || "nový kontakt";
+          const intentName = payload.zamer || "rezervácia konzultácie";
+          const body = [
+            route.leadTitle,
+            "",
+            `Meno: ${payload.meno || "-"}`,
+            `Telefón: ${payload.telefon || "-"}`,
+            `Email: ${payload.email || "-"}`,
+            `Zámer: ${intentName}`,
+            `Typ nehnuteľnosti / vetva: ${payload.typ || "-"}`,
+            `Lokalita: ${payload.lokalita || "-"}`,
+            `Lokalita overená Google: ${payload.lokalita_overena === "true" ? "áno" : "nie"}`,
+            `Google Place ID: ${payload.lokalita_place_id || "-"}`,
+            `GPS: ${payload.lokalita_lat && payload.lokalita_lng ? `${payload.lokalita_lat}, ${payload.lokalita_lng}` : "-"}`,
+            "",
+            "Parametre:",
+            ...(Array.isArray(payload.parametre) && payload.parametre.length > 0 ? payload.parametre : ["-"]),
+            "",
+            `Preferovaný dátum: ${payload.datum || "-"}`,
+            `Preferovaný čas: ${payload.cas || "-"}`,
+            `Časový horizont: ${payload.horizont || "-"}`,
+            "",
+            "Čo je dôležité:",
+            payload.sprava || "-",
+          ].join("\n");
+
+          return `mailto:${encodeURIComponent(targetEmail)}?subject=${encodeURIComponent(
+            `${route.subjectPrefix} - ${subjectName} - ${intentName}`,
+          )}&body=${encodeURIComponent(body)}`;
+        };
+
+        const showBookingConfirmation = (result) => {
+          funnelSteps.forEach((panel) => {
+            panel.toggleAttribute("hidden", true);
+          });
+
+          if (wizardActions instanceof HTMLElement) wizardActions.hidden = true;
+          if (wizardProgress instanceof HTMLElement) wizardProgress.hidden = true;
+          if (funnelSummary) funnelSummary.textContent = "";
+          if (bookingConfirmation instanceof HTMLElement) bookingConfirmation.hidden = false;
+
+          if (bookingConfirmationText) {
+            bookingConfirmationText.textContent =
+              result.bookingStatus === "calendar_created"
+                ? "Termín je zapísaný do kalendára a Jakub dostal podklady k hovoru."
+                : "Podklady sú odoslané do rezervačného backendu. Po napojení Google kalendára sa termín bude zapisovať automaticky.";
+          }
+
+          setFunnelError();
+        };
+
+        const submitBooking = async () => {
+          if (isSubmitting) return;
+
+          const endpoint = funnelForm.getAttribute("data-booking-endpoint") || "/api/book";
+          const payload = buildLeadPayload();
+          isSubmitting = true;
+
+          if (funnelSubmit instanceof HTMLButtonElement) {
+            funnelSubmit.disabled = true;
+            funnelSubmit.textContent = "Odosielam...";
+          }
+
+          try {
+            const response = await fetch(endpoint, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+              },
+              body: JSON.stringify(payload),
+            });
+
+            const data = await response.json();
+
+            if (response.status === 409 && data.code === "slot_unavailable") {
+              setFunnelError(data.error || "Tento termín sa medzitým obsadil.");
+              setFunnelStep(2);
+              await loadAvailability();
+              return;
+            }
+
+            if (!response.ok || !data.ok) {
+              throw new Error(data.error || "Rezerváciu sa nepodarilo odoslať.");
+            }
+
+            showBookingConfirmation(data);
+          } catch {
+            const fallbackHref = buildMailFallbackHref(payload);
+            setFunnelError("Rezervačný backend teraz neodpovedá. Otvorím email fallback, aby sa lead nestratil.");
+
+            if (fallbackHref) {
+              window.location.href = fallbackHref;
+            }
+          } finally {
+            isSubmitting = false;
+
+            if (
+              funnelSubmit instanceof HTMLButtonElement &&
+              !(bookingConfirmation instanceof HTMLElement && !bookingConfirmation.hidden)
+            ) {
+              funnelSubmit.disabled = false;
+              applyIntentRoute();
+            }
+          }
+        };
+
         const setFunnelStep = (step) => {
           activeStep = Math.max(0, Math.min(step, funnelSteps.length - 1));
 
@@ -696,6 +939,10 @@ const googleMapsScriptUrl = googleMapsApiKey
           if (funnelSubmit instanceof HTMLButtonElement) funnelSubmit.hidden = activeStep !== funnelSteps.length - 1;
           setFunnelError();
           updateFunnelSummary();
+
+          if (activeStep === 2) {
+            loadAvailability();
+          }
         };
 
         const validateFunnelStep = (step) => {
@@ -757,6 +1004,11 @@ const googleMapsScriptUrl = googleMapsApiKey
           });
         });
 
+        dateInput?.addEventListener("change", () => {
+          clearSelectedTime();
+          loadAvailability();
+        });
+
         locationInput?.addEventListener("input", () => {
           if (!(locationInput instanceof HTMLInputElement)) return;
 
@@ -782,46 +1034,7 @@ const googleMapsScriptUrl = googleMapsApiKey
             }
           }
 
-          const targetEmail = funnelForm.getAttribute("data-email");
-          if (!targetEmail) return;
-
-          const subjectName = funnelValue("meno") || "nový kontakt";
-          const intentName = funnelValue("zamer") || "rezervácia konzultácie";
-          const route = currentRoute();
-          const parameterLines = routeParameterLines();
-          const body = [
-            route.leadTitle,
-            "",
-            `Meno: ${funnelValue("meno")}`,
-            `Telefón: ${funnelValue("telefon")}`,
-            `Email: ${funnelValue("email") || "-"}`,
-            `Zámer: ${intentName}`,
-            `Typ nehnuteľnosti / vetva: ${funnelValue("typ") || "-"}`,
-            `Lokalita: ${funnelValue("lokalita")}`,
-            `Lokalita overená Google: ${funnelValue("lokalita_overena") === "true" ? "áno" : "nie"}`,
-            `Google Place ID: ${funnelValue("lokalita_place_id") || "-"}`,
-            `GPS: ${
-              funnelValue("lokalita_lat") && funnelValue("lokalita_lng")
-                ? `${funnelValue("lokalita_lat")}, ${funnelValue("lokalita_lng")}`
-                : "-"
-            }`,
-            "",
-            "Parametre:",
-            ...(parameterLines.length > 0 ? parameterLines : ["-"]),
-            "",
-            `Preferovaný dátum: ${funnelValue("datum")}`,
-            `Preferovaný čas: ${funnelValue("cas")}`,
-            `Časový horizont: ${funnelValue("horizont") || "-"}`,
-            "",
-            "Čo je dôležité:",
-            funnelValue("sprava") || "-",
-            "",
-            "Poznámka: termín je predbežný, kým nebude web napojený na kalendár.",
-          ].join("\n");
-
-          window.location.href = `mailto:${encodeURIComponent(targetEmail)}?subject=${encodeURIComponent(
-            `${route.subjectPrefix} - ${subjectName} - ${intentName}`,
-          )}&body=${encodeURIComponent(body)}`;
+          submitBooking();
         });
 
         setupLocationAutocomplete();
@@ -1044,6 +1257,16 @@ const googleMapsScriptUrl = googleMapsApiKey
         font-weight: 800;
       }
 
+      .hp-field {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        clip-path: inset(50%);
+        white-space: nowrap;
+      }
+
       .wizard-step {
         display: grid;
         width: 100%;
@@ -1101,6 +1324,23 @@ const googleMapsScriptUrl = googleMapsApiKey
         background: rgba(216, 184, 120, 0.16);
         color: var(--white);
         transform: translateY(-1px);
+      }
+
+      .slot-button:disabled,
+      .slot-button.is-unavailable {
+        border-color: rgba(255, 250, 242, 0.1);
+        background: rgba(255, 250, 242, 0.06);
+        color: rgba(255, 250, 242, 0.34);
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .slot-status {
+        min-height: 20px;
+        margin: 0;
+        color: rgba(255, 250, 242, 0.58);
+        font-size: 13px;
+        font-weight: 750;
       }
 
       .wizard-fields {
@@ -1206,6 +1446,26 @@ const googleMapsScriptUrl = googleMapsApiKey
         color: rgba(255, 250, 242, 0.66);
         font-size: 13px;
         font-weight: 750;
+      }
+
+      .booking-confirmation {
+        display: grid;
+        gap: 16px;
+        max-width: 820px;
+      }
+
+      .booking-confirmation[hidden] {
+        display: none;
+      }
+
+      .booking-confirmation p:not(.step-kicker) {
+        margin: 0;
+        color: rgba(255, 250, 242, 0.72);
+        font-size: 18px;
+      }
+
+      .booking-confirmation .button {
+        justify-self: start;
       }
 
       .wizard-actions {

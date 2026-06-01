@@ -39,14 +39,14 @@ The staging deploy must not use the production worker name.
 Production deploy command:
 
 ```bash
-npx wrangler deploy --assets=dist --name=jakubastroweb --compatibility-date=2026-05-26
+npx wrangler deploy --config wrangler.toml --name=jakubastroweb
 ```
 
 Staging deploy command:
 
 ```bash
 PUBLIC_SITE_ENV=staging npm run build
-npx wrangler deploy --assets=dist --name=jakubastroweb-staging --compatibility-date=2026-05-26
+npx wrangler deploy --config wrangler.toml --name=jakubastroweb-staging
 ```
 
 Recommended Cloudflare setup:
@@ -57,6 +57,7 @@ Recommended Cloudflare setup:
 - Keep the custom route `staging.jakubolsa.sk/*`.
 - Set `PUBLIC_SITE_ENV=staging` for staging builds.
 - Keep `PUBLIC_BOOKING_URL` empty on staging unless testing the real booking flow intentionally.
+- Configure booking secrets only on staging first when testing Google Calendar sync.
 
 `PUBLIC_SITE_ENV=staging` adds:
 
@@ -100,5 +101,22 @@ Wrangler needs a Cloudflare login or `CLOUDFLARE_API_TOKEN`. Do not store the to
 - `PUBLIC_SITE_ENV=staging` for staging builds.
 - `PUBLIC_BOOKING_URL` optional external calendar link.
 - `PUBLIC_GOOGLE_MAPS_API_KEY` optional browser key for Google Places autocomplete on `/rezervacia/`.
+- `BOOKING_TIME_ZONE`, `BOOKING_SLOT_MINUTES`, `BOOKING_SLOT_TIMES`, and `BOOKING_WORKING_DAYS` are Worker vars in `wrangler.toml`.
 
 `PUBLIC_GOOGLE_MAPS_API_KEY` must be restricted in Google Cloud to the production and staging domains. Do not store it in Git.
+
+## Booking API secrets
+
+The Worker API can run without secrets in mock mode. For live Google Calendar sync, set these as
+Cloudflare secrets on `jakubastroweb-staging` first:
+
+```bash
+npx wrangler secret put GOOGLE_CLIENT_ID --name jakubastroweb-staging
+npx wrangler secret put GOOGLE_CLIENT_SECRET --name jakubastroweb-staging
+npx wrangler secret put GOOGLE_REFRESH_TOKEN --name jakubastroweb-staging
+npx wrangler secret put GOOGLE_CALENDAR_ID --name jakubastroweb-staging
+npx wrangler secret put TELEGRAM_BOT_TOKEN --name jakubastroweb-staging
+npx wrangler secret put TELEGRAM_CHAT_ID --name jakubastroweb-staging
+```
+
+Repeat on `jakubastroweb` only after the staging flow is approved.

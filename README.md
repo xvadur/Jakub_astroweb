@@ -33,6 +33,7 @@ npm run build
 - `docs/DECISIONS.md` - project decision log
 - `docs/FILESYSTEM_LAYOUT.md` - canonical folder and compatibility aliases
 - `docs/CONVERSION_FUNNEL_RESEARCH.md` - sales funnel and booking research
+- `docs/GOOGLE_CALENDAR_BOOKING.md` - Worker API, Google Calendar sync, and Telegram notification plan
 - `docs/WEDNESDAY_PREP.md` - meeting prep for Jakub
 - `ops/telegram-worker` - minimal Telegram notification endpoint without n8n
 - `ops/n8n` - optional local n8n Docker setup for heavier lead automation and CRM handoff
@@ -71,16 +72,17 @@ Legal/privacy:
 
 ## Booking behavior
 
-The main conversation CTA links to Jakub's Google Calendar appointment schedule. Visitors book a
-phone call in Google's booking flow, while the website stays static and mobile-friendly.
+The primary CTA opens `/rezervacia/`, a custom consultation wizard. The wizard posts to the
+Cloudflare Worker API instead of opening the visitor's email client.
 
-If `PUBLIC_BOOKING_URL` is not set, the contact section shows the email form and phone fallback.
-For booking preview or production booking, set `PUBLIC_BOOKING_URL` to Jakub's real appointment
-schedule URL before deployment.
+Current API routes:
 
-The email form currently prepares a `mailto:` email in the visitor's email client. It does not
-create a local CRM record by itself. Lead storage, Telegram notifications, or agent handoff can be
-added later through a backend such as Cloudflare Worker, OpenClaw, n8n, or another API.
+- `GET /api/availability?date=YYYY-MM-DD`
+- `POST /api/book`
+
+Without Google Calendar secrets, the API runs in mock mode so the UI can be tested end-to-end.
+After Google OAuth secrets are configured, the Worker checks `freeBusy`, creates a Google Calendar
+event, and sends a Telegram notification. See `docs/GOOGLE_CALENDAR_BOOKING.md`.
 
 ## Asset hygiene
 
