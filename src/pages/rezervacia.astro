@@ -110,6 +110,18 @@ const googleMapsScriptUrl = googleMapsApiKey
                 <option value="Investičná nehnuteľnosť">Investičná nehnuteľnosť</option>
               </select>
             </label>
+            <label data-param-field="commercial_type">
+              <span>Typ priestoru</span>
+              <select name="typ_komercneho_priestoru">
+                <option value="">Vyberte typ</option>
+                <option value="Kancelárie">Kancelárie</option>
+                <option value="Obchod">Obchod</option>
+                <option value="Sklad / hala">Sklad / hala</option>
+                <option value="Gastro">Gastro</option>
+                <option value="Polyfunkčný objekt">Polyfunkčný objekt</option>
+                <option value="Iné">Iné</option>
+              </select>
+            </label>
             <label data-param-field="rooms">
               <span>Izby</span>
               <input name="izby" placeholder="napr. 4 izby" />
@@ -122,21 +134,6 @@ const googleMapsScriptUrl = googleMapsApiKey
               <span>Poschodie</span>
               <input name="poschodie" placeholder="napr. 3/6" />
             </label>
-            <label data-param-field="condition">
-              <span>Stav</span>
-              <select name="stav">
-                <option value="">Vyberte stav</option>
-                <option value="Pôvodný stav">Pôvodný stav</option>
-                <option value="Čiastočná rekonštrukcia">Čiastočná rekonštrukcia</option>
-                <option value="Kompletná rekonštrukcia">Kompletná rekonštrukcia</option>
-                <option value="Novostavba">Novostavba</option>
-                <option value="Na dokončenie">Na dokončenie</option>
-              </select>
-            </label>
-            <label data-param-field="extras">
-              <span>Doplnky</span>
-              <input name="doplnky" placeholder="balkón, terasa, pivnica, parkovanie" />
-            </label>
             <label data-param-field="house_area">
               <span>Úžitková plocha</span>
               <input name="uzitkova_plocha" placeholder="napr. 180 m²" />
@@ -144,6 +141,26 @@ const googleMapsScriptUrl = googleMapsApiKey
             <label data-param-field="land_area">
               <span>Výmera pozemku</span>
               <input name="vymera_pozemku" placeholder="napr. 620 m²" />
+            </label>
+            <label data-param-field="year">
+              <span>Rok výstavby / rekonštrukcie</span>
+              <input name="rok_vystavby_rekonstrukcie" placeholder="napr. 2008 / rekonštrukcia 2021" />
+            </label>
+            <label data-param-field="condition">
+              <span>Stav</span>
+              <select name="stav">
+                <option value="">Vyberte stav</option>
+                <option value="Pôvodný stav">Pôvodný stav</option>
+                <option value="Udržiavaný stav">Udržiavaný stav</option>
+                <option value="Čiastočná rekonštrukcia">Čiastočná rekonštrukcia</option>
+                <option value="Kompletná rekonštrukcia">Kompletná rekonštrukcia</option>
+                <option value="Novostavba">Novostavba</option>
+                <option value="Vo výstavbe / na dokončenie">Vo výstavbe / na dokončenie</option>
+              </select>
+            </label>
+            <label data-param-field="extras">
+              <span data-route-field-label="extras">Výhody nehnuteľnosti</span>
+              <input name="doplnky" placeholder="loggia/balkón, terasa, pivnica, parkovanie..." />
             </label>
             <label data-param-field="land_type">
               <span>Typ pozemku</span>
@@ -156,6 +173,10 @@ const googleMapsScriptUrl = googleMapsApiKey
                 <option value="Iné">Iné</option>
               </select>
             </label>
+            <label data-param-field="land_use">
+              <span>Územný plán / využitie</span>
+              <input name="uzemny_plan_vyuzitie" placeholder="napr. bývanie, rekreácia, komercia, neviem" />
+            </label>
             <label data-param-field="utilities">
               <span>Siete</span>
               <input name="siete" placeholder="voda, elektrina, plyn, kanalizácia" />
@@ -163,18 +184,6 @@ const googleMapsScriptUrl = googleMapsApiKey
             <label data-param-field="access">
               <span>Prístup</span>
               <input name="pristup" placeholder="asfaltová cesta, podiel, vecné bremeno..." />
-            </label>
-            <label data-param-field="commercial_type">
-              <span>Typ priestoru</span>
-              <select name="typ_komercneho_priestoru">
-                <option value="">Vyberte typ</option>
-                <option value="Kancelárie">Kancelárie</option>
-                <option value="Obchod">Obchod</option>
-                <option value="Sklad / hala">Sklad / hala</option>
-                <option value="Gastro">Gastro</option>
-                <option value="Polyfunkčný objekt">Polyfunkčný objekt</option>
-                <option value="Iné">Iné</option>
-              </select>
             </label>
             <label data-param-field="occupancy">
               <span>Obsadenosť</span>
@@ -358,10 +367,11 @@ const googleMapsScriptUrl = googleMapsApiKey
           vymera: "Výmera",
           poschodie: "Poschodie",
           stav: "Stav",
-          doplnky: "Doplnky",
           uzitkova_plocha: "Úžitková plocha",
           vymera_pozemku: "Výmera pozemku",
+          rok_vystavby_rekonstrukcie: "Rok výstavby / rekonštrukcie",
           typ_pozemku: "Typ pozemku",
+          uzemny_plan_vyuzitie: "Územný plán / využitie",
           siete: "Siete",
           pristup: "Prístup",
           typ_komercneho_priestoru: "Typ priestoru",
@@ -391,8 +401,14 @@ const googleMapsScriptUrl = googleMapsApiKey
           "Predať byt": {
             propertyType: "Byt",
             paramFields: ["rooms", "area", "floor", "condition", "extras"],
+            fieldMeta: {
+              extras: {
+                label: "Výhody bytu",
+                placeholder: "loggia/balkón, terasa, pivnica, parkovanie, výťah...",
+              },
+            },
             propertyTitle: "Aký byt chcete predať?",
-            propertyText: "Pri byte sú dôležité lokalita, dispozícia, výmera, poschodie, stav a doplnky ako balkón, pivnica alebo parkovanie.",
+            propertyText: "Pri byte sú dôležité lokalita, dispozícia, výmera, poschodie, stav a výhody ako balkón, pivnica alebo parkovanie.",
             dateTitle: "Kedy chcete prejsť predaj bytu?",
             dateText: "Vyberte termín hovoru k cene, príprave, prezentácii a predajnému postupu.",
             contactTitle: "Kam má Jakub poslať potvrdenie predajnej konzultácie?",
@@ -404,7 +420,13 @@ const googleMapsScriptUrl = googleMapsApiKey
           },
           "Predať dom": {
             propertyType: "Dom",
-            paramFields: ["rooms", "house_area", "land_area", "condition", "extras"],
+            paramFields: ["rooms", "house_area", "land_area", "year", "condition", "extras"],
+            fieldMeta: {
+              extras: {
+                label: "Výhody domu",
+                placeholder: "garáž, terasa, záhrada, bazén, krb, pivnica...",
+              },
+            },
             propertyTitle: "Aký dom chcete predať?",
             propertyText: "Pri dome potrebujeme oddeliť úžitkovú plochu, pozemok, stav a veci ako garáž, terasa, bazén alebo technické zázemie.",
             dateTitle: "Kedy chcete prejsť predaj domu?",
@@ -418,7 +440,7 @@ const googleMapsScriptUrl = googleMapsApiKey
           },
           "Predať pozemok": {
             propertyType: "Pozemok",
-            paramFields: ["land_area", "land_type", "utilities", "access"],
+            paramFields: ["land_area", "land_type", "land_use", "utilities", "access"],
             propertyTitle: "Aký pozemok chcete predať?",
             propertyText: "Pri pozemku rozhoduje výmera, typ pozemku, siete, prístup a regulácia. Detaily sa preveria následne.",
             dateTitle: "Kedy chcete prejsť predaj pozemku?",
@@ -433,6 +455,12 @@ const googleMapsScriptUrl = googleMapsApiKey
           "Predať komerčný priestor": {
             propertyType: "Komerčný priestor",
             paramFields: ["commercial_type", "area", "condition", "occupancy", "extras"],
+            fieldMeta: {
+              extras: {
+                label: "Výhody priestoru",
+                placeholder: "parkovanie, výklad, zásobovanie, terasa, technické zázemie...",
+              },
+            },
             propertyTitle: "Aký komerčný priestor chcete predať?",
             propertyText: "Pri komerčnej nehnuteľnosti sú podstatné typ priestoru, výmera, stav, obsadenosť a investičný potenciál.",
             dateTitle: "Kedy chcete prejsť predaj komerčného priestoru?",
@@ -484,6 +512,13 @@ const googleMapsScriptUrl = googleMapsApiKey
 
         const currentRoute = () => intentRoutes[funnelValue("zamer")] || defaultRoute;
 
+        const defaultFieldMeta = {
+          extras: {
+            label: "Výhody nehnuteľnosti",
+            placeholder: "loggia/balkón, terasa, pivnica, parkovanie...",
+          },
+        };
+
         const setParamFieldState = (field, isActive) => {
           if (!(field instanceof HTMLElement)) return;
 
@@ -520,7 +555,7 @@ const googleMapsScriptUrl = googleMapsApiKey
               const value = control.value.trim();
               if (!value) return "";
 
-              const label = parameterLabels[control.name] || field.querySelector("span")?.textContent?.trim() || control.name;
+              const label = field.querySelector("span")?.textContent?.trim() || parameterLabels[control.name] || control.name;
               return `${label}: ${value}`;
             })
             .filter(Boolean);
@@ -548,6 +583,18 @@ const googleMapsScriptUrl = googleMapsApiKey
 
           paramFields.forEach((field) => {
             const key = field instanceof HTMLElement ? field.dataset.paramField || "" : "";
+            const fieldMeta = route.fieldMeta?.[key] || defaultFieldMeta[key];
+            const fieldLabel = field instanceof HTMLElement ? field.querySelector("[data-route-field-label]") : null;
+            const fieldControl = field instanceof HTMLElement ? field.querySelector("input, textarea") : null;
+
+            if (fieldMeta?.label && fieldLabel) fieldLabel.textContent = fieldMeta.label;
+            if (
+              fieldMeta?.placeholder &&
+              (fieldControl instanceof HTMLInputElement || fieldControl instanceof HTMLTextAreaElement)
+            ) {
+              fieldControl.placeholder = fieldMeta.placeholder;
+            }
+
             setParamFieldState(field, activeParamFields.has(key));
           });
         };
