@@ -13,6 +13,7 @@ const DEFAULT_ALLOWED_ORIGINS = [
 const DEFAULT_WORK_START = "09:00";
 const DEFAULT_WORK_END = "19:00";
 const DEFAULT_WORKING_DAYS = [0, 1, 2, 3, 4, 5, 6];
+const DEFAULT_MIN_LEAD_MINUTES = 0;
 
 export default {
   async fetch(request, env, ctx) {
@@ -81,11 +82,13 @@ async function handleAvailability(request, env, headers) {
 
   const timeZone = env.BOOKING_TIME_ZONE || "Europe/Bratislava";
   const slotMinutes = readInteger(env.BOOKING_SLOT_MINUTES, 30);
+  const minLeadMinutes = readInteger(env.BOOKING_MIN_LEAD_MINUTES, DEFAULT_MIN_LEAD_MINUTES, true);
   const slotTimes = buildSlotTimes(env, slotMinutes);
   const workStart = env.BOOKING_WORK_START || DEFAULT_WORK_START;
   const workEnd = env.BOOKING_WORK_END || DEFAULT_WORK_END;
   const workingDays = readIntegerList(env.BOOKING_WORKING_DAYS, DEFAULT_WORKING_DAYS);
   const workingDay = workingDays.includes(dayOfWeek(date));
+  const earliestBookableStart = Date.now() + minLeadMinutes * 60 * 1000;
   const googleEnabled = hasGoogleCalendar(env);
 
   let busy = [];
@@ -100,13 +103,14 @@ async function handleAvailability(request, env, headers) {
   const slots = slotTimes.map((time) => {
     const interval = buildInterval(date, time, slotMinutes, timeZone);
     const blocked = busy.some((busyInterval) => overlaps(interval, busyInterval));
-    const available = workingDay && !blocked;
+    const past = interval.start <= earliestBookableStart;
+    const available = workingDay && !past && !blocked;
 
     return {
       time,
       label: time,
       available,
-      reason: available ? "" : workingDay ? "busy" : "outside-working-days",
+      reason: available ? "" : !workingDay ? "outside-working-days" : past ? "past" : "busy",
     };
   });
 
@@ -145,6 +149,7 @@ async function handleBooking(request, env, ctx, headers) {
 
   const timeZone = env.BOOKING_TIME_ZONE || "Europe/Bratislava";
   const slotMinutes = readInteger(env.BOOKING_SLOT_MINUTES, 30);
+  const minLeadMinutes = readInteger(env.BOOKING_MIN_LEAD_MINUTES, DEFAULT_MIN_LEAD_MINUTES, true);
   const slotTimes = buildSlotTimes(env, slotMinutes);
 
   if (!slotTimes.includes(payload.cas)) {
@@ -152,6 +157,11 @@ async function handleBooking(request, env, ctx, headers) {
   }
 
   const interval = buildInterval(payload.datum, payload.cas, slotMinutes, timeZone);
+
+  if (interval.start <= Date.now() + minLeadMinutes * 60 * 1000) {
+    return json({ ok: false, error: "Vybraný čas už nie je dostupný." }, 400, headers);
+  }
+
   const googleEnabled = hasGoogleCalendar(env);
 
   let calendarEvent = null;
@@ -259,6 +269,7 @@ function validateLeadPayload(payload) {
     ["lokalita", "lokalita"],
     ["datum", "dátum"],
     ["cas", "čas"],
+    ["gdpr_suhlas", "súhlas so spracovaním údajov"],
   ];
 
   for (const [key, label] of required) {
@@ -594,9 +605,9 @@ function readIntegerList(value, fallback) {
   return items.length ? items : fallback;
 }
 
-function readInteger(value, fallback) {
+function readInteger(value, fallback, allowZero = false) {
   const parsed = Number.parseInt(value, 10);
-  return Number.isInteger(parsed) && parsed > 0 ? parsed : fallback;
+  return Number.isInteger(parsed) && (allowZero ? parsed >= 0 : parsed > 0) ? parsed : fallback;
 }
 
 function clean(value) {

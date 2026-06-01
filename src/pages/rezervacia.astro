@@ -271,6 +271,19 @@ const googleMapsScriptUrl = googleMapsApiKey
                 data-route-placeholder="message"
               ></textarea>
             </label>
+            <label class="consent-field full">
+              <input
+                name="gdpr_suhlas"
+                type="checkbox"
+                value="ano"
+                data-required
+                data-label="súhlas so spracovaním údajov"
+              />
+              <span>
+                Súhlasím so spracovaním údajov za účelom kontaktovania a rezervácie konzultácie.
+                <a href="/ochrana-osobnych-udajov/" target="_blank" rel="noreferrer">Ochrana údajov</a>
+              </span>
+            </label>
           </div>
         </section>
 
@@ -385,6 +398,31 @@ const googleMapsScriptUrl = googleMapsApiKey
         let activeStep = 0;
         let availabilityController;
         let isSubmitting = false;
+        const funnelStepNames = ["intent", "property", "date", "contact"];
+
+        const trackFunnelEvent = (name, detail = {}) => {
+          const payload = {
+            event: `booking_${name}`,
+            page_path: window.location.pathname,
+            ...detail,
+          };
+
+          try {
+            if (Array.isArray(window.dataLayer)) {
+              window.dataLayer.push(payload);
+            } else if (Object.isExtensible(window)) {
+              window.dataLayer = [payload];
+            }
+          } catch {
+            // Analytics hooks must stay best-effort only.
+          }
+
+          try {
+            window.dispatchEvent(new CustomEvent("booking:funnel", { detail: payload }));
+          } catch {
+            // Tracking must never block the reservation flow.
+          }
+        };
 
         const parameterLabels = {
           typ_detail: "Typ nehnuteľnosti",
@@ -515,7 +553,6 @@ const googleMapsScriptUrl = googleMapsApiKey
 
         if (dateInput instanceof HTMLInputElement) {
           const now = new Date();
-          now.setDate(now.getDate() + 1);
           const localDate = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
           dateInput.min = localDate;
           if (!dateInput.value) dateInput.value = localDate;
@@ -751,10 +788,11 @@ const googleMapsScriptUrl = googleMapsApiKey
 
             const slot = availableByTime.get(button.dataset.value || "");
             const isAvailable = slot ? slot.available : false;
+            const isPast = slot?.reason === "past";
             button.disabled = !isAvailable;
-            button.hidden = !isAvailable;
+            button.hidden = !isAvailable && !isPast;
             button.classList.toggle("is-unavailable", !isAvailable);
-            button.title = !isAvailable ? "Tento čas je obsadený." : "";
+            button.title = !isAvailable ? (isPast ? "Tento čas už prešiel." : "Tento čas je obsadený.") : "";
 
             if (isAvailable) availableCount += 1;
 
@@ -880,6 +918,7 @@ const googleMapsScriptUrl = googleMapsApiKey
           const endpoint = funnelForm.getAttribute("data-booking-endpoint") || "/api/book";
           const payload = buildLeadPayload();
           isSubmitting = true;
+          trackFunnelEvent("submit_attempt", { intent: payload.zamer || "" });
 
           if (funnelSubmit instanceof HTMLButtonElement) {
             funnelSubmit.disabled = true;
@@ -909,10 +948,16 @@ const googleMapsScriptUrl = googleMapsApiKey
               throw new Error(data.error || "Rezerváciu sa nepodarilo odoslať.");
             }
 
+            trackFunnelEvent("submit_success", {
+              intent: payload.zamer || "",
+              booking_status: data.bookingStatus || "",
+              mode: data.mode || "",
+            });
             showBookingConfirmation(data);
           } catch {
             const fallbackHref = buildMailFallbackHref(payload);
             setFunnelError("Rezerváciu sa teraz nepodarilo odoslať. Otvorím email, aby sa správa nestratila.");
+            trackFunnelEvent("submit_error", { intent: payload.zamer || "" });
 
             if (fallbackHref) {
               window.location.href = fallbackHref;
@@ -944,6 +989,11 @@ const googleMapsScriptUrl = googleMapsApiKey
           if (funnelSubmit instanceof HTMLButtonElement) funnelSubmit.hidden = activeStep !== funnelSteps.length - 1;
           setFunnelError();
           updateFunnelSummary();
+          trackFunnelEvent("step_view", {
+            step: activeStep + 1,
+            step_name: funnelStepNames[activeStep] || "unknown",
+            intent: funnelValue("zamer") || "",
+          });
 
           if (activeStep === 2) {
             loadAvailability();
@@ -959,6 +1009,20 @@ const googleMapsScriptUrl = googleMapsApiKey
               (field instanceof HTMLInputElement ||
                 field instanceof HTMLTextAreaElement ||
                 field instanceof HTMLSelectElement) &&
+              field.type === "checkbox" &&
+              field instanceof HTMLInputElement &&
+              !field.checked
+            ) {
+              setFunnelError(`Potvrďte prosím ${field.dataset.label || "povinný súhlas"}.`);
+              field.focus();
+              return false;
+            }
+
+            if (
+              (field instanceof HTMLInputElement ||
+                field instanceof HTMLTextAreaElement ||
+                field instanceof HTMLSelectElement) &&
+              field.type !== "checkbox" &&
               !field.value.trim()
             ) {
               setFunnelError(`Doplňte prosím ${field.dataset.label || "povinné pole"}.`);
@@ -1006,11 +1070,20 @@ const googleMapsScriptUrl = googleMapsApiKey
             applyIntentRoute();
             updateFunnelSummary();
             setFunnelError();
+
+            if (name === "zamer") {
+              trackFunnelEvent("intent_select", { intent: value });
+            }
+
+            if (name === "cas") {
+              trackFunnelEvent("time_select", { intent: funnelValue("zamer") || "" });
+            }
           });
         });
 
         dateInput?.addEventListener("change", () => {
           clearSelectedTime();
+          trackFunnelEvent("date_select", { intent: funnelValue("zamer") || "" });
           loadAvailability();
         });
 
@@ -1375,10 +1448,29 @@ const googleMapsScriptUrl = googleMapsApiKey
         grid-column: 1 / -1;
       }
 
+      .wizard-fields .consent-field {
+        display: flex;
+        align-items: flex-start;
+        gap: 11px;
+        margin-top: 2px;
+      }
+
       .wizard-fields span {
         color: rgba(255, 250, 242, 0.64);
         font-size: 12px;
         font-weight: 850;
+      }
+
+      .wizard-fields .consent-field span {
+        color: rgba(255, 250, 242, 0.72);
+        font-size: 13px;
+        font-weight: 700;
+        line-height: 1.45;
+      }
+
+      .wizard-fields .consent-field a {
+        color: var(--brass);
+        text-decoration: none;
       }
 
       .wizard-fields input,
@@ -1397,6 +1489,15 @@ const googleMapsScriptUrl = googleMapsApiKey
       .wizard-fields select {
         min-height: 48px;
         padding: 0 13px;
+      }
+
+      .wizard-fields .consent-field input {
+        flex: 0 0 auto;
+        width: 18px;
+        min-height: 18px;
+        height: 18px;
+        margin: 1px 0 0;
+        accent-color: var(--brass);
       }
 
       .wizard-fields textarea {
