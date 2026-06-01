@@ -280,6 +280,7 @@ const googleMapsScriptUrl = googleMapsApiKey
           <p data-booking-confirmation-text>
             Jakub dostal podklady a termín potvrdí podľa dostupnosti.
           </p>
+          <a class="button primary" href="#" target="_blank" rel="noreferrer" data-booking-event-link hidden>Otvoriť v Google Calendar</a>
           <a class="button secondary" href="/">Späť na web</a>
         </section>
 
@@ -361,6 +362,7 @@ const googleMapsScriptUrl = googleMapsApiKey
         const slotButtons = Array.from(funnelForm.querySelectorAll(".slot-button"));
         const bookingConfirmation = funnelForm.querySelector("[data-booking-confirmation]");
         const bookingConfirmationText = funnelForm.querySelector("[data-booking-confirmation-text]");
+        const bookingEventLink = funnelForm.querySelector("[data-booking-event-link]");
         const locationField = funnelForm.querySelector("[data-location-field]");
         const locationInput = funnelForm.querySelector("[data-location-input]");
         const locationPlaceId = funnelForm.querySelector("[data-location-place-id]");
@@ -864,6 +866,12 @@ const googleMapsScriptUrl = googleMapsApiKey
               result.bookingStatus === "calendar_created"
                 ? "Termín je zapísaný do kalendára a Jakub dostal podklady k hovoru."
                 : "Podklady sú odoslané do rezervačného backendu. Po napojení Google kalendára sa termín bude zapisovať automaticky.";
+          }
+
+          if (bookingEventLink instanceof HTMLAnchorElement) {
+            const eventLink = typeof result.eventLink === "string" ? result.eventLink : "";
+            bookingEventLink.hidden = !eventLink;
+            if (eventLink) bookingEventLink.href = eventLink;
           }
 
           setFunnelError();
