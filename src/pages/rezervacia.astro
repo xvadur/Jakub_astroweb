@@ -95,9 +95,6 @@ const googleMapsScriptUrl = googleMapsApiKey
               <input type="hidden" name="lokalita_lat" data-location-lat />
               <input type="hidden" name="lokalita_lng" data-location-lng />
               <input type="hidden" name="lokalita_overena" data-location-verified />
-              <small class="field-note" data-location-hint>
-                {googleMapsApiKey ? "Začnite písať a vyberte overenú adresu z Google." : "Google overenie adresy sa zapne po doplnení API kľúča."}
-              </small>
             </label>
             <label data-param-field="property_kind">
               <span>Typ nehnuteľnosti</span>
@@ -343,7 +340,6 @@ const googleMapsScriptUrl = googleMapsApiKey
         const locationLat = funnelForm.querySelector("[data-location-lat]");
         const locationLng = funnelForm.querySelector("[data-location-lng]");
         const locationVerified = funnelForm.querySelector("[data-location-verified]");
-        const locationHint = funnelForm.querySelector("[data-location-hint]");
         const routeTypeField = funnelForm.querySelector("[data-route-type]");
         const paramFields = Array.from(funnelForm.querySelectorAll("[data-param-field]"));
         const routeTitles = {
@@ -599,10 +595,6 @@ const googleMapsScriptUrl = googleMapsApiKey
           });
         };
 
-        const setLocationHint = (message = "") => {
-          if (locationHint) locationHint.textContent = message;
-        };
-
         const clearLocationVerification = () => {
           if (locationPlaceId instanceof HTMLInputElement) locationPlaceId.value = "";
           if (locationLat instanceof HTMLInputElement) locationLat.value = "";
@@ -647,14 +639,12 @@ const googleMapsScriptUrl = googleMapsApiKey
 
             locationInput.dataset.googleEnforced = "true";
             locationInput.classList.add("has-google-autocomplete");
-            setLocationHint("Vyberte adresu z Google návrhov, aby bola lokalita overená.");
 
             autocomplete.addListener("place_changed", () => {
               const place = autocomplete.getPlace();
 
               if (!place?.place_id || !place.formatted_address) {
                 clearLocationVerification();
-                setLocationHint("Vyberte prosím konkrétnu adresu z Google návrhov.");
                 return;
               }
 
@@ -671,13 +661,11 @@ const googleMapsScriptUrl = googleMapsApiKey
               if (locationVerified instanceof HTMLInputElement) locationVerified.value = "true";
               if (locationField instanceof HTMLElement) locationField.classList.add("is-verified");
 
-              setLocationHint("Overená adresa z Google.");
               updateFunnelSummary();
               setFunnelError();
             });
           } catch {
             if (locationInput instanceof HTMLInputElement) locationInput.dataset.googleEnforced = "false";
-            setLocationHint("Google overenie adresy sa nenačítalo. Lokalitu môžete dopísať ručne.");
           }
         };
 
@@ -774,9 +762,6 @@ const googleMapsScriptUrl = googleMapsApiKey
 
           if (locationInput.value !== locationInput.dataset.selectedLocation) {
             clearLocationVerification();
-            if (locationInput.dataset.googleEnforced === "true") {
-              setLocationHint("Vyberte adresu z Google návrhov, aby bola lokalita overená.");
-            }
           }
         });
 
@@ -1125,6 +1110,7 @@ const googleMapsScriptUrl = googleMapsApiKey
 
       .wizard-fields.two {
         grid-template-columns: repeat(4, minmax(0, 1fr));
+        row-gap: 18px;
       }
 
       .wizard-fields label {
@@ -1177,13 +1163,6 @@ const googleMapsScriptUrl = googleMapsApiKey
       .wizard-fields input::placeholder,
       .wizard-fields textarea::placeholder {
         color: rgba(255, 250, 242, 0.36);
-      }
-
-      .field-note {
-        color: rgba(255, 250, 242, 0.48);
-        font-size: 12px;
-        font-weight: 750;
-        line-height: 1.35;
       }
 
       .location-field.is-verified input[data-location-input] {
