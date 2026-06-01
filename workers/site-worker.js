@@ -10,7 +10,8 @@ const DEFAULT_ALLOWED_ORIGINS = [
   "http://localhost:8787",
 ];
 
-const DEFAULT_SLOT_TIMES = ["09:00", "11:30", "14:30", "17:00"];
+const DEFAULT_WORK_START = "09:00";
+const DEFAULT_WORK_END = "19:00";
 const DEFAULT_WORKING_DAYS = [1, 2, 3, 4, 5];
 
 export default {
@@ -80,7 +81,9 @@ async function handleAvailability(request, env, headers) {
 
   const timeZone = env.BOOKING_TIME_ZONE || "Europe/Bratislava";
   const slotMinutes = readInteger(env.BOOKING_SLOT_MINUTES, 30);
-  const slotTimes = readList(env.BOOKING_SLOT_TIMES, DEFAULT_SLOT_TIMES);
+  const slotTimes = buildSlotTimes(env, slotMinutes);
+  const workStart = env.BOOKING_WORK_START || DEFAULT_WORK_START;
+  const workEnd = env.BOOKING_WORK_END || DEFAULT_WORK_END;
   const workingDays = readIntegerList(env.BOOKING_WORKING_DAYS, DEFAULT_WORKING_DAYS);
   const workingDay = workingDays.includes(dayOfWeek(date));
   const googleEnabled = hasGoogleCalendar(env);
@@ -114,6 +117,8 @@ async function handleAvailability(request, env, headers) {
       date,
       timeZone,
       slotMinutes,
+      workStart,
+      workEnd,
       slots,
     },
     200,
@@ -140,6 +145,12 @@ async function handleBooking(request, env, ctx, headers) {
 
   const timeZone = env.BOOKING_TIME_ZONE || "Europe/Bratislava";
   const slotMinutes = readInteger(env.BOOKING_SLOT_MINUTES, 30);
+  const slotTimes = buildSlotTimes(env, slotMinutes);
+
+  if (!slotTimes.includes(payload.cas)) {
+    return json({ ok: false, error: "Vybraný čas nie je dostupný." }, 400, headers);
+  }
+
   const interval = buildInterval(payload.datum, payload.cas, slotMinutes, timeZone);
   const googleEnabled = hasGoogleCalendar(env);
 
@@ -526,6 +537,36 @@ function addDays(date, days) {
   const parsed = new Date(`${date}T00:00:00Z`);
   parsed.setUTCDate(parsed.getUTCDate() + days);
   return parsed.toISOString().slice(0, 10);
+}
+
+function buildSlotTimes(env, slotMinutes) {
+  const explicitSlots = readList(env.BOOKING_SLOT_TIMES, []);
+
+  if (explicitSlots.length) {
+    return explicitSlots.filter(isValidTime);
+  }
+
+  const start = parseTimeToMinutes(env.BOOKING_WORK_START || DEFAULT_WORK_START);
+  const end = parseTimeToMinutes(env.BOOKING_WORK_END || DEFAULT_WORK_END);
+
+  if (start === null || end === null || end <= start) {
+    return [];
+  }
+
+  const slots = [];
+
+  for (let total = start; total + slotMinutes <= end; total += slotMinutes) {
+    slots.push(minutesToTime(total));
+  }
+
+  return slots;
+}
+
+function parseTimeToMinutes(time) {
+  if (!isValidTime(time)) return null;
+
+  const [hour, minute] = time.split(":").map(Number);
+  return hour * 60 + minute;
 }
 
 function minutesToTime(total) {

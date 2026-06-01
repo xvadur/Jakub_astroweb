@@ -21,7 +21,7 @@ API routy:
 
 Kým nie sú nastavené Google secrets, API beží v `mock` režime:
 
-- vracia sloty z `BOOKING_SLOT_TIMES`,
+- vracia 30-minútové sloty v pracovnom okne,
 - nevolá Google Calendar,
 - `POST /api/book` vráti `bookingStatus: "pending_calendar_config"`,
 - ak sú nastavené Telegram secrets, aj mock booking pošle Telegram notifikáciu.
@@ -90,7 +90,8 @@ Non-secret defaults are in `wrangler.toml`:
 ```text
 BOOKING_TIME_ZONE=Europe/Bratislava
 BOOKING_SLOT_MINUTES=30
-BOOKING_SLOT_TIMES=09:00,11:30,14:30,17:00
+BOOKING_WORK_START=09:00
+BOOKING_WORK_END=19:00
 BOOKING_WORKING_DAYS=1,2,3,4,5
 ```
 

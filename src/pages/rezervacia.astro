@@ -731,7 +731,14 @@ const googleMapsScriptUrl = googleMapsApiKey
 
         const setSlotButtonsDisabled = (isDisabled) => {
           slotButtons.forEach((button) => {
-            if (button instanceof HTMLButtonElement) button.disabled = isDisabled;
+            if (button instanceof HTMLButtonElement) {
+              button.disabled = isDisabled;
+              if (isDisabled) {
+                button.hidden = false;
+                button.classList.remove("is-unavailable");
+                button.title = "";
+              }
+            }
           });
         };
 
@@ -743,8 +750,9 @@ const googleMapsScriptUrl = googleMapsApiKey
             if (!(button instanceof HTMLButtonElement)) return;
 
             const slot = availableByTime.get(button.dataset.value || "");
-            const isAvailable = slot ? slot.available : true;
+            const isAvailable = slot ? slot.available : false;
             button.disabled = !isAvailable;
+            button.hidden = !isAvailable;
             button.classList.toggle("is-unavailable", !isAvailable);
             button.title = !isAvailable ? "Tento čas je obsadený." : "";
 

@@ -101,7 +101,7 @@ Wrangler needs a Cloudflare login or `CLOUDFLARE_API_TOKEN`. Do not store the to
 - `PUBLIC_SITE_ENV=staging` for staging builds.
 - `PUBLIC_BOOKING_URL` optional external calendar link.
 - `PUBLIC_GOOGLE_MAPS_API_KEY` optional browser key for Google Places autocomplete on `/rezervacia/`.
-- `BOOKING_TIME_ZONE`, `BOOKING_SLOT_MINUTES`, `BOOKING_SLOT_TIMES`, and `BOOKING_WORKING_DAYS` are Worker vars in `wrangler.toml`.
+- `BOOKING_TIME_ZONE`, `BOOKING_SLOT_MINUTES`, `BOOKING_WORK_START`, `BOOKING_WORK_END`, and `BOOKING_WORKING_DAYS` are Worker vars in `wrangler.toml`.
 
 `PUBLIC_GOOGLE_MAPS_API_KEY` must be restricted in Google Cloud to the production and staging domains. Do not store it in Git.
 
