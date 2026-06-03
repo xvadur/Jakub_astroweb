@@ -1,0 +1,629 @@
+---
+import { site } from "../../data/site";
+
+const serviceWords = ["cena", "prezentácia", "databáza", "obhliadky", "právo", "financie"];
+const serviceCards = [
+  {
+    title: "Cena",
+    text: "Nastaviť očakávanie tak, aby predaj nezačal zlým anchorom.",
+  },
+  {
+    title: "Prezentácia",
+    text: "Fotky, video, detail a materiály, ktoré predávajú hodnotu.",
+  },
+  {
+    title: "Dopyt",
+    text: "Interná sieť, databáza a kupujúci, ktorí dávajú zmysel.",
+  },
+  {
+    title: "Proces",
+    text: "Obhliadky, vyjednávanie, termíny a administratíva pokope.",
+  },
+];
+---
+
+<!doctype html>
+<html lang="sk">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/png" href="/favicon.png?v=2" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow,noarchive" />
+    <title>BOSEN infra prototypy | {site.brand}</title>
+    <meta
+      name="description"
+      content="Interné iterácie vybraného hero smeru BOSEN infra pre web Jakuba Olšu."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,650;6..72,700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header class="prototype-header">
+      <a class="brand" href="/prototypy/hero/">
+        <img src={site.logoImage} alt="" />
+        <span>
+          <strong>{site.brand}</strong>
+          <small>{site.role}</small>
+        </span>
+      </a>
+      <img class="bosen-logo" src={site.bosenGroupLogo} alt="BOSEN Group" />
+      <a class="booking-link" href="/rezervacia/">Rezervácia</a>
+    </header>
+
+    <main>
+      <section class="intro">
+        <p class="eyebrow">Vybraný smer · BOSEN infra</p>
+        <h1>Ďalšie verzie jedného silného mechanizmu.</h1>
+        <p>
+          Prvý výber bol správny: nie dekorácia, ale produktový promise. Jeden kontakt pre klienta,
+          celý servis za predajom. Tu sú ďalšie iterácie toho istého smeru.
+        </p>
+      </section>
+
+      <section class="variant variant-stack" aria-labelledby="stack-title">
+        <div class="background city" aria-hidden="true"></div>
+        <div class="copy">
+          <p class="eyebrow">D1 · Service stack</p>
+          <h2 id="stack-title">Jeden kontakt pre klienta. Celý servis za predajom.</h2>
+          <p>
+            Klient nepotrebuje riešiť desať ľudí. Potrebuje človeka, ktorý drží proces pokope a vie
+            vytiahnuť správny servis v správnom momente.
+          </p>
+        </div>
+        <div class="stack-list">
+          {serviceWords.map((word) => <span>{word}</span>)}
+        </div>
+      </section>
+
+      <section class="variant variant-command" aria-labelledby="command-title">
+        <div class="copy">
+          <p class="eyebrow">D2 · Command center</p>
+          <h2 id="command-title">Jakub drží rozhodnutia. BOSEN drží servis.</h2>
+          <p>
+            Predaj sa nerozpadne na chaos dodávateľov. Klient má jeden hlas, jeden proces a jasný
+            ďalší krok.
+          </p>
+        </div>
+        <div class="command-grid" aria-label="Rozdelenie práce">
+          <article>
+            <small>Jakub</small>
+            <strong>stratégia, komunikácia, vyjednávanie</strong>
+          </article>
+          <article>
+            <small>BOSEN</small>
+            <strong>marketing, právo, financie, sieť</strong>
+          </article>
+          <article>
+            <small>OpenClaw</small>
+            <strong>CRM, podklady, drafty, follow-up</strong>
+          </article>
+        </div>
+      </section>
+
+      <section class="variant variant-process" aria-labelledby="process-title">
+        <div class="copy">
+          <p class="eyebrow">D3 · Predajový proces</p>
+          <h2 id="process-title">Od prvého hovoru po kataster bez presúvania práce na klienta.</h2>
+          <p>
+            Tento smer predáva pokoj. Nie “máme služby”, ale “viem, čo sa deje v každom kroku”.
+          </p>
+        </div>
+        <ol class="process-rail">
+          <li><span>01</span><strong>stratégia ceny</strong></li>
+          <li><span>02</span><strong>príprava ponuky</strong></li>
+          <li><span>03</span><strong>dopyt a obhliadky</strong></li>
+          <li><span>04</span><strong>vyjednávanie</strong></li>
+          <li><span>05</span><strong>zmluvy a kataster</strong></li>
+        </ol>
+      </section>
+
+      <section class="variant variant-proof" aria-labelledby="proof-title">
+        <div class="proof-collage" aria-hidden="true">
+          <img src="/images/listings/skalicka-cesta-4-izbovy-byt/01-obyvacka.jpg" alt="" />
+          <img src="/images/listings/orenburska-polyfunkcny-objekt/02-letecky-pohlad.jpg" alt="" />
+          <img src="/images/listings/slnecnice-2-izbovy-byt/02-loggia.jpg" alt="" />
+        </div>
+        <div class="copy">
+          <p class="eyebrow">D4 · Infra cez dôkazy</p>
+          <h2 id="proof-title">Servis má význam vtedy, keď je vidieť na výsledku.</h2>
+          <p>
+            Fotky, cena, príbeh predaja a kupujúci nie sú oddelené veci. Sú to časti jednej
+            stratégie.
+          </p>
+          <div class="metric-row">
+            <span><strong>810k</strong> objekt</span>
+            <span><strong>8 dní</strong> predaj</span>
+            <span><strong>6</strong> referencií</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="variant variant-audit" aria-labelledby="audit-title">
+        <div class="copy">
+          <p class="eyebrow">D5 · Strategy engine</p>
+          <h2 id="audit-title">Najprv zistíme, ktorá stratégia má pre vás najväčší zmysel.</h2>
+          <p>
+            Toto je najbližšie k nášmu produktu: web nie je len vizitka, ale začiatok predajového
+            auditu.
+          </p>
+        </div>
+        <div class="audit-panel" aria-label="Predajový audit">
+          {serviceCards.map((card) => (
+            <article>
+              <h3>{card.title}</h3>
+              <p>{card.text}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="variant variant-signature" aria-labelledby="signature-title">
+        <div class="signature-media">
+          <img src={site.heroImage} alt="Jakub Olša" />
+        </div>
+        <div class="copy">
+          <p class="eyebrow">D6 · Osobná infra</p>
+          <h2 id="signature-title">Vy nevoláte systému. Voláte Jakubovi.</h2>
+          <p>
+            Toto je najľudskejšia verzia BOSEN infra smeru: servis je silný preto, že ho niekto
+            osobne drží a vysvetľuje.
+          </p>
+          <div class="actions">
+            <a class="button primary" href="/rezervacia/">Rezervovať konzultáciu</a>
+            <a class="button secondary" href="/#ponuky">Pozrieť predaje</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <style>
+      :root {
+        --paper: #f3ecdf;
+        --ink: #10100e;
+        --muted: #d5cbbd;
+        --dark: #141411;
+        --dark-soft: #22211d;
+        --brass: #d9b86e;
+        --cream: #fff8ec;
+        --line: rgba(255, 248, 236, 0.18);
+        --line-dark: rgba(16, 16, 14, 0.16);
+        --font-body: "Instrument Sans", system-ui, sans-serif;
+        --font-display: "Newsreader", Georgia, serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: var(--font-body);
+      }
+
+      img {
+        display: block;
+        max-width: 100%;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .prototype-header {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        display: flex;
+        align-items: center;
+        gap: 22px;
+        min-height: 74px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(15, 15, 13, 0.88);
+        color: var(--cream);
+        padding: 14px clamp(18px, 4vw, 42px);
+        backdrop-filter: blur(18px);
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        text-decoration: none;
+      }
+
+      .brand img {
+        width: 42px;
+        height: 42px;
+        object-fit: contain;
+      }
+
+      .brand strong {
+        display: block;
+        font-family: var(--font-display);
+        font-size: 24px;
+        line-height: 1;
+      }
+
+      .brand small {
+        display: block;
+        margin-top: 3px;
+        color: rgba(255, 248, 236, 0.66);
+        font-size: 13px;
+      }
+
+      .bosen-logo {
+        width: 158px;
+        height: 34px;
+        border-left: 1px solid rgba(255, 255, 255, 0.16);
+        object-fit: contain;
+        object-position: left center;
+        padding-left: 20px;
+      }
+
+      .booking-link {
+        margin-left: auto;
+        border: 1px solid rgba(217, 184, 110, 0.5);
+        border-radius: 999px;
+        color: var(--brass);
+        padding: 10px 16px;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 800;
+      }
+
+      main {
+        display: grid;
+        gap: 34px;
+        padding: 34px clamp(12px, 3vw, 34px) 54px;
+      }
+
+      .intro {
+        width: min(1040px, 100%);
+        padding: 34px 0 10px;
+      }
+
+      .eyebrow {
+        margin: 0 0 12px;
+        color: var(--brass);
+        font-size: 13px;
+        font-weight: 900;
+        letter-spacing: 0;
+        text-transform: uppercase;
+      }
+
+      h1,
+      h2 {
+        margin: 0;
+        font-family: var(--font-display);
+        line-height: 0.94;
+        letter-spacing: 0;
+      }
+
+      h1 {
+        max-width: 850px;
+        font-size: clamp(46px, 7vw, 98px);
+      }
+
+      h2 {
+        max-width: 900px;
+        font-size: clamp(42px, 6.8vw, 94px);
+      }
+
+      h3 {
+        margin: 0;
+        font-family: var(--font-display);
+        font-size: clamp(26px, 3vw, 42px);
+        line-height: 1;
+      }
+
+      .intro p:last-child,
+      .copy > p:not(.eyebrow) {
+        max-width: 720px;
+        font-size: clamp(17px, 2vw, 23px);
+        line-height: 1.45;
+        opacity: 0.78;
+      }
+
+      .variant {
+        position: relative;
+        min-height: min(780px, calc(100vh - 90px));
+        overflow: hidden;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(320px, 0.72fr);
+        gap: clamp(26px, 5vw, 76px);
+        align-items: center;
+        border-radius: 8px;
+        background: var(--dark);
+        color: var(--cream);
+        padding: clamp(24px, 5vw, 66px);
+      }
+
+      .copy,
+      .stack-list,
+      .command-grid,
+      .process-rail,
+      .audit-panel,
+      .signature-media {
+        position: relative;
+        z-index: 2;
+      }
+
+      .background.city {
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(90deg, rgba(12, 16, 17, 0.96), rgba(31, 28, 23, 0.76), rgba(92, 75, 51, 0.48)),
+          url("/images/brand/bratislava-panorama.jpg") center / cover;
+      }
+
+      .stack-list {
+        display: grid;
+        gap: 12px;
+      }
+
+      .stack-list span,
+      .process-rail li,
+      .infra-chip {
+        min-height: 74px;
+        display: flex;
+        align-items: center;
+        border: 1px solid var(--line);
+        background: rgba(255, 248, 236, 0.08);
+        padding: 0 26px;
+        font-family: var(--font-display);
+        font-size: clamp(28px, 4vw, 46px);
+        line-height: 1;
+      }
+
+      .variant-command {
+        background:
+          linear-gradient(115deg, rgba(19, 19, 16, 0.97), rgba(19, 19, 16, 0.78)),
+          url("/images/jakub-handshake.png") center / cover;
+      }
+
+      .command-grid {
+        display: grid;
+        gap: 12px;
+      }
+
+      .command-grid article {
+        border: 1px solid var(--line);
+        background: rgba(255, 248, 236, 0.08);
+        padding: clamp(20px, 3vw, 34px);
+      }
+
+      .command-grid small {
+        display: block;
+        margin-bottom: 18px;
+        color: var(--brass);
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .command-grid strong {
+        display: block;
+        font-family: var(--font-display);
+        font-size: clamp(28px, 4vw, 48px);
+        line-height: 1;
+      }
+
+      .variant-process {
+        grid-template-columns: minmax(0, 0.82fr) minmax(320px, 1fr);
+        background: #eee4d4;
+        color: var(--ink);
+      }
+
+      .variant-process .eyebrow {
+        color: #936f2f;
+      }
+
+      .process-rail {
+        display: grid;
+        gap: 0;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .process-rail li {
+        justify-content: space-between;
+        border-color: var(--line-dark);
+        background: rgba(255, 255, 255, 0.3);
+        color: var(--ink);
+      }
+
+      .process-rail span {
+        color: #9a7b43;
+        font-family: var(--font-body);
+        font-size: 13px;
+        font-weight: 900;
+      }
+
+      .process-rail strong {
+        font-family: var(--font-display);
+        font-size: clamp(28px, 4vw, 48px);
+      }
+
+      .variant-proof {
+        grid-template-columns: minmax(320px, 0.85fr) minmax(0, 1fr);
+        background: var(--dark-soft);
+      }
+
+      .proof-collage {
+        display: grid;
+        grid-template-columns: 1fr 0.74fr;
+        grid-template-rows: 1fr 1fr;
+        gap: 12px;
+        min-height: 520px;
+      }
+
+      .proof-collage img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .proof-collage img:first-child {
+        grid-row: span 2;
+      }
+
+      .metric-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 30px;
+      }
+
+      .metric-row span {
+        min-width: 132px;
+        border-top: 1px solid var(--line);
+        padding-top: 12px;
+        color: rgba(255, 248, 236, 0.72);
+        font-weight: 700;
+      }
+
+      .metric-row strong {
+        display: block;
+        color: var(--cream);
+        font-family: var(--font-display);
+        font-size: 42px;
+        line-height: 1;
+      }
+
+      .variant-audit {
+        background: #141816;
+      }
+
+      .audit-panel {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .audit-panel article {
+        min-height: 220px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        border: 1px solid var(--line);
+        background: rgba(255, 248, 236, 0.08);
+        padding: 24px;
+      }
+
+      .audit-panel p {
+        margin: 24px 0 0;
+        color: rgba(255, 248, 236, 0.72);
+        line-height: 1.5;
+      }
+
+      .variant-signature {
+        grid-template-columns: minmax(320px, 0.62fr) minmax(0, 1fr);
+        background: #171512;
+      }
+
+      .signature-media {
+        align-self: stretch;
+        min-height: 560px;
+        border: 1px solid var(--line);
+      }
+
+      .signature-media img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: 52% 24%;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 30px;
+      }
+
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 52px;
+        border-radius: 6px;
+        padding: 0 20px;
+        text-decoration: none;
+        font-weight: 900;
+      }
+
+      .button.primary {
+        background: var(--brass);
+        color: #15120d;
+      }
+
+      .button.secondary {
+        border: 1px solid currentColor;
+        color: currentColor;
+      }
+
+      @media (max-width: 940px) {
+        .prototype-header {
+          flex-wrap: wrap;
+        }
+
+        .booking-link {
+          margin-left: 0;
+        }
+
+        .variant,
+        .variant-process,
+        .variant-proof,
+        .variant-signature {
+          grid-template-columns: 1fr;
+          min-height: auto;
+        }
+
+        .proof-collage,
+        .signature-media {
+          min-height: 430px;
+        }
+      }
+
+      @media (max-width: 620px) {
+        .prototype-header {
+          gap: 12px;
+          padding: 12px 14px;
+        }
+
+        .brand strong {
+          font-size: 20px;
+        }
+
+        .bosen-logo {
+          width: 132px;
+          padding-left: 14px;
+        }
+
+        main {
+          padding-inline: 10px;
+        }
+
+        .variant {
+          border-radius: 0;
+          padding: 24px 14px;
+        }
+
+        .audit-panel,
+        .proof-collage {
+          grid-template-columns: 1fr;
+        }
+
+        .proof-collage img:first-child {
+          grid-row: auto;
+        }
+      }
+    </style>
+  </body>
+</html>
