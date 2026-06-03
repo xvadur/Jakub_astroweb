@@ -29,7 +29,7 @@ Staging is deployed as a separate Cloudflare Worker:
 
 The staging page currently returns:
 
-- `/robots.txt` with `Disallow: /`
+- `/robots.txt` with explicit `Disallow: /` and `Disallow: /*` for `Googlebot`, `OAI-SearchBot`, `Bingbot`, and `*`
 - `<meta name="robots" content="noindex,nofollow,noarchive">`
 - visible `STAGING` badge in the browser
 
@@ -62,9 +62,12 @@ Recommended Cloudflare setup:
 
 `PUBLIC_SITE_ENV=staging` adds:
 
-- `/robots.txt` with `Disallow: /`
+- `/robots.txt` with explicit crawler blocking for staging
 - `<meta name="robots" content="noindex,nofollow,noarchive">`
 - a visible `STAGING` badge in the browser
+
+Cloudflare Managed Content Signals may prepend its own content-signal block to `robots.txt`.
+Staging therefore also uses page-level `noindex` and explicit named crawler groups.
 
 ## Workflow
 

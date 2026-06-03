@@ -5,8 +5,21 @@ const isStaging = siteEnv !== "production";
 
 export function GET() {
   const body = isStaging
-    ? `User-agent: *
+    ? `User-agent: Googlebot
 Disallow: /
+Disallow: /*
+
+User-agent: OAI-SearchBot
+Disallow: /
+Disallow: /*
+
+User-agent: Bingbot
+Disallow: /
+Disallow: /*
+
+User-agent: *
+Disallow: /
+Disallow: /*
 `
     : `User-agent: *
 Allow: /
