@@ -1,0 +1,609 @@
+---
+import { site } from "../../data/site";
+
+const variants = [
+  {
+    id: "A",
+    label: "Osobný maklér",
+    title: "Predaj hodnotnej nehnuteľnosti riešim osobne.",
+    text:
+      "Ja držím stratégiu, komunikáciu a rozhodnutia. BOSEN Group je servisné zázemie, ktoré dáva predaju marketing, právo, financie a sieť.",
+    image: site.heroImage,
+    imageAlt: "Portrét Jakuba Olšu",
+  },
+  {
+    id: "B",
+    label: "Predajová stratégia",
+    title: "Najprv vyberieme správny postup. Až potom púšťame byt na trh.",
+    text:
+      "Cena, rýchlosť, diskrétnosť, prenájom alebo kúpa nového bývania nie sú rovnaký plán. Dobrý predaj začína rozhodnutím, čo je pre vás výsledok.",
+    image: "/images/listings/skalicka-cesta-4-izbovy-byt/02-terasa.jpg",
+    imageAlt: "Terasa predanej nehnuteľnosti",
+  },
+  {
+    id: "C",
+    label: "Dôkaz a výsledky",
+    title: "Predaj nie je inzerát. Je to príprava, dopyt a vyjednávanie.",
+    text:
+      "Referenčné predaje ukazujú, kde sa oplatilo pomenovať silu nehnuteľnosti, pripraviť prezentáciu a pracovať s kupujúcimi skôr, než sa rozhodnú inde.",
+    image: "/images/listings/orenburska-polyfunkcny-objekt/02-letecky-pohlad.jpg",
+    imageAlt: "Letecký pohľad na predanú nehnuteľnosť",
+  },
+  {
+    id: "D",
+    label: "BOSEN infra",
+    title: "Jeden kontakt pre klienta. Celý servis za predajom.",
+    text:
+      "Klient nepotrebuje riešiť desať ľudí. Potrebuje človeka, ktorý drží proces pokope a vie vytiahnuť správny servis v správnom momente.",
+    image: site.cityPanoramaImage,
+    imageAlt: "Panoráma Bratislavy",
+  },
+];
+---
+
+<!doctype html>
+<html lang="sk">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/png" href="/favicon.png?v=2" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow,noarchive" />
+    <title>Hero prototypy | {site.brand}</title>
+    <meta
+      name="description"
+      content="Interný prototypový board pre výber hero smeru webu Jakuba Olšu."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,650;6..72,700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header class="prototype-header">
+      <a class="brand" href="/">
+        <img src={site.logoImage} alt="" />
+        <span>
+          <strong>{site.brand}</strong>
+          <small>{site.role}</small>
+        </span>
+      </a>
+      <img class="bosen-logo" src={site.bosenGroupLogo} alt="BOSEN Group" />
+      <a class="booking-link" href="/rezervacia/">Rezervácia</a>
+    </header>
+
+    <main>
+      <section class="intro">
+        <p class="eyebrow">Interný prototyping board</p>
+        <h1>Štyri možné smery prvého viewportu.</h1>
+        <p>
+          Každý variant pracuje s rovnakým biznisom, ale iným vstupným pocitom: osobná dôvera,
+          stratégia, dôkaz alebo servisné zázemie.
+        </p>
+      </section>
+
+      <section class="variant variant-personal" aria-labelledby="variant-a">
+        <div class="variant-copy">
+          <p class="eyebrow">Smer {variants[0].id} · {variants[0].label}</p>
+          <h2 id="variant-a">{variants[0].title}</h2>
+          <p>{variants[0].text}</p>
+          <div class="actions">
+            <a class="button primary" href="/rezervacia/">Rezervovať konzultáciu</a>
+            <a class="button secondary" href="/#ponuky">Pozrieť predaje</a>
+          </div>
+        </div>
+        <div class="portrait-frame">
+          <img src={variants[0].image} alt={variants[0].imageAlt} />
+          <div class="signature-strip">
+            <span>Jakub osobne</span>
+            <span>BOSEN servis</span>
+            <span>AI workflow</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="variant variant-strategy" aria-labelledby="variant-b">
+        <div class="strategy-panel">
+          <div>
+            <p>Čo je cieľ?</p>
+            <strong>Najvyššia cena</strong>
+          </div>
+          <div>
+            <p>Časový tlak</p>
+            <strong>1-3 mesiace</strong>
+          </div>
+          <div>
+            <p>Riziko</p>
+            <strong>Zlá cena na štarte</strong>
+          </div>
+          <div>
+            <p>Odporúčanie</p>
+            <strong>Predpredaj + silná prezentácia</strong>
+          </div>
+        </div>
+        <div class="variant-copy">
+          <p class="eyebrow">Smer {variants[1].id} · {variants[1].label}</p>
+          <h2 id="variant-b">{variants[1].title}</h2>
+          <p>{variants[1].text}</p>
+          <div class="actions">
+            <a class="button primary" href="/rezervacia/">Spustiť audit</a>
+            <a class="button secondary" href="/#servis">Ako to funguje</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="variant variant-proof" aria-labelledby="variant-c">
+        <div class="proof-media">
+          <img class="large" src={variants[2].image} alt={variants[2].imageAlt} />
+          <img src="/images/listings/skalicka-cesta-4-izbovy-byt/01-obyvacka.jpg" alt="" />
+          <img src="/images/listings/slnecnice-2-izbovy-byt/02-loggia.jpg" alt="" />
+        </div>
+        <div class="variant-copy">
+          <p class="eyebrow">Smer {variants[2].id} · {variants[2].label}</p>
+          <h2 id="variant-c">{variants[2].title}</h2>
+          <p>{variants[2].text}</p>
+          <dl class="metrics">
+            <div>
+              <dt>Referencie</dt>
+              <dd>6 predajov</dd>
+            </div>
+            <div>
+              <dt>Aktuálne</dt>
+              <dd>Martinčekova</dd>
+            </div>
+            <div>
+              <dt>Najväčší obchod</dt>
+              <dd>810 000 €</dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+
+      <section class="variant variant-infra" aria-labelledby="variant-d">
+        <div
+          class="infra-background"
+          style={`--infra-image: url('${variants[3].image}')`}
+          aria-hidden="true"
+        ></div>
+        <div class="variant-copy">
+          <p class="eyebrow">Smer {variants[3].id} · {variants[3].label}</p>
+          <h2 id="variant-d">{variants[3].title}</h2>
+          <p>{variants[3].text}</p>
+        </div>
+        <div class="infra-steps" aria-label="Servisné zázemie">
+          <span>cena</span>
+          <span>prezentácia</span>
+          <span>databáza</span>
+          <span>obhliadky</span>
+          <span>právo</span>
+          <span>financie</span>
+        </div>
+      </section>
+    </main>
+
+    <style>
+      :root {
+        --paper: #f4eee3;
+        --ink: #11110f;
+        --muted: #6d675e;
+        --dark: #171715;
+        --dark-2: #24221e;
+        --brass: #d9b76f;
+        --moss: #53624b;
+        --clay: #a85f3f;
+        --blue: #3c5f78;
+        --line: rgba(255, 255, 255, 0.18);
+        --line-dark: rgba(17, 17, 15, 0.16);
+        --font-body: "Instrument Sans", system-ui, sans-serif;
+        --font-display: "Newsreader", Georgia, serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: var(--font-body);
+      }
+
+      a {
+        color: inherit;
+      }
+
+      img {
+        display: block;
+        max-width: 100%;
+      }
+
+      .prototype-header {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        display: flex;
+        align-items: center;
+        gap: 22px;
+        min-height: 74px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(15, 15, 13, 0.86);
+        color: #fff8ee;
+        padding: 14px clamp(18px, 4vw, 42px);
+        backdrop-filter: blur(18px);
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        text-decoration: none;
+      }
+
+      .brand img {
+        width: 42px;
+        height: 42px;
+        object-fit: contain;
+      }
+
+      .brand strong {
+        display: block;
+        font-family: var(--font-display);
+        font-size: 24px;
+        line-height: 1;
+      }
+
+      .brand small {
+        display: block;
+        margin-top: 3px;
+        color: rgba(255, 248, 238, 0.64);
+        font-size: 13px;
+      }
+
+      .bosen-logo {
+        width: 158px;
+        height: 34px;
+        border-left: 1px solid rgba(255, 255, 255, 0.16);
+        object-fit: contain;
+        object-position: left center;
+        padding-left: 20px;
+      }
+
+      .booking-link {
+        margin-left: auto;
+        border: 1px solid rgba(217, 183, 111, 0.5);
+        border-radius: 999px;
+        color: var(--brass);
+        padding: 10px 16px;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 800;
+      }
+
+      main {
+        display: grid;
+        gap: 34px;
+        padding: 34px clamp(14px, 3vw, 34px) 54px;
+      }
+
+      .intro {
+        width: min(980px, 100%);
+        padding: 34px 0 10px;
+      }
+
+      .eyebrow {
+        margin: 0 0 12px;
+        color: var(--brass);
+        font-size: 13px;
+        font-weight: 900;
+        letter-spacing: 0;
+        text-transform: uppercase;
+      }
+
+      h1,
+      h2 {
+        margin: 0;
+        font-family: var(--font-display);
+        line-height: 0.95;
+        letter-spacing: 0;
+      }
+
+      h1 {
+        max-width: 760px;
+        font-size: clamp(46px, 7vw, 96px);
+      }
+
+      h2 {
+        max-width: 780px;
+        font-size: clamp(42px, 6vw, 86px);
+      }
+
+      .intro p:last-child,
+      .variant-copy p:not(.eyebrow) {
+        max-width: 680px;
+        color: currentColor;
+        font-size: clamp(17px, 2vw, 22px);
+        line-height: 1.45;
+        opacity: 0.78;
+      }
+
+      .variant {
+        position: relative;
+        min-height: min(760px, calc(100vh - 96px));
+        overflow: hidden;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(320px, 0.82fr);
+        gap: clamp(24px, 5vw, 70px);
+        align-items: center;
+        border-radius: 8px;
+        padding: clamp(24px, 5vw, 66px);
+      }
+
+      .variant-copy {
+        position: relative;
+        z-index: 2;
+      }
+
+      .actions,
+      .metrics {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 30px;
+      }
+
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 52px;
+        border-radius: 6px;
+        padding: 0 20px;
+        text-decoration: none;
+        font-weight: 900;
+      }
+
+      .button.primary {
+        background: var(--brass);
+        color: #15120d;
+      }
+
+      .button.secondary {
+        border: 1px solid currentColor;
+        color: currentColor;
+      }
+
+      .variant-personal {
+        background: #151512;
+        color: #fff7ed;
+      }
+
+      .portrait-frame {
+        align-self: stretch;
+        display: grid;
+        grid-template-rows: 1fr auto;
+        min-height: 520px;
+        border: 1px solid var(--line);
+      }
+
+      .portrait-frame img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: 52% 24%;
+      }
+
+      .signature-strip {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        border-top: 1px solid var(--line);
+      }
+
+      .signature-strip span {
+        min-height: 62px;
+        display: grid;
+        place-items: center;
+        padding: 12px;
+        color: rgba(255, 247, 237, 0.74);
+        font-size: 13px;
+        font-weight: 800;
+        text-align: center;
+      }
+
+      .signature-strip span + span {
+        border-left: 1px solid var(--line);
+      }
+
+      .variant-strategy {
+        grid-template-columns: minmax(320px, 0.8fr) minmax(0, 1fr);
+        background: #e8ddcf;
+        color: #12110f;
+      }
+
+      .strategy-panel {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .strategy-panel div {
+        min-height: 150px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        border: 1px solid var(--line-dark);
+        background: rgba(255, 255, 255, 0.42);
+        padding: 22px;
+      }
+
+      .strategy-panel p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .strategy-panel strong {
+        display: block;
+        font-family: var(--font-display);
+        font-size: clamp(26px, 3vw, 42px);
+        line-height: 1;
+      }
+
+      .variant-proof {
+        background: #f7f1e6;
+        color: #11110f;
+      }
+
+      .proof-media {
+        display: grid;
+        grid-template-columns: 1fr 0.74fr;
+        grid-template-rows: 1fr 1fr;
+        gap: 12px;
+        min-height: 520px;
+      }
+
+      .proof-media img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .proof-media .large {
+        grid-row: 1 / span 2;
+      }
+
+      .metrics {
+        padding: 0;
+      }
+
+      .metrics div {
+        min-width: 150px;
+        border-top: 1px solid var(--line-dark);
+        padding-top: 14px;
+      }
+
+      .metrics dt {
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .metrics dd {
+        margin: 6px 0 0;
+        font-family: var(--font-display);
+        font-size: 30px;
+        line-height: 1;
+      }
+
+      .variant-infra {
+        min-height: 720px;
+        grid-template-columns: minmax(0, 1fr) minmax(280px, 0.58fr);
+        background: #152023;
+        color: #fff8ec;
+      }
+
+      .infra-background {
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(90deg, rgba(13, 18, 19, 0.95), rgba(13, 18, 19, 0.72), rgba(13, 18, 19, 0.4)),
+          var(--infra-image) center / cover;
+      }
+
+      .infra-steps {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        gap: 12px;
+      }
+
+      .infra-steps span {
+        min-height: 66px;
+        display: flex;
+        align-items: center;
+        border: 1px solid rgba(255, 248, 236, 0.18);
+        background: rgba(255, 248, 236, 0.08);
+        padding: 0 20px;
+        font-size: clamp(20px, 3vw, 34px);
+        font-family: var(--font-display);
+      }
+
+      @media (max-width: 920px) {
+        .prototype-header {
+          flex-wrap: wrap;
+        }
+
+        .booking-link {
+          margin-left: 0;
+        }
+
+        .variant,
+        .variant-strategy,
+        .variant-infra {
+          grid-template-columns: 1fr;
+          min-height: auto;
+        }
+
+        .portrait-frame,
+        .proof-media {
+          min-height: 430px;
+        }
+
+        .variant-strategy .variant-copy {
+          order: -1;
+        }
+      }
+
+      @media (max-width: 620px) {
+        .prototype-header {
+          gap: 12px;
+          padding: 12px 14px;
+        }
+
+        .brand strong {
+          font-size: 20px;
+        }
+
+        .bosen-logo {
+          width: 132px;
+          padding-left: 14px;
+        }
+
+        main {
+          padding-inline: 10px;
+        }
+
+        .variant {
+          border-radius: 0;
+          padding: 24px 14px;
+        }
+
+        .strategy-panel,
+        .proof-media {
+          grid-template-columns: 1fr;
+        }
+
+        .proof-media .large {
+          grid-row: auto;
+        }
+
+        .signature-strip {
+          grid-template-columns: 1fr;
+        }
+
+        .signature-strip span + span {
+          border-top: 1px solid var(--line);
+          border-left: 0;
+        }
+      }
+    </style>
+  </body>
+</html>
