@@ -25,10 +25,11 @@ Staging is deployed as a separate Cloudflare Worker:
 - Custom route: `staging.jakubolsa.sk/*`
 - Public staging URL: `https://staging.jakubolsa.sk/`
 - Workers.dev fallback: `https://jakubastroweb-staging.yksvadur-ja.workers.dev/`
-- Last verified: 30 May 2026
+- Last verified: 3 June 2026
 
 The staging page currently returns:
 
+- `/robots.txt` with `Disallow: /`
 - `<meta name="robots" content="noindex,nofollow,noarchive">`
 - visible `STAGING` badge in the browser
 
@@ -61,6 +62,7 @@ Recommended Cloudflare setup:
 
 `PUBLIC_SITE_ENV=staging` adds:
 
+- `/robots.txt` with `Disallow: /`
 - `<meta name="robots" content="noindex,nofollow,noarchive">`
 - a visible `STAGING` badge in the browser
 

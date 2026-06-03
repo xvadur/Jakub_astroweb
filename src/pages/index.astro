@@ -7,6 +7,8 @@ const hasEmail = site.contact.email.includes("@") && !site.contact.email.include
 const hasInstagram = site.contact.instagram.startsWith("http");
 const siteEnv = import.meta.env.PUBLIC_SITE_ENV ?? "production";
 const isStaging = siteEnv !== "production";
+const canonicalUrl = new URL("/", site.siteUrl).toString();
+const heroImageUrl = new URL(site.heroImage, site.siteUrl).toString();
 const availableListings = site.listings.filter((listing) => listing.group === "available");
 const soldListings = site.listings.filter((listing) => listing.group === "sold");
 const availableListingsLabel =
@@ -21,7 +23,9 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "RealEstateAgent",
   name: site.brand,
+  url: canonicalUrl,
   description: `${site.brand}, ${site.role}. ${site.shortPromise}`,
+  image: heroImageUrl,
   areaServed: site.cityLabel,
   ...(hasPhone ? { telephone: site.contact.phone } : {}),
   ...(hasEmail ? { email: site.contact.email } : {}),
@@ -42,13 +46,15 @@ const jsonLd = {
       name="description"
       content={`${site.brand} je ${site.role}. ${site.shortPromise} Dohodnite si konzultáciu k predaju, kúpe alebo prenájmu nehnuteľnosti.`}
     />
+    <link rel="canonical" href={canonicalUrl} />
     <meta property="og:title" content={`${site.brand} | ${site.shortPromise}`} />
     <meta
       property="og:description"
       content="Osobný maklér so servisným zázemím BOSEN Group pre predaj, kúpu, prenájom a stratégiu hodnotnej nehnuteľnosti."
     />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content={site.heroImage} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={heroImageUrl} />
     {isStaging ? <meta name="robots" content="noindex,nofollow,noarchive" /> : null}
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

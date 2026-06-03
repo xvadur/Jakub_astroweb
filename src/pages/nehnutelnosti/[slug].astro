@@ -12,6 +12,10 @@ const { listing } = Astro.props;
 const gallery = listing.gallery?.length ? listing.gallery : [listing.image];
 const isSold = listing.group === "sold";
 const hasInstagram = site.contact.instagram.startsWith("http");
+const siteEnv = import.meta.env.PUBLIC_SITE_ENV ?? "production";
+const isStaging = siteEnv !== "production";
+const canonicalUrl = new URL(listing.href, site.siteUrl).toString();
+const listingImageUrl = new URL(listing.image, site.siteUrl).toString();
 ---
 
 <!doctype html>
@@ -23,10 +27,13 @@ const hasInstagram = site.contact.instagram.startsWith("http");
     <link rel="icon" href="/favicon.ico?v=2" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={`${listing.title} | ${listing.place}. ${listing.summary}`} />
+    <link rel="canonical" href={canonicalUrl} />
     <meta property="og:title" content={`${listing.title} | ${site.brand}`} />
     <meta property="og:description" content={listing.summary} />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content={listing.image} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={listingImageUrl} />
+    {isStaging ? <meta name="robots" content="noindex,nofollow,noarchive" /> : null}
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

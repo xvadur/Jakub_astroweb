@@ -1,5 +1,9 @@
 ---
 import { site } from "../data/site";
+
+const siteEnv = import.meta.env.PUBLIC_SITE_ENV ?? "production";
+const isStaging = siteEnv !== "production";
+const canonicalUrl = new URL("/ochrana-osobnych-udajov/", site.siteUrl).toString();
 ---
 
 <!doctype html>
@@ -15,6 +19,8 @@ import { site } from "../data/site";
       name="description"
       content={`Informácie o spracovaní osobných údajov a používaní cookies na webe ${site.brand}.`}
     />
+    <link rel="canonical" href={canonicalUrl} />
+    {isStaging ? <meta name="robots" content="noindex,nofollow,noarchive" /> : null}
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

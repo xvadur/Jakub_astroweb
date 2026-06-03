@@ -1,6 +1,6 @@
 # Stav projektu Jakub Olša web
 
-Posledná aktualizácia: 1. jún 2026
+Posledná aktualizácia: 3. jún 2026
 
 ## Aktuálny stav
 
@@ -41,6 +41,18 @@ Aktuálna obchodná stratégia je postavená na tom, že Jakub je osobný maklé
   - `POST /api/book`.
 - Wizard už odosiela booking payload na API namiesto priameho `mailto:` flow. Ak API zlyhá, ostáva núdzový email fallback.
 - Worker je pripravený na Google Calendar sync a Telegram notifikácie cez Cloudflare secrets.
+- Produkcia má základnú SEO/AI indexačnú vrstvu:
+  - `/robots.txt`,
+  - `/sitemap.xml`,
+  - `/llms.txt`,
+  - canonical URL na homepage, rezervácii, privacy stránke a detailoch nehnuteľností,
+  - OpenGraph URL/image metadata.
+- Staging build blokuje crawling cez `/robots.txt` a stránky majú `noindex,nofollow,noarchive`.
+- Pripravené sú večerné pracovné dokumenty:
+  - `docs/MEETING_DEMO_PATH_2026-06-03.md`,
+  - `docs/BOSEN_COPY_WORKSHOP_2026-06-03.md`,
+  - `docs/LISTING_TEMPLATE_2026-06-03.md`,
+  - `docs/OPENCLAW_ONBOARDING_2026-06-03.md`.
 
 ## Rozhodnutia
 
@@ -162,6 +174,7 @@ TELEGRAM_CHAT_ID
 - Príprava na stretnutie s Jakubom: `docs/WEDNESDAY_PREP.md`.
 - Aktuálne ponuky: doplniť živé nehnuteľnosti, nielen referenčné predaje.
 - SEO: doplniť lokálne landing texty pre Bratislavu a okolie, ak bude cieľ organická návštevnosť.
+- SEO/AI polish: Google Search Console, sitemap submit, Twitter cards, Breadcrumb/FAQ/Service structured data a lokálne landing pages.
 - Analytics/cookies: ak sa pridá meranie alebo remarketing, doplniť cookie consent.
 
 ## Rýchly dev postup

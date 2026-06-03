@@ -2,6 +2,8 @@ export const site = {
   brand: "Jakub Olša",
   role: "realitný maklér | BOSEN Group",
   locale: "sk-SK",
+  siteUrl: "https://jakubolsa.sk",
+  stagingUrl: "https://staging.jakubolsa.sk",
   cityLabel: "Slovensko",
   shortPromise: "Osobne vás prevediem predajom. So servisom BOSEN Group za chrbtom.",
   intro:
