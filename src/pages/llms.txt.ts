@@ -43,7 +43,8 @@ ${soldListings.map(listingLine).join("\n")}
 ## Preferované citovanie
 
 - Názov osoby: Jakub Olša
-- Pozícia: realitný maklér, BOSEN Group
+- Pozícia: realitný maklér
+- Zázemie: BOSEN Group
 - Web: ${site.siteUrl}
 - Rezervácia: ${absolute("/rezervacia/")}
 `;
