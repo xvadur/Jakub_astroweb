@@ -1,0 +1,583 @@
+---
+import { site } from "../../data/site";
+
+const proofImages = {
+  interior: "/images/listings/skalicka-cesta-4-izbovy-byt/01-obyvacka.jpg",
+  aerial: "/images/listings/orenburska-polyfunkcny-objekt/02-letecky-pohlad.jpg",
+  balcony: "/images/listings/slnecnice-2-izbovy-byt/02-loggia.jpg",
+  martincekova: "/images/listings/martincekova-byt/01-obyvacka.jpg",
+};
+---
+
+<!doctype html>
+<html lang="sk">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/png" href="/favicon.png?v=2" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow,noarchive" />
+    <title>D4 proof prototypy | {site.brand}</title>
+    <meta
+      name="description"
+      content="Interné prototypy D4 smeru: proof, negatívny priestor a fontové experimenty."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Instrument+Sans:wght@400;500;600;700;800&family=Libre+Baskerville:wght@400;700&family=Newsreader:opsz,wght@6..72,500;6..72,650;6..72,700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header class="prototype-header">
+      <a class="brand" href="/prototypy/bosen-infra/">
+        <img src={site.logoImage} alt="" />
+        <span>
+          <strong>{site.brand}</strong>
+          <small>{site.role}</small>
+        </span>
+      </a>
+      <img class="bosen-logo" src={site.bosenGroupLogo} alt="BOSEN Group" />
+      <a class="booking-link" href="/rezervacia/">Rezervácia</a>
+    </header>
+
+    <main>
+      <section class="intro">
+        <p class="eyebrow">D4 · Proof direction</p>
+        <h1>Viac priestoru. Menej vysvetľovania. Silnejší dôkaz.</h1>
+        <p>
+          Toto sú iterácie smeru, ktorý fungoval: servis cez výsledok. Skúšame viac negatívneho
+          priestoru, iný typografický tón a menej preplnený prvý dojem.
+        </p>
+      </section>
+
+      <section class="proof proof-editorial" aria-labelledby="editorial-title">
+        <div class="image-band">
+          <img src={proofImages.interior} alt="" />
+          <img src={proofImages.aerial} alt="" />
+        </div>
+        <div class="copy">
+          <p class="eyebrow">D4.1 · Editorial air</p>
+          <h2 id="editorial-title">Servis má význam vtedy, keď je vidieť na výsledku.</h2>
+          <p>
+            Fotky, cena, príbeh predaja a kupujúci nie sú oddelené veci. Sú to časti jednej stratégie.
+          </p>
+          <div class="metrics">
+            <span><strong>810k</strong> objekt</span>
+            <span><strong>8 dní</strong> predaj</span>
+            <span><strong>6</strong> referencií</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="proof proof-serif" aria-labelledby="serif-title">
+        <div class="serif-copy">
+          <p class="eyebrow">D4.2 · Typographic proof</p>
+          <h2 id="serif-title">Výsledok je najlepšie vysvetlenie servisu.</h2>
+          <p>
+            Keď prezentácia, stratégia a sieť pracujú spolu, klient nevidí zoznam služieb. Vidí predaj,
+            ktorý drží pokope.
+          </p>
+        </div>
+        <div class="serif-proof">
+          <img src={proofImages.martincekova} alt="" />
+          <div>
+            <span>aktuálna ponuka</span>
+            <strong>Martinčekova</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="proof proof-swiss" aria-labelledby="swiss-title">
+        <div class="swiss-grid" aria-hidden="true">
+          <img src={proofImages.interior} alt="" />
+          <img src={proofImages.balcony} alt="" />
+          <img src={proofImages.aerial} alt="" />
+        </div>
+        <div class="copy">
+          <p class="eyebrow">D4.3 · Clean system</p>
+          <h2 id="swiss-title">Dôkaz, proces, výsledok.</h2>
+          <p>
+            Najviac systematická verzia. Menej emócie, viac presnosti. Vhodná, ak chceme prémiový
+            realitný web posunúť bližšie k produktovému systému.
+          </p>
+          <dl class="proof-list">
+            <div><dt>Prezentácia</dt><dd>fotky, video, detail</dd></div>
+            <div><dt>Dopyt</dt><dd>sieť, databáza, kupujúci</dd></div>
+            <div><dt>Výsledok</dt><dd>cena, čas, pokoj</dd></div>
+          </dl>
+        </div>
+      </section>
+
+      <section class="proof proof-gallery" aria-labelledby="gallery-title">
+        <div class="quiet-copy">
+          <p class="eyebrow">D4.4 · Quiet luxury</p>
+          <h2 id="gallery-title">Nie každý servis treba kričať.</h2>
+          <p>
+            Tichšia verzia. Viac galérie, viac priestoru, menej textu. Funguje, ak Jakubove predaje a
+            fotky ponesú väčšiu časť presviedčania.
+          </p>
+        </div>
+        <div class="quiet-gallery">
+          <img src={proofImages.martincekova} alt="" />
+          <img src={proofImages.interior} alt="" />
+          <img src={proofImages.aerial} alt="" />
+        </div>
+      </section>
+
+      <section class="proof proof-product" aria-labelledby="product-title">
+        <div class="product-note">
+          <span>Predajový audit</span>
+          <strong>cena · prezentácia · dopyt · proces</strong>
+        </div>
+        <div class="copy">
+          <p class="eyebrow">D4.5 · Proof + funnel</p>
+          <h2 id="product-title">Najprv ukážeme hodnotu servisu. Potom pozveme do auditu.</h2>
+          <p>
+            Táto verzia najviac prepája vizuálny dôkaz s naším booking systémom. Nie je to iba hero,
+            ale začiatok funnelu.
+          </p>
+          <a class="button" href="/rezervacia/">Rezervovať konzultáciu</a>
+        </div>
+      </section>
+    </main>
+
+    <style>
+      :root {
+        --paper: #f5efe4;
+        --ink: #12110f;
+        --dark: #1d1c18;
+        --cream: #fff7ec;
+        --muted: #cfc5b6;
+        --brass: #d9b86e;
+        --line: rgba(255, 247, 236, 0.18);
+        --line-dark: rgba(18, 17, 15, 0.16);
+        --font-body: "Instrument Sans", system-ui, sans-serif;
+        --font-display: "Newsreader", Georgia, serif;
+        --font-alt: "Cormorant Garamond", Georgia, serif;
+        --font-classic: "Libre Baskerville", Georgia, serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: var(--font-body);
+      }
+
+      img {
+        display: block;
+        max-width: 100%;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .prototype-header {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        display: flex;
+        align-items: center;
+        gap: 22px;
+        min-height: 74px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(15, 15, 13, 0.88);
+        color: var(--cream);
+        padding: 14px clamp(18px, 4vw, 42px);
+        backdrop-filter: blur(18px);
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        text-decoration: none;
+      }
+
+      .brand img {
+        width: 42px;
+        height: 42px;
+        object-fit: contain;
+      }
+
+      .brand strong {
+        display: block;
+        font-family: var(--font-display);
+        font-size: 24px;
+        line-height: 1;
+      }
+
+      .brand small {
+        display: block;
+        margin-top: 3px;
+        color: rgba(255, 247, 236, 0.66);
+        font-size: 13px;
+      }
+
+      .bosen-logo {
+        width: 158px;
+        height: 34px;
+        border-left: 1px solid rgba(255, 255, 255, 0.16);
+        object-fit: contain;
+        object-position: left center;
+        padding-left: 20px;
+      }
+
+      .booking-link {
+        margin-left: auto;
+        border: 1px solid rgba(217, 184, 110, 0.5);
+        border-radius: 999px;
+        color: var(--brass);
+        padding: 10px 16px;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 800;
+      }
+
+      main {
+        display: grid;
+        gap: clamp(22px, 4vw, 46px);
+        padding: 36px clamp(12px, 3vw, 34px) 60px;
+      }
+
+      .intro {
+        min-height: 44vh;
+        display: grid;
+        align-content: end;
+        width: min(1080px, 100%);
+        padding: clamp(40px, 7vw, 110px) 0 clamp(28px, 4vw, 54px);
+      }
+
+      .eyebrow {
+        margin: 0 0 14px;
+        color: var(--brass);
+        font-size: 13px;
+        font-weight: 900;
+        letter-spacing: 0;
+        text-transform: uppercase;
+      }
+
+      h1,
+      h2 {
+        margin: 0;
+        letter-spacing: 0;
+        line-height: 0.94;
+      }
+
+      h1 {
+        max-width: 960px;
+        font-family: var(--font-alt);
+        font-size: clamp(56px, 8vw, 126px);
+        font-weight: 700;
+      }
+
+      h2 {
+        max-width: 980px;
+        font-family: var(--font-display);
+        font-size: clamp(48px, 7vw, 104px);
+        font-weight: 700;
+      }
+
+      .intro p:last-child,
+      .copy > p:not(.eyebrow),
+      .serif-copy > p:not(.eyebrow),
+      .quiet-copy > p:not(.eyebrow) {
+        max-width: 760px;
+        font-size: clamp(17px, 2vw, 23px);
+        line-height: 1.5;
+        opacity: 0.74;
+      }
+
+      .proof {
+        min-height: min(850px, calc(100vh - 86px));
+        overflow: hidden;
+        border-radius: 8px;
+        background: var(--dark);
+        color: var(--cream);
+        padding: clamp(26px, 5vw, 72px);
+      }
+
+      .proof-editorial {
+        display: grid;
+        grid-template-rows: minmax(260px, 0.82fr) auto;
+        gap: clamp(52px, 8vw, 118px);
+      }
+
+      .image-band {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(260px, 0.42fr);
+        gap: 18px;
+        min-height: 320px;
+      }
+
+      .image-band img,
+      .serif-proof img,
+      .swiss-grid img,
+      .quiet-gallery img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .metrics {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 18px;
+        margin-top: 40px;
+      }
+
+      .metrics span {
+        min-width: 150px;
+        border-top: 1px solid var(--line);
+        padding-top: 14px;
+        color: rgba(255, 247, 236, 0.72);
+        font-weight: 800;
+      }
+
+      .metrics strong {
+        display: block;
+        color: var(--cream);
+        font-family: var(--font-alt);
+        font-size: clamp(42px, 6vw, 76px);
+        line-height: 0.95;
+      }
+
+      .proof-serif {
+        display: grid;
+        grid-template-columns: minmax(0, 0.92fr) minmax(320px, 0.58fr);
+        gap: clamp(42px, 8vw, 120px);
+        align-items: center;
+        background: #f6efe4;
+        color: var(--ink);
+      }
+
+      .proof-serif h2 {
+        max-width: 780px;
+        font-family: var(--font-classic);
+        font-size: clamp(42px, 5.7vw, 86px);
+        line-height: 1.04;
+      }
+
+      .proof-serif .eyebrow {
+        color: #8b6b31;
+      }
+
+      .serif-proof {
+        display: grid;
+        gap: 20px;
+      }
+
+      .serif-proof img {
+        min-height: 520px;
+      }
+
+      .serif-proof span {
+        color: #82786a;
+        font-size: 13px;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .serif-proof strong {
+        display: block;
+        margin-top: 8px;
+        font-family: var(--font-alt);
+        font-size: clamp(42px, 5vw, 74px);
+        line-height: 0.95;
+      }
+
+      .proof-swiss {
+        display: grid;
+        grid-template-columns: minmax(320px, 0.7fr) minmax(0, 1fr);
+        gap: clamp(44px, 7vw, 108px);
+        align-items: center;
+      }
+
+      .proof-swiss h2 {
+        font-family: var(--font-body);
+        font-size: clamp(46px, 7vw, 102px);
+        font-weight: 800;
+        line-height: 0.96;
+      }
+
+      .swiss-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+        gap: 12px;
+        min-height: 540px;
+      }
+
+      .swiss-grid img:first-child {
+        grid-column: span 2;
+      }
+
+      .proof-list {
+        display: grid;
+        gap: 0;
+        margin: 38px 0 0;
+      }
+
+      .proof-list div {
+        display: grid;
+        grid-template-columns: 160px minmax(0, 1fr);
+        gap: 22px;
+        border-top: 1px solid var(--line);
+        padding: 18px 0;
+      }
+
+      .proof-list dt {
+        color: var(--brass);
+        font-size: 13px;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .proof-list dd {
+        margin: 0;
+        color: rgba(255, 247, 236, 0.76);
+        font-size: 20px;
+      }
+
+      .proof-gallery {
+        display: grid;
+        align-content: space-between;
+        gap: clamp(54px, 8vw, 120px);
+        background: #fbf6ee;
+        color: var(--ink);
+      }
+
+      .proof-gallery .eyebrow {
+        color: #8b6b31;
+      }
+
+      .proof-gallery h2 {
+        max-width: 820px;
+        font-family: var(--font-alt);
+        font-size: clamp(58px, 9vw, 132px);
+      }
+
+      .quiet-gallery {
+        display: grid;
+        grid-template-columns: 1.1fr 0.62fr 0.8fr;
+        gap: 18px;
+        min-height: 360px;
+      }
+
+      .proof-product {
+        display: grid;
+        grid-template-columns: minmax(320px, 0.58fr) minmax(0, 1fr);
+        gap: clamp(46px, 8vw, 120px);
+        align-items: center;
+        background:
+          linear-gradient(90deg, rgba(18, 17, 15, 0.94), rgba(18, 17, 15, 0.76)),
+          url("/images/brand/bratislava-panorama.jpg") center / cover;
+      }
+
+      .product-note {
+        min-height: 520px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        border: 1px solid var(--line);
+        padding: clamp(24px, 4vw, 44px);
+      }
+
+      .product-note span {
+        color: var(--brass);
+        font-size: 13px;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .product-note strong {
+        display: block;
+        margin-top: 18px;
+        font-family: var(--font-alt);
+        font-size: clamp(46px, 7vw, 92px);
+        line-height: 0.94;
+      }
+
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 54px;
+        margin-top: 30px;
+        border-radius: 6px;
+        background: var(--brass);
+        color: #15120d;
+        padding: 0 22px;
+        text-decoration: none;
+        font-weight: 900;
+      }
+
+      @media (max-width: 940px) {
+        .prototype-header {
+          flex-wrap: wrap;
+        }
+
+        .booking-link {
+          margin-left: 0;
+        }
+
+        .proof-serif,
+        .proof-swiss,
+        .proof-product {
+          grid-template-columns: 1fr;
+        }
+
+        .serif-proof img,
+        .product-note {
+          min-height: 380px;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .prototype-header {
+          gap: 12px;
+          padding: 12px 14px;
+        }
+
+        .brand strong {
+          font-size: 20px;
+        }
+
+        .bosen-logo {
+          width: 132px;
+          padding-left: 14px;
+        }
+
+        main {
+          padding-inline: 10px;
+        }
+
+        .proof {
+          border-radius: 0;
+          padding: 26px 14px;
+        }
+
+        .image-band,
+        .quiet-gallery,
+        .swiss-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .swiss-grid img:first-child {
+          grid-column: auto;
+        }
+
+        .proof-list div {
+          grid-template-columns: 1fr;
+          gap: 8px;
+        }
+      }
+    </style>
+  </body>
+</html>

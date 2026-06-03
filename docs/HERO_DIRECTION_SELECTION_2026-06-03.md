@@ -7,6 +7,13 @@ Smer D - BOSEN infra
 Jeden kontakt pre klienta. Cely servis za predajom.
 ```
 
+Po druhej iteracii je najsilnejsi konkretny pod-smer:
+
+```text
+D4 - Infra cez dokazy
+Servis ma vyznam vtedy, ked je vidiet na vysledku.
+```
+
 ## Preco to funguje
 
 - Nie je to iba vizualny styl, ale mechanizmus.
@@ -24,6 +31,7 @@ Jeden kontakt pre klienta. Cely servis za predajom.
   - ludsky a doverovy,
   - dokazovy cez realne predaje,
   - alebo technologicky s AI/OpenClaw ako internym servisom.
+- Pri D4 testovat viac negativneho priestoru, fontovu osobitost a editorial/premium real estate pocit.
 
 ## Zachovat
 
@@ -33,3 +41,9 @@ Jeden kontakt pre klienta. Cely servis za predajom.
 - Konkretne servisne pojmy: cena, prezentacia, databaza, obhliadky, pravo, financie.
 - Jakub ako jeden kontakt.
 - BOSEN ako infrastruktura, nie duplicitna rola v logu.
+
+## Poznamka k prototypovaniu
+
+Nerobime styri hotove weby. Robime lacne throwaway prototypy jedneho hero/component smeru.
+Vo Figme by to boli artboardy, v Storybooku varianty komponentu, v kode su to interne `noindex`
+routes. Ciel je rychlo zabit slabe smery a najst jazyk, ktory stoji za implementaciu do homepage.
