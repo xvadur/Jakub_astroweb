@@ -38,6 +38,10 @@ npm run build
 - `docs/FILESYSTEM_LAYOUT.md` - canonical folder and compatibility aliases
 - `docs/CONVERSION_FUNNEL_RESEARCH.md` - sales funnel and booking research
 - `docs/GOOGLE_CALENDAR_BOOKING.md` - Worker API, Google Calendar sync, and Telegram notification plan
+- `docs/GOOGLE_CALENDAR_HANDOFF.md` - Google Calendar OAuth state and safe credentials transfer runbook
+- `docs/JARVIS_OPERATING_PROTOCOL.md` - operating model for web, lead, Telegram, calendar, and deploy work
+- `docs/MAC_MINI_HANDOFF.md` - GitHub-first migration notes for moving the project/runtime to Mac mini
+- `docs/OPENCLAW_TELEGRAM_JAKUB.md` - OpenClaw Telegram pairing and bot runtime runbook
 - `docs/WEDNESDAY_PREP.md` - meeting prep for Jakub
 - `docs/TODO_2026-06-03.md` - tomorrow checklist and full website backlog
 - `ops/telegram-worker` - minimal Telegram notification endpoint without n8n
@@ -88,6 +92,9 @@ Current API routes:
 Without Google Calendar secrets, the API runs in mock mode so the UI can be tested end-to-end.
 After Google OAuth secrets are configured, the Worker checks `freeBusy`, creates a Google Calendar
 event, and sends a Telegram notification. See `docs/GOOGLE_CALENDAR_BOOKING.md`.
+
+`ops/telegram-worker` remains available for a lighter standalone lead notification path, but the
+current primary funnel is `/rezervacia/` -> `/api/book`.
 
 ## Asset hygiene
 

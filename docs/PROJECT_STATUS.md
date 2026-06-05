@@ -1,6 +1,6 @@
 # Stav projektu Jakub Olša web
 
-Posledná aktualizácia: 4. jún 2026
+Posledná aktualizácia: 5. jún 2026
 
 ## Aktuálny stav
 
@@ -82,6 +82,42 @@ Aktuálna obchodná stratégia je postavená na tom, že Jakub je osobný maklé
 - Google Calendar OAuth secrets a Telegram secrets sa nesmú ukladať do repozitára. Musia ísť do Cloudflare secrets.
 - OpenClaw hook URL/token a prípadné Cloudflare Access service tokeny sa nesmú ukladať do repozitára. Najprv sa nastavujú iba na `jakubastroweb-staging`.
 - Docker OpenClaw agent model má zostať `openai/gpt-5.5`; provider `openai-codex` nemal zodpovedajúci auth route a spôsoboval zlyhanie agent runu.
+
+## OpenClaw a Telegram stav
+
+Overené 5. júna 2026:
+
+- OpenClaw gateway beží lokálne cez launchd na porte `18789`.
+- Telegram bot v OpenClaw konfigurácii je `@jakub_reality_bot` s menom `jakub_realitky`.
+- Telegram token je uložený lokálne v `~/.openclaw/credentials/jakub-telegram-bot-token`, nie v repozitári.
+- Telegram channel bol nakonfigurovaný a beží v polling móde. Pred produkčným odovzdaním ho treba znova overiť správou v Telegrame.
+- Telegram/OpenClaw pairing treba pri presune na Mac mini overiť test správou, vrátane inbound aj outbound smeru.
+- OpenClaw model provider smoke test prešiel cez `openai-codex/gpt-5.5`. Ak auth pri deme zlyhá, obnoviť ho cez `openclaw models auth login --provider openai-codex`.
+
+Praktický runbook je v `docs/OPENCLAW_TELEGRAM_JAKUB.md`.
+
+## Cloudflare/Wrangler stav
+
+Overené 5. júna 2026:
+
+- Wrangler login na MacBooku je hotový cez OAuth.
+- Cloudflare účet: `yksvadur.ja@gmail.com`.
+- Cloudflare account ID: `002b0727daee60448cf72c0b08f7810f`.
+- OpenClaw môže používať `npx wrangler ...` cez lokálny macOS user profil, ale samostatný Cloudflare API token nie je uložený v OpenClaw secrets.
+- Pri presune na Mac mini je najčistejšie spustiť nový `npx wrangler@latest login` na Mac mini namiesto kopírovania OAuth tokenov.
+
+Mac mini prenos je dokumentovaný v `docs/MAC_MINI_HANDOFF.md`.
+
+## Google Calendar OAuth stav
+
+Overené 5. júna 2026:
+
+- Google OAuth Desktop client credentials sú lokálne uložené mimo repozitára v `.secrets/`.
+- `gog` pozná OAuth client pod názvom `jakub-calendar`.
+- Cieľový Google účet pre Calendar je `jakubolsa90@gmail.com`.
+- Jakubov OAuth consent sa zatiaľ nepodarilo dokončiť, takže refresh token pre jeho Calendar ešte nemáme.
+- Calendar ID zatiaľ nie je vybrané; po úspešnej autorizácii treba vypísať kalendáre cez `gog calendar calendars`.
+- Prenos na iný Mac je dokumentovaný v `docs/GOOGLE_CALENDAR_HANDOFF.md`.
 
 ## Cloudflare a doména
 
@@ -175,6 +211,7 @@ TELEGRAM_CHAT_ID
 ```
 
 - Po schválení flow prepnúť Google OAuth secrets na Jakubov Google účet/kalendár.
+- Dokončiť Jakubov Google Calendar OAuth consent na cieľovom Macu, ak má OpenClaw/gog alebo Worker zapisovať alebo čítať interný kalendár.
 - Overiť, že `/api/availability` vracia obsadené sloty podľa Google kalendára a `/api/book` vytvorí event.
 - Skontrolovať stránku na mobile po nasadení na reálnej doméne.
 - Skontrolovať SSL/TLS v Cloudflare, ideálne `Full`.

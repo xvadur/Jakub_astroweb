@@ -31,6 +31,31 @@ PUBLIC_LEAD_ENDPOINT=https://your-worker.your-subdomain.workers.dev
 
 Restart the Astro dev server or rebuild the site.
 
+## Local smoke test
+
+For a local test, keep real values in `.dev.vars`, not in Git:
+
+```bash
+cd ops/telegram-worker
+cp .dev.vars.example .dev.vars
+# Fill TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID in .dev.vars.
+wrangler dev --local --port 8787
+```
+
+From another terminal:
+
+```bash
+curl -X POST http://127.0.0.1:8787 \
+  -H "Content-Type: application/json" \
+  -d '{"source":"jakub-olsa-web","meno":"Test","email":"test@example.com","telefon":"+421900000000","poznamka":"Smoke test"}'
+```
+
+Expected response:
+
+```json
+{"ok":true}
+```
+
 ## Multiple clients
 
 For multiple websites, each form sends a `source` value. The Worker can route by source with

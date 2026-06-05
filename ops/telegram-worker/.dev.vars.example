@@ -1,0 +1,5 @@
+# Local-only values for `wrangler dev`.
+# Copy to `.dev.vars`, fill real values, and keep `.dev.vars` out of Git.
+TELEGRAM_BOT_TOKEN=
+TELEGRAM_CHAT_ID=
+ALLOWED_ORIGINS=http://127.0.0.1:4323,http://localhost:4323
