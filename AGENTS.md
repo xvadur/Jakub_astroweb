@@ -6,7 +6,8 @@ Business website for Jakub, a real-estate broker.
 
 ## Current State
 
-- Source project is migrated and active in `/Users/xvadur_mac/Jakub_Astro`.
+- Source project is migrated and active in `/Users/xvadur_mac/Diera/active/jakub/Jakub_Astro`.
+- Compatibility symlink: `/Users/xvadur_mac/Jakub_Astro`.
 - Production domain: `https://jakubolsa.sk/`.
 - Staging domain: `https://staging.jakubolsa.sk/`.
 - Current public positioning: Jakub Olša as an experienced real-estate broker backed by BOSEN service infrastructure.

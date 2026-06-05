@@ -1,14 +1,17 @@
 ---
 import { site } from "../data/site";
+import { createHomeJsonLd, createPageMeta, serializeJsonLd } from "../data/seo";
 
-const cleanPhone = site.contact.phone.replace(/[^\d+]/g, "");
-const hasPhone = cleanPhone.length >= 10;
-const hasEmail = site.contact.email.includes("@") && !site.contact.email.includes("example.");
 const hasInstagram = site.contact.instagram.startsWith("http");
 const siteEnv = import.meta.env.PUBLIC_SITE_ENV ?? "production";
 const isStaging = siteEnv !== "production";
-const canonicalUrl = new URL("/", site.siteUrl).toString();
-const heroImageUrl = new URL(site.heroImage, site.siteUrl).toString();
+const pageDescription = `${site.brand} je ${site.role}. ${site.shortPromise} Dohodnite si konzultáciu k predaju, kúpe alebo prenájmu nehnuteľnosti.`;
+const pageMeta = createPageMeta({
+  title: `${site.brand} | ${site.shortPromise}`,
+  description: pageDescription,
+  path: "/",
+  image: site.heroImage,
+});
 const availableListings = site.listings.filter((listing) => listing.group === "available");
 const soldListings = site.listings.filter((listing) => listing.group === "sold");
 const availableListingsLabel =
@@ -19,18 +22,7 @@ const availableListingsLabel =
       : availableListings.length > 0
         ? `${availableListings.length} aktuálnych ponúk`
         : "pripravené na doplnenie";
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "RealEstateAgent",
-  name: site.brand,
-  url: canonicalUrl,
-  description: `${site.brand}, ${site.role}. ${site.shortPromise}`,
-  image: heroImageUrl,
-  areaServed: site.cityLabel,
-  ...(hasPhone ? { telephone: site.contact.phone } : {}),
-  ...(hasEmail ? { email: site.contact.email } : {}),
-  ...(hasInstagram ? { sameAs: [site.contact.instagram] } : {}),
-};
+const jsonLd = createHomeJsonLd(pageMeta);
 ---
 
 <!doctype html>
@@ -44,17 +36,19 @@ const jsonLd = {
     <meta name="generator" content={Astro.generator} />
     <meta
       name="description"
-      content={`${site.brand} je ${site.role}. ${site.shortPromise} Dohodnite si konzultáciu k predaju, kúpe alebo prenájmu nehnuteľnosti.`}
+      content={pageMeta.description}
     />
-    <link rel="canonical" href={canonicalUrl} />
-    <meta property="og:title" content={`${site.brand} | ${site.shortPromise}`} />
-    <meta
-      property="og:description"
-      content="Osobný maklér so servisným zázemím BOSEN Group pre predaj, kúpu, prenájom a stratégiu hodnotnej nehnuteľnosti."
-    />
+    <link rel="canonical" href={pageMeta.canonicalUrl} />
+    <meta property="og:title" content={pageMeta.title} />
+    <meta property="og:description" content={pageMeta.description} />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content={canonicalUrl} />
-    <meta property="og:image" content={heroImageUrl} />
+    <meta property="og:url" content={pageMeta.canonicalUrl} />
+    <meta property="og:image" content={pageMeta.imageUrl} />
+    <meta property="og:locale" content={site.locale.replace("-", "_")} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageMeta.title} />
+    <meta name="twitter:description" content={pageMeta.description} />
+    <meta name="twitter:image" content={pageMeta.imageUrl} />
     {isStaging ? <meta name="robots" content="noindex,nofollow,noarchive" /> : null}
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -62,11 +56,11 @@ const jsonLd = {
       href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,650;6..72,700&display=swap"
       rel="stylesheet"
     />
-    <title>{site.brand} | {site.shortPromise}</title>
+    <title>{pageMeta.title}</title>
     <script is:inline>
       document.documentElement.classList.add("js");
     </script>
-    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    <script type="application/ld+json" set:html={serializeJsonLd(jsonLd)} />
   </head>
   <body>
     <a class="skip-link" href="#top">Prejsť na obsah</a>

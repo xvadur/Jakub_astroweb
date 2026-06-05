@@ -125,3 +125,58 @@ npx wrangler secret put TELEGRAM_CHAT_ID --name jakubastroweb-staging
 ```
 
 Repeat on `jakubastroweb` only after the staging flow is approved.
+
+## OpenClaw handoff secrets
+
+The booking Worker can optionally hand off a successfully accepted booking to OpenClaw after the Calendar/booking response path. This is non-blocking and should be tested on staging first.
+
+Local preflight 2026-06-04:
+
+- Docker OpenClaw `/hooks/agent` is enabled on `http://127.0.0.1:18889/hooks/agent`.
+- Local Worker E2E test passed in mock mode: `/api/book` returned `200 OK`, `ctx.waitUntil` handed the booking to OpenClaw, and `jakub-olsa` created an internal admin case.
+- Current CRM blocker: HighLevel connector returns `401 Reauthentication required`; do not treat CRM write as live until reauth or a replacement backend is configured.
+- Staging still needs a public HTTPS URL for the local OpenClaw hook, for example Cloudflare Tunnel/Access.
+
+Local repo preflight 2026-06-05:
+
+- Docker OpenClaw mounts Jakub Astro repo from `/Users/xvadur_mac/Jakub_Astro` to `/home/node/Jakub_Astro`.
+- `jakub-olsa` can read `/home/node/Jakub_Astro/package.json` and `/home/node/Jakub_Astro/astro.config.mjs`.
+- Agent connection smoke test returned `CONNECTED`, package `clients-jakub-olsa`, and confirmed `astro.config.mjs`.
+
+Required staging secrets:
+
+```bash
+npx wrangler secret put OPENCLAW_HOOK_URL --name jakubastroweb-staging
+npx wrangler secret put OPENCLAW_HOOK_TOKEN --name jakubastroweb-staging
+```
+
+Optional staging secrets when the OpenClaw hook is behind Cloudflare Access:
+
+```bash
+npx wrangler secret put OPENCLAW_CF_ACCESS_CLIENT_ID --name jakubastroweb-staging
+npx wrangler secret put OPENCLAW_CF_ACCESS_CLIENT_SECRET --name jakubastroweb-staging
+```
+
+Optional fallback delivery to Telegram from the isolated OpenClaw run:
+
+```bash
+npx wrangler secret put OPENCLAW_DELIVER --name jakubastroweb-staging
+npx wrangler secret put OPENCLAW_DELIVERY_CHANNEL --name jakubastroweb-staging
+npx wrangler secret put OPENCLAW_DELIVERY_TO --name jakubastroweb-staging
+```
+
+Recommended values after Telegram is verified:
+
+```text
+OPENCLAW_DELIVER=announce
+OPENCLAW_DELIVERY_CHANNEL=telegram
+OPENCLAW_DELIVERY_TO=<Jakub chat id or trusted group id>
+```
+
+Non-secret defaults live in `wrangler.toml`:
+
+```text
+OPENCLAW_AGENT_ID=jakub-olsa
+OPENCLAW_HOOK_TIMEOUT_MS=8000
+OPENCLAW_TIMEOUT_SECONDS=120
+```

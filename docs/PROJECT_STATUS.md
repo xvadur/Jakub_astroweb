@@ -1,6 +1,6 @@
 # Stav projektu Jakub Olša web
 
-Posledná aktualizácia: 3. jún 2026
+Posledná aktualizácia: 4. jún 2026
 
 ## Aktuálny stav
 
@@ -53,6 +53,20 @@ Aktuálna obchodná stratégia je postavená na tom, že Jakub je osobný maklé
   - `docs/BOSEN_COPY_WORKSHOP_2026-06-03.md`,
   - `docs/LISTING_TEMPLATE_2026-06-03.md`,
   - `docs/OPENCLAW_ONBOARDING_2026-06-03.md`.
+- OpenClaw príprava pre Jakuba je rozbehnutá bez ukladania secretov:
+  - lokálne vytvorený oddelený agent `jakub-olsa`,
+  - workspace `/Users/xvadur_mac/OpenClaw/workspaces/jakub-olsa`,
+  - pripravený non-blocking Worker handoff po úspešnom `/api/book`,
+  - pripravený agent prompt, tool pravidlá, Supabase schema draft a runbook.
+- Docker runtime je nainštalovaný user-local cez Docker CLI + Colima a overený cez `hello-world`.
+- Docker OpenClaw pilot beží oddelene na `http://127.0.0.1:18889/` s vlastným config/workspace adresárom.
+- Docker agent `jakub-olsa` je overený cez `openclaw-cli agent` smoke test a používa `openai/gpt-5.5` cez OpenAI Codex runtime.
+- Docker agent `jakub-olsa` má od 2026-06-05 priamy mount na Jakub Astro repo: host `/Users/xvadur_mac/Jakub_Astro` -> container `/home/node/Jakub_Astro`.
+- Astro repo connection smoke test cez agenta prešiel: agent odpovedal `CONNECTED`, package `clients-jakub-olsa`, `astro.config.mjs` existuje.
+- Docker OpenClaw `/hooks/agent` je lokálne zapnutý, chránený bearer tokenom mimo repozitára a obmedzený na agenta `jakub-olsa`.
+- Hook smoke test z 2026-06-04 prešiel: neautorizovaný request vracia `401`, autorizovaný request vytvorí `runId` a session `agent:jakub-olsa:main` ukladá odpoveď agenta.
+- Lokálny Worker E2E test z 2026-06-04 prešiel: `/api/book` v mock režime odovzdal test booking cez `ctx.waitUntil` do OpenClaw `/hooks/agent` a agent vytvoril interný admin case.
+- Aktuálny OpenClaw handoff blocker pre reálne CRM zapisovanie: HighLevel connector vracia `401 Reauthentication required`; agent správne nevytvára falošný CRM úspech.
 
 ## Rozhodnutia
 
@@ -66,6 +80,8 @@ Aktuálna obchodná stratégia je postavená na tom, že Jakub je osobný maklé
 - Booking funnel má zatiaľ mock dostupnosť, kým nie sú nastavené Google Calendar OAuth secrets. Na stagingu sa najprv otestuje Adamov Google kalendár, až potom Jakubov.
 - Google Maps API kľúč sa nesmie ukladať do repozitára. Musí byť nastavený ako environment variable a obmedzený na povolené domény.
 - Google Calendar OAuth secrets a Telegram secrets sa nesmú ukladať do repozitára. Musia ísť do Cloudflare secrets.
+- OpenClaw hook URL/token a prípadné Cloudflare Access service tokeny sa nesmú ukladať do repozitára. Najprv sa nastavujú iba na `jakubastroweb-staging`.
+- Docker OpenClaw agent model má zostať `openai/gpt-5.5`; provider `openai-codex` nemal zodpovedajúci auth route a spôsoboval zlyhanie agent runu.
 
 ## Cloudflare a doména
 
@@ -170,6 +186,11 @@ TELEGRAM_CHAT_ID
 - CRM-lite: ukladať dopyty/rezervácie do Google Sheet, Notion alebo vlastnej databázy.
 - Notifikácie: Telegram alebo WhatsApp po odoslaní formulára/rezervácie.
 - OpenClaw agent pre Jakuba: návrh full broker suite je zdokumentovaný v `docs/JAKUB_OPENCLAW_SUITE_ARCHITECTURE.md`.
+- OpenClaw runbook a prvý technický rez:
+  - `docs/OPENCLAW_RUNBOOK_2026-06-03.md`,
+  - `docs/OPENCLAW_TOOL_CONTRACTS_2026-06-03.md`,
+  - `ops/openclaw/README.md`,
+  - `ops/openclaw/supabase/SUPABASE_SCHEMA.sql`.
 - Conversion funnel research: `docs/CONVERSION_FUNNEL_RESEARCH.md`.
 - Príprava na stretnutie s Jakubom: `docs/WEDNESDAY_PREP.md`.
 - Aktuálne ponuky: doplniť živé nehnuteľnosti, nielen referenčné predaje.

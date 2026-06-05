@@ -1,11 +1,17 @@
 ---
 import { site } from "../data/site";
+import { createPageMeta, createReservationJsonLd, serializeJsonLd } from "../data/seo";
 
 const siteEnv = import.meta.env.PUBLIC_SITE_ENV ?? "production";
 const isStaging = siteEnv !== "production";
 const hasInstagram = site.contact.instagram.startsWith("http");
-const canonicalUrl = new URL("/rezervacia/", site.siteUrl).toString();
-const ogImageUrl = new URL(site.heroImage, site.siteUrl).toString();
+const pageMeta = createPageMeta({
+  title: `Rezervácia konzultácie | ${site.brand}`,
+  description: `Rezervácia konzultácie s realitným maklérom Jakubom Olšom. ${site.shortPromise}`,
+  path: "/rezervacia/",
+  image: site.heroImage,
+});
+const jsonLd = createReservationJsonLd(pageMeta);
 const googleMapsApiKey = import.meta.env.PUBLIC_GOOGLE_MAPS_API_KEY?.trim() ?? "";
 const googleMapsScriptUrl = googleMapsApiKey
   ? `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(
@@ -25,17 +31,19 @@ const googleMapsScriptUrl = googleMapsApiKey
     <meta name="generator" content={Astro.generator} />
     <meta
       name="description"
-      content={`Rezervácia konzultácie s realitným maklérom Jakubom Olšom. ${site.shortPromise}`}
+      content={pageMeta.description}
     />
-    <link rel="canonical" href={canonicalUrl} />
-    <meta property="og:title" content={`Rezervácia konzultácie | ${site.brand}`} />
-    <meta
-      property="og:description"
-      content="Vyberte termín hovoru, doplňte kontext k nehnuteľnosti a Jakub sa pripraví na konkrétnu situáciu."
-    />
+    <link rel="canonical" href={pageMeta.canonicalUrl} />
+    <meta property="og:title" content={pageMeta.title} />
+    <meta property="og:description" content={pageMeta.description} />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content={canonicalUrl} />
-    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:url" content={pageMeta.canonicalUrl} />
+    <meta property="og:image" content={pageMeta.imageUrl} />
+    <meta property="og:locale" content={site.locale.replace("-", "_")} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageMeta.title} />
+    <meta name="twitter:description" content={pageMeta.description} />
+    <meta name="twitter:image" content={pageMeta.imageUrl} />
     {isStaging ? <meta name="robots" content="noindex,nofollow,noarchive" /> : null}
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -44,7 +52,8 @@ const googleMapsScriptUrl = googleMapsApiKey
       rel="stylesheet"
     />
     {googleMapsScriptUrl ? <script is:inline async defer src={googleMapsScriptUrl}></script> : null}
-    <title>Rezervácia konzultácie | {site.brand}</title>
+    <title>{pageMeta.title}</title>
+    <script type="application/ld+json" set:html={serializeJsonLd(jsonLd)} />
   </head>
   <body>
     {isStaging ? <div class="staging-ribbon" aria-hidden="true">STAGING</div> : null}

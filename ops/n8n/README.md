@@ -9,7 +9,15 @@ Goal:
 
 ## Mac mini status
 
-The Mac mini has enough disk space for this. Docker is not installed yet on the Mac mini, so this folder is ready for Docker/Colima/Docker Desktop once the runtime is installed.
+The Mac mini has enough disk space for this. Docker runtime is available through user-local Docker CLI + Colima:
+
+```text
+Docker CLI: 29.5.2
+Docker Compose: v5.1.4
+Colima: v0.10.2
+Lima: 2.1.2
+Runtime: Colima with macOS Virtualization.Framework
+```
 
 ## Run
 

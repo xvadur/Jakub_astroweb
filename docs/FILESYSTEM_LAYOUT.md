@@ -3,7 +3,7 @@
 Canonical project folder:
 
 ```text
-/Users/xvadur_mac/Jakub_Astro
+/Users/xvadur_mac/Diera/active/jakub/Jakub_Astro
 ```
 
 Everything that belongs to Jakub's website project should live inside this folder:
@@ -24,9 +24,10 @@ Private/raw research note rule:
 Compatibility aliases:
 
 ```text
-/Users/xvadur_mac/Projects/Jakub_Astro -> /Users/xvadur_mac/Jakub_Astro
-/Users/xvadur_mac/Workspace/legacy/code/Jakub_Astro -> /Users/xvadur_mac/Jakub_Astro
-/Users/xvadur_mac/Workspace/projects/jakub-astro -> /Users/xvadur_mac/Jakub_Astro
+/Users/xvadur_mac/Jakub_Astro -> /Users/xvadur_mac/Diera/active/jakub/Jakub_Astro
+/Users/xvadur_mac/Projects/Jakub_Astro -> /Users/xvadur_mac/Diera/active/jakub/Jakub_Astro
+/Users/xvadur_mac/Workspace/legacy/code/Jakub_Astro -> /Users/xvadur_mac/Diera/active/jakub/Jakub_Astro
+/Users/xvadur_mac/Workspace/projects/jakub-astro -> /Users/xvadur_mac/Diera/active/jakub/Jakub_Astro
 ```
 
 These aliases exist only so older references still open the same project. They must not become separate copies.

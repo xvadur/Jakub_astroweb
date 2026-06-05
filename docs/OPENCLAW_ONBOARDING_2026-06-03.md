@@ -106,10 +106,66 @@ Verejne veci pojdu von az po tvojom schvaleni.
 ## Po meetingu
 
 - [ ] Vytvorit Telegram bota.
-- [ ] Navrhnut Supabase schema.
-- [ ] Pridat Worker notifikaciu do Telegramu.
+- [x] Navrhnut Supabase schema.
+- [x] Pridat Worker notifikaciu do Telegramu.
 - [ ] Pridat CRM write po uspesnom bookingu.
-- [ ] Pripravit OpenClaw prompt/personu pre Jakuba.
+- [x] Pripravit OpenClaw prompt/personu pre Jakuba.
 - [ ] Pripravit workflow "fotky -> property draft".
-- [ ] Pripravit workflow "lead -> follow-up".
-- [ ] Pripravit workflow "staging -> approval -> production".
+- [x] Pripravit workflow "lead -> follow-up".
+- [x] Pripravit workflow "staging -> approval -> production".
+
+## Pripravene bez secretov - 2026-06-03
+
+- Vytvoreny lokalny OpenClaw agent `jakub-olsa`.
+- Agent workspace: `/Users/xvadur_mac/OpenClaw/workspaces/jakub-olsa`.
+- Agent je oddeleny od Adamovho `main` agenta.
+- Webovy Worker po uspesnom `/api/book` vie spustit non-blocking OpenClaw handoff cez `OPENCLAW_HOOK_URL` + `OPENCLAW_HOOK_TOKEN`.
+- Handoff je mimo kritickej booking transakcie a bezi cez `ctx.waitUntil`.
+- Docker OpenClaw hooks su zapnute lokalne na `http://127.0.0.1:18889/hooks/agent`.
+- Hook token je ulozeny mimo repozitara v `/Users/xvadur_mac/OpenClaw/docker/state/openclaw-config/secrets/jakub-hook-token.txt`.
+- Hook default session je `agent:jakub-olsa:main` a povoleny agent je iba `jakub-olsa`.
+- Pripravene dokumenty:
+  - `docs/OPENCLAW_RUNBOOK_2026-06-03.md`,
+  - `docs/OPENCLAW_TOOL_CONTRACTS_2026-06-03.md`,
+  - `ops/openclaw/README.md`,
+  - `ops/openclaw/jakub-agent/AGENTS.md`,
+  - `ops/openclaw/jakub-agent/TOOLS.md`,
+  - `ops/openclaw/supabase/SUPABASE_SCHEMA.sql`.
+
+## Ostava ziskat / nastavit
+
+- `TELEGRAM_BOT_TOKEN`
+- `TELEGRAM_CHAT_ID`
+- public HTTPS hook URL cez Cloudflare Tunnel/Access alebo ekvivalent
+- staging Cloudflare secrets pre `jakubastroweb-staging`
+- Supabase projekt alebo ekvivalentny CRM backend
+
+## Docker pilot overeny - 2026-06-04
+
+- Docker OpenClaw gateway bezi na host porte `18889`.
+- Gateway health/ready endpointy vracaju OK.
+- Docker agent `jakub-olsa` existuje s workspace:
+  `/Users/xvadur_mac/OpenClaw/docker/state/openclaw-config/agent-workspaces/jakub-olsa`.
+- Jakub Astro repo je od 2026-06-05 namountovane do Docker OpenClaw kontajnera:
+  - host: `/Users/xvadur_mac/Jakub_Astro`,
+  - container: `/home/node/Jakub_Astro`,
+  - agent workspace symlink: `/home/node/.openclaw/agent-workspaces/jakub-olsa/Jakub_Astro`.
+- Agent model bol opraveny z `openai-codex/gpt-5.5` na `openai/gpt-5.5`, aby pouzival existujuci OpenAI OAuth auth profil.
+- Smoke test cez Docker `openclaw-cli agent --agent jakub-olsa` presiel a agent odpovedal `OK`.
+- Astro repo connection smoke test cez `jakub-olsa` presiel 2026-06-05:
+  - agent precital `/home/node/Jakub_Astro/package.json`,
+  - odpovedal `CONNECTED`,
+  - package je `clients-jakub-olsa`,
+  - `astro.config.mjs` existuje.
+- Docker `/hooks/agent` smoke test presiel 2026-06-04:
+  - no-auth request vracia `401 Unauthorized`,
+  - autorizovany request vratil `ok:true` a `runId`,
+  - session `agent:jakub-olsa:main` ulozila odpoved `OK`.
+- Lokalny Worker E2E test presiel 2026-06-04:
+  - `POST /api/book` na lokalnom Workeri vratil `200 OK` v `mode: mock`,
+  - booking bol cez `ctx.waitUntil` odovzdany do Docker OpenClaw `/hooks/agent`,
+  - `jakub-olsa` spracoval web booking v session `agent:jakub-olsa:main`,
+  - HighLevel CRM connector vratil `401 Reauthentication required`,
+  - agent namiesto halucinovaneho CRM zapisu vytvoril interny admin case:
+    `/Users/xvadur_mac/OpenClaw/docker/state/openclaw-config/agent-workspaces/jakub-olsa/admin-cases/2026-06-04-web-booking-16edb862.md`.
+- Docker OpenClaw zatial nema nakonfigurovany Telegram channel; onboarding sa zastavil na chybajucom `TELEGRAM_BOT_TOKEN`.

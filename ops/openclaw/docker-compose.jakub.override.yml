@@ -1,0 +1,8 @@
+services:
+  openclaw-gateway:
+    volumes:
+      - ${JAKUB_ASTRO_REPO_DIR:-/Users/xvadur_mac/Jakub_Astro}:/home/node/Jakub_Astro
+
+  openclaw-cli:
+    volumes:
+      - ${JAKUB_ASTRO_REPO_DIR:-/Users/xvadur_mac/Jakub_Astro}:/home/node/Jakub_Astro

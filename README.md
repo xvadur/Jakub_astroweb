@@ -3,17 +3,21 @@
 Astro one-page web for a real estate broker. The first version is built for Jakub Olša,
 but the content is already isolated so it can later become a broker website template.
 
+## Developer start
+
+Full workstation notes:
+
+- `docs/DEV_WORKSTATION_2026-06-04.md`
+
+Quick health check:
+
+```bash
+npm run health
+```
+
 ## Run locally
 
 ```bash
-bun install
-bun run dev
-```
-
-If Bun is not installed:
-
-```bash
-npm install --no-package-lock
 npm run dev -- --host 127.0.0.1
 ```
 

@@ -1,0 +1,19 @@
+{
+  "editor.formatOnSave": false,
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "search.exclude": {
+    "**/.astro": true,
+    "**/.wrangler": true,
+    "**/dist": true,
+    "**/node_modules": true,
+    "**/private": true
+  },
+  "files.exclude": {
+    "**/.DS_Store": true,
+    "**/.astro": true,
+    "**/.wrangler": true,
+    "**/dist": true
+  },
+  "terminal.integrated.cwd": "/Users/xvadur_mac/Diera/active/jakub/Jakub_Astro"
+}

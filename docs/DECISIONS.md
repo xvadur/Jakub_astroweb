@@ -23,6 +23,23 @@ Reason:
 
 The production domain is already stable enough to protect. Staging gives Adam and Jakub a safe place to review conversion, positioning, and automation changes before they affect live visitors.
 
+## 2026-06-03: OpenClaw is a post-booking handoff, not the booking authority
+
+Booking must remain deterministic inside the Cloudflare Worker path.
+
+Decision:
+
+- `/api/book` validates the payload, checks Google Calendar when configured, creates the event, and returns success/failure to the visitor.
+- Telegram notification and OpenClaw processing are non-blocking side effects after the booking decision.
+- OpenClaw receives a structured system event through `/hooks/agent` only when `OPENCLAW_HOOK_URL` and `OPENCLAW_HOOK_TOKEN` are configured.
+- The target agent is `jakub-olsa`.
+- OpenClaw may summarize, create CRM records, propose follow-up, and prepare drafts.
+- OpenClaw may not publish public web changes, delete CRM data, delete/move calendar events, or send sensitive client messages without approval.
+
+Reason:
+
+This keeps the visitor-facing booking flow reliable while still letting Jakub's agent build business memory and follow-up work in parallel. If OpenClaw is offline, the booking can still succeed.
+
 ## 2026-05-30: Business positioning centers on BOSEN-backed service
 
 The homepage should present Jakub as the personal broker, with BOSEN as the service infrastructure behind him.

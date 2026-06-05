@@ -10,6 +10,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
+    "health": "node scripts/dev-health-check.mjs",
     "worker:dev": "npm run build && npx wrangler dev --config wrangler.toml --local --port 8787",
     "deploy:production": "npm run build && npx wrangler deploy --config wrangler.toml --name=jakubastroweb",
     "deploy:staging": "PUBLIC_SITE_ENV=staging npm run build && npx wrangler deploy --config wrangler.toml --name=jakubastroweb-staging"
