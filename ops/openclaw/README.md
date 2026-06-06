@@ -65,6 +65,31 @@ Cielovy stav pre Jakuba je:
 - OpenClaw Docker gateway bezi na `http://127.0.0.1:18789/`,
 - Docker container ma `restart: unless-stopped`,
 - macOS LaunchAgent `ai.openclaw.docker` kazde 2 minuty overi Docker/Colima a `openclaw-gateway`.
+- macOS LaunchDaemon `ai.openclaw.keepawake.system` drzi stroj bdelý cez `/usr/bin/caffeinate -ims`, aby pilot bezal ako always-on Mac aj pred user loginom.
+- macOS LaunchAgent `ai.openclaw.keepawake` je user-level fallback bez sudo.
+
+System keep-awake daemon:
+
+```bash
+/Users/xvadur_mac/Jakub_Astro/ops/openclaw/install-system-keepawake-daemon.sh
+launchctl print system/ai.openclaw.keepawake.system
+pmset -g assertions
+```
+
+User-level keep-awake fallback:
+
+```bash
+/Users/xvadur_mac/Jakub_Astro/ops/openclaw/install-keepawake-launchagent.sh
+launchctl print gui/$(id -u)/ai.openclaw.keepawake
+pmset -g assertions
+```
+
+Overeny stav 2026-06-06:
+
+- system daemon `ai.openclaw.keepawake.system` je preferovany permanentny rezim,
+- `caffeinate` drzi `PreventUserIdleSystemSleep`, `PreventSystemSleep` a `PreventDiskIdle`,
+- display moze zhasnut; keep-awake nepouziva `caffeinate -d`,
+- AC power config ma `sleep = 0` a `autorestart = 1`.
 
 Watchdog script:
 
