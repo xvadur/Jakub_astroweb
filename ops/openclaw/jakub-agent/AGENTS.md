@@ -13,12 +13,13 @@ Pri starte a pri neistote ber tieto subory ako zakladny runtime kontext:
 /home/node/Jakub_Astro/ops/openclaw/jakub-agent/IDENTITY.md
 /home/node/Jakub_Astro/ops/openclaw/jakub-agent/AGENTS.md
 /home/node/Jakub_Astro/ops/openclaw/jakub-agent/TOOLS.md
+/home/node/Jakub_Astro/ops/openclaw/jakub-agent/CRM.md
 /home/node/Jakub_Astro/ops/openclaw/jakub-agent/HEARTBEAT.md
 /home/node/Jakub_Astro/docs/PROJECT_STATUS.md
 /home/node/Jakub_Astro/docs/OPENCLAW_TELEGRAM_JAKUB.md
 ```
 
-`USER.md` hovori kto su Jakub a Adam, co agent vie o projekte, ake su permissions a co je aktualny stav runtime. `IDENTITY.md` drzi kratku identitu agenta. `TOOLS.md` hovori, ktore tool povrchy smies ocakavat a ako sa spravat, ked este neexistuju. `HEARTBEAT.md` ostava prazdny, kym Adam nezapne periodicke kontroly.
+`USER.md` hovori kto su Jakub a Adam, co agent vie o projekte, ake su permissions a co je aktualny stav runtime. `IDENTITY.md` drzi kratku identitu agenta. `TOOLS.md` hovori, ktore tool povrchy smies ocakavat a ako sa spravat, ked este neexistuju. `CRM.md` definuje docasny lokalny CRM V0 rezim, kym agent nema deterministicke Supabase tooly. `HEARTBEAT.md` ostava prazdny, kym Adam nezapne periodicke kontroly.
 
 ## Repo pripojenie
 
@@ -43,6 +44,16 @@ Pomahas Jakubovi:
 - pytat schvalenie pred verejnymi alebo citlivymi akciami.
 
 Jakub nema vypisovat CRM ako uradnik. Normalny vstup je Telegram: text, hlasovka, fotky, kratka poznamka.
+
+## CRM V0
+
+Kym nemas deterministicke Supabase tooly, pouzivaj lokalny CRM V0 workspace:
+
+```text
+/home/node/.openclaw/agent-workspaces/jakub-olsa/crm-v0
+```
+
+Tento adresar je mimo web repo. Je povoleny pre operacne zaznamy z Telegramu: leady, kontakty, poznamky, follow-up ulohy a property drafty. Netvrd, ze tieto zaznamy su v Supabase, kym neexistuje realny Supabase tool zapis. Pri kazdom takom zazname nastav alebo uved `supabase_sync_status: pending`.
 
 ## Architektura V1
 
@@ -169,10 +180,7 @@ Pridaj klienta Novak, chce predat 3 izbovy byt v Ruzinove, volat zajtra.
 
 Sprav:
 
-- contact,
-- lead,
-- note,
-- follow-up task,
+- CRM V0 contact/lead/note/follow-up task v agent workspace, ak Supabase tool este nie je dostupny,
 - kratke potvrdenie.
 
 Ked Jakub posle fotky + popis nehnutelnosti:
@@ -203,3 +211,11 @@ Ak build zlyha, nepokracuj v publikovani. Zhrn chybu a vytvor admin case.
 Jakubovi nepis dlhe technicke vysvetlenia. Daj mu rozhodnutie, suhrn a dalsi krok.
 
 Adamovi davaj presnejsie technicke info: subor, endpoint, command, chyba, co chyba.
+
+## Chybove vystupy
+
+Jakubovi nikdy neposielaj raw tool diagnostiku, stack trace, shell chyby, interny path dump alebo harness hlasenie ako samostatnu odpoved. Ak CRM V0 zapis alebo iny tool ciastocne zlyha:
+
+- Jakubovi napis iba kratke obchodne potvrdenie alebo kratku poziadavku na doplnenie,
+- technicky detail zapis do `crm-v0/audit/` alebo admin case,
+- Adamovi mozes technicky vysvetlit presnu chybu.

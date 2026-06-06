@@ -15,7 +15,7 @@ Tento subor je verzovany kontext pre agenta `jakub-olsa`. Neobsahuje secrety.
 ### Adam
 
 - Technicky owner infrastruktury a webu.
-- Rieri OpenClaw, Docker, Cloudflare, staging, GitHub, Supabase/CRM smer, secrets a chybove stavy.
+- Riesi OpenClaw, Docker, Cloudflare, staging, GitHub, Supabase/CRM smer, secrets a chybove stavy.
 - Adamovi mozes pisat technickejsie: subory, prikazy, endpointy, statusy, chyby, dalsie kroky.
 
 ## Projekt
@@ -49,6 +49,11 @@ Jakubov web a OpenClaw agent maju tvorit lahky realitny operacny system:
 - Telegram routing binding: `telegram -> jakub-olsa`.
 - Jakubov Telegram pairing bol schvaleny v Docker OpenClaw 6. juna 2026.
 - Outbound smoke test Jakubovi presiel cez OpenClaw message tool (`messageId=19`).
+- Staging web booking ma funkcny Google Calendar sync a priame Telegram notifikacie.
+- Supabase schema je spustena a staging booking smoke test overil zapis contact/lead/appointment/note.
+- Verejny staging dashboard je docasne iba demo view; realne CRM citanie musi byt zapnute az po ochrane `/dashboard/*` a `/api/dashboard/*`.
+- Deployed staging Worker zatial neposiela booking do OpenClaw, kym nie je verejny HTTPS hook pre Docker OpenClaw a nastavene `OPENCLAW_HOOK_URL`/`OPENCLAW_HOOK_TOKEN`.
+- OpenClaw agent zatial nema priamy deterministicky Supabase tool. Pre Jakubove Telegram vstupy pouziva docasny CRM V0 workspace mimo repozitara: `/home/node/.openclaw/agent-workspaces/jakub-olsa/crm-v0`.
 
 ## Komunikacny styl
 
@@ -89,10 +94,11 @@ Approval je povinny pred:
 
 ## Co nevieme / nezapinat automaticky
 
-- CRM backend este nie je finalne pripojeny.
-- Supabase schema je draft, nie potvrdeny produkcny backend.
+- Web booking vie zapisovat do Supabase CRM cez Cloudflare Worker, ale OpenClaw este nema deterministicke Supabase CRM tools.
+- Supabase schema je staging-overena, ale pred ostrymi klientskymi datami treba auth, audit, cleanup smoke dat a rotaciu service role key.
 - Google Calendar booking flow ma byt riadeny cez Worker/Calendar, nie priamo agentom bez approval.
-- Produkcne web deploye idu az po staging review.
+- HighLevel uz nie je aktualny CRM smer. Ak sa spomina v starsich runbookoch, ber ho ako historicky blocker.
+- Produkcne web deploye idu az po staging review; dashboard a CRM data nesmu ist na produkciu bez ochrany pristupu.
 
 ## Zdrojove dokumenty
 
@@ -105,4 +111,5 @@ Pri neistote citaj v tomto poradi:
 5. `/home/node/Jakub_Astro/ops/openclaw/jakub-agent/IDENTITY.md`
 6. `/home/node/Jakub_Astro/ops/openclaw/jakub-agent/AGENTS.md`
 7. `/home/node/Jakub_Astro/ops/openclaw/jakub-agent/TOOLS.md`
-8. `/home/node/Jakub_Astro/ops/openclaw/jakub-agent/HEARTBEAT.md`
+8. `/home/node/Jakub_Astro/ops/openclaw/jakub-agent/CRM.md`
+9. `/home/node/Jakub_Astro/ops/openclaw/jakub-agent/HEARTBEAT.md`

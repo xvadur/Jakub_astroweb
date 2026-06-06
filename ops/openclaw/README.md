@@ -30,6 +30,7 @@ Aktualny lokalny stav 2026-06-06:
 - `jakub-agent/IDENTITY.md` - kratka identita agenta pre OpenClaw runtime.
 - `jakub-agent/AGENTS.md` - pracovny system prompt / pravidla Jakub agenta.
 - `jakub-agent/TOOLS.md` - lokalne tool pravidla a integracne povrchy.
+- `jakub-agent/CRM.md` - docasny CRM V0 rezim pre Telegram leady kym nie su hotove Supabase tools.
 - `jakub-agent/HEARTBEAT.md` - placeholder pre buduce periodicke kontroly.
 - `docker-compose.jakub.override.yml` - portable Docker Compose override, ktory mountne Jakub Astro repo do OpenClaw kontajnera.
 - `supabase/SUPABASE_SCHEMA.sql` - prvy navrh CRM schemy pre Supabase.
@@ -228,6 +229,7 @@ Repo source-of-truth pre agenta:
 /Users/xvadur_mac/Jakub_Astro/ops/openclaw/jakub-agent/IDENTITY.md
 /Users/xvadur_mac/Jakub_Astro/ops/openclaw/jakub-agent/AGENTS.md
 /Users/xvadur_mac/Jakub_Astro/ops/openclaw/jakub-agent/TOOLS.md
+/Users/xvadur_mac/Jakub_Astro/ops/openclaw/jakub-agent/CRM.md
 /Users/xvadur_mac/Jakub_Astro/ops/openclaw/jakub-agent/HEARTBEAT.md
 ```
 
@@ -238,8 +240,17 @@ Runtime kopie v Docker OpenClaw agent workspace:
 /Users/xvadur_mac/OpenClaw/docker/state/openclaw-config/agent-workspaces/jakub-olsa/IDENTITY.md
 /Users/xvadur_mac/OpenClaw/docker/state/openclaw-config/agent-workspaces/jakub-olsa/AGENTS.md
 /Users/xvadur_mac/OpenClaw/docker/state/openclaw-config/agent-workspaces/jakub-olsa/TOOLS.md
+/Users/xvadur_mac/OpenClaw/docker/state/openclaw-config/agent-workspaces/jakub-olsa/CRM.md
 /Users/xvadur_mac/OpenClaw/docker/state/openclaw-config/agent-workspaces/jakub-olsa/HEARTBEAT.md
 ```
+
+CRM V0 runtime databaza pre Telegram vstupy:
+
+```text
+/Users/xvadur_mac/OpenClaw/docker/state/openclaw-config/agent-workspaces/jakub-olsa/crm-v0
+```
+
+Tento adresar je mimo repozitara a moze obsahovat osobne udaje. Necommitovat.
 
 Po zmene source-of-truth docs zosynchronizuj runtime kopie:
 
@@ -252,6 +263,8 @@ install -m 644 /Users/xvadur_mac/Jakub_Astro/ops/openclaw/jakub-agent/AGENTS.md 
   /Users/xvadur_mac/OpenClaw/docker/state/openclaw-config/agent-workspaces/jakub-olsa/AGENTS.md
 install -m 644 /Users/xvadur_mac/Jakub_Astro/ops/openclaw/jakub-agent/TOOLS.md \
   /Users/xvadur_mac/OpenClaw/docker/state/openclaw-config/agent-workspaces/jakub-olsa/TOOLS.md
+install -m 644 /Users/xvadur_mac/Jakub_Astro/ops/openclaw/jakub-agent/CRM.md \
+  /Users/xvadur_mac/OpenClaw/docker/state/openclaw-config/agent-workspaces/jakub-olsa/CRM.md
 install -m 644 /Users/xvadur_mac/Jakub_Astro/ops/openclaw/jakub-agent/HEARTBEAT.md \
   /Users/xvadur_mac/OpenClaw/docker/state/openclaw-config/agent-workspaces/jakub-olsa/HEARTBEAT.md
 ```

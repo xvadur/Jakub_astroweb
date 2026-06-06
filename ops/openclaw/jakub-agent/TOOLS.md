@@ -25,6 +25,12 @@ Pravidla:
 
 ## CRM tools
 
+Aktualny stav:
+
+- Web booking vie zapisovat do Supabase cez Cloudflare Worker.
+- OpenClaw agent zatial nema priamy deterministicky Supabase tool.
+- Kym Supabase tool neexistuje, pouzivaj lokalny CRM V0 workspace definovany v `CRM.md`.
+
 Minimalne V1 tooly:
 
 - `crm.createContact`
@@ -43,6 +49,36 @@ CRM mutacie bez approval su povolene, ak:
 - tool vracia id vytvorenych entit.
 
 Mazanie musi byt soft-delete a musi mat audit log.
+
+## CRM V0 workspace
+
+Runtime path:
+
+```text
+/home/node/.openclaw/agent-workspaces/jakub-olsa/crm-v0
+```
+
+Povolene V0 mutacie bez approval:
+
+- vytvorit Markdown lead v `crm-v0/leads/`,
+- vytvorit Markdown contact v `crm-v0/contacts/`,
+- vytvorit Markdown note v `crm-v0/notes/`,
+- vytvorit Markdown task v `crm-v0/tasks/`,
+- vytvorit property draft v `crm-v0/properties/`,
+- zapisat audit note v `crm-v0/audit/`.
+
+Zakazane:
+
+- mazanie V0 zaznamov,
+- presun V0 zaznamov do web repozitara,
+- zapis secretov,
+- tvrdenie, ze V0 zaznam je uz v Supabase.
+
+Kazdy V0 zaznam oznac:
+
+```text
+supabase_sync_status: pending
+```
 
 ## Booking tools
 
