@@ -20,7 +20,7 @@ Posledná aktualizácia: 6. jún 2026
 - MacBook OpenClaw state obsahoval pôvodný token a `telegram-default-allowFrom.json`; oboje bolo prenesené do Docker state 6. júna 2026.
 - Pairing request od Jakuba bol schválený v Docker OpenClaw 6. júna 2026; `pairing list` je po schválení prázdny.
 - Routing binding už je v Docker configu: `telegram -> jakub-olsa`.
-- Outbound správa Jakubovi z Docker runtime zatiaľ nebola poslaná; poslať až po potvrdení textu.
+- Outbound test správa Jakubovi z Docker runtime bola poslaná 6. júna 2026 cez OpenClaw message tool (`messageId=19`).
 - `openclaw channels status --deep` môže ukazovať `disconnected`, aj keď je bot nakonfigurovaný a beží v polling móde; rozhodujúci smoke test je inbound/outbound Telegram správa.
 - OpenClaw model auth treba pred plným demom obnoviť:
 
@@ -131,7 +131,7 @@ openclaw message send --channel telegram --target <JAKUB_CHAT_ID> --message "Aho
 
 Ak sa pairing request nezobrazí, vytiahnuť chat ID cez Telegram Bot API `getUpdates` z lokálnej konfigurácie, ale token nevypisovať ani neukladať do repa.
 
-Stav 6. júna 2026: Docker runtime zachytil pending request od Jakuba a pairing bol schválený bez `--notify`. Ďalší smoke test je outbound správa cez Docker OpenClaw:
+Stav 6. júna 2026: Docker runtime zachytil pending request od Jakuba a pairing bol schválený bez `--notify`. Outbound smoke test cez Docker OpenClaw prešiel správou:
 
 ```bash
 docker compose \
@@ -140,10 +140,10 @@ docker compose \
   run --rm -e OPENCLAW_GATEWAY_PORT=18789 openclaw-cli message send \
   --channel telegram \
   --target <JAKUB_CHAT_ID> \
-  --message "Ahoj Jakub, OpenClaw Docker runtime je pripojený."
+  --message "Ahoj Jakub, len technicky testujem napojenie OpenClaw na Telegram. Nemusíš nič robiť."
 ```
 
-Neposielať outbound správu bez potvrdeného textu.
+Výsledok: Telegram `messageId=19`.
 
 ## Lead notifikácie z webu do Telegramu
 

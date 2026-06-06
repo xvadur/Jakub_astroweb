@@ -96,7 +96,7 @@ Overené 6. júna 2026:
 - Telegram bot cieľ je `@jakub_reality_bot` s menom `jakubolsa_reality`.
 - Docker Telegram channel je nakonfigurovaný cez tokenFile v Docker OpenClaw state; token a allowlist boli prenesené z MacBook OpenClaw state.
 - Docker polling zachytil pending pairing request od Jakuba a pairing bol schválený bez `--notify`; `pairing list` je prázdny.
-- Outbound Telegram správa z Docker runtime ešte nebola poslaná. Poslať až po potvrdení textu.
+- Outbound Telegram smoke test z Docker runtime bol poslaný Jakubovi cez OpenClaw message tool 6. júna 2026 (`messageId=19`).
 
 Praktický runbook je v `docs/OPENCLAW_TELEGRAM_JAKUB.md`.
 
