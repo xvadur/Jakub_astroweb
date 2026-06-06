@@ -19,7 +19,8 @@ Aktualny lokalny stav 2026-06-06:
   - host: `/Users/xvadur_mac/Jakub_Astro`,
   - container: `/home/node/Jakub_Astro`.
 - Portable compose override pre tento mount je v `ops/openclaw/docker-compose.jakub.override.yml`.
-- Telegram channel v Docker state este nie je pripojeny, lebo v Docker OpenClaw configu chyba Telegram bot token. Kontrola 2026-06-06 vratila `channels: {}`.
+- Telegram channel v Docker state je pripojeny cez tokenFile. Token a Telegram allowlist boli prenesene z MacBook OpenClaw state 2026-06-06.
+- Pairing request od Jakuba bol schvaleny v Docker OpenClaw 2026-06-06; `pairing list` je po schvaleni prazdny.
 - Webovy Worker je pripraveny poslat booking payload do OpenClaw webhooku, ked budu nastavene staging secrets.
 
 ## Subory
@@ -146,7 +147,7 @@ Jakub Docker agent pripraveny.
 
 ## Telegram v Docker OpenClaw
 
-Overene 2026-06-05:
+Overene 2026-06-06:
 
 - Docker gateway bezi a je healthy.
 - Docker agent `jakub-olsa` funguje cez `openai/gpt-5.5`.
@@ -156,13 +157,22 @@ Overene 2026-06-05:
 jakub-olsa <- telegram
 ```
 
-Este chyba samotny Telegram channel token v Docker OpenClaw state. Ked bude token dostupny v subore mimo repozitara, nastavenie:
+Telegram channel je nakonfigurovany:
+
+```text
+Telegram default (Jakub)
+Bot: @jakub_reality_bot (8877934710)
+tokenSource: tokenFile
+mode: polling
+```
+
+Ak treba token vymenit, pouzi helper. Token musi byt v clipboarde alebo na stdin a nesmie ist do repozitara:
 
 ```bash
 pbpaste | /Users/xvadur_mac/Jakub_Astro/ops/openclaw/configure-docker-telegram-token.sh
 ```
 
-Potom Jakub posle botovi spravu a pairing sa overi cez:
+Pairing status:
 
 ```bash
 docker compose \
@@ -170,6 +180,8 @@ docker compose \
   -f /Users/xvadur_mac/Jakub_Astro/ops/openclaw/docker-compose.jakub.override.yml \
   run --rm -e OPENCLAW_GATEWAY_PORT=18789 openclaw-cli pairing list --channel telegram --json
 ```
+
+Ocakavane po schvaleni Jakuba: `requests: []`.
 
 ## Secrets mimo repozitara
 

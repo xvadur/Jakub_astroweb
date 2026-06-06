@@ -43,14 +43,16 @@ USERNAME="$(
   TELEGRAM_TOKEN_FILE="$TMP_TOKEN_FILE" node <<'NODE'
 const fs = require("node:fs");
 
-const tokenFile = process.env.TELEGRAM_TOKEN_FILE;
-const token = fs.readFileSync(tokenFile, "utf8").trim();
-const response = await fetch(`https://api.telegram.org/bot${token}/getMe`);
-const body = await response.json();
-if (!body.ok) {
-  process.exit(2);
-}
-process.stdout.write(body.result?.username || "");
+(async () => {
+  const tokenFile = process.env.TELEGRAM_TOKEN_FILE;
+  const token = fs.readFileSync(tokenFile, "utf8").trim();
+  const response = await fetch(`https://api.telegram.org/bot${token}/getMe`);
+  const body = await response.json();
+  if (!body.ok) {
+    process.exit(2);
+  }
+  process.stdout.write(body.result?.username || "");
+})().catch(() => process.exit(2));
 NODE
 )"
 

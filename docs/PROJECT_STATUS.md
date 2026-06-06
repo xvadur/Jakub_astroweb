@@ -87,15 +87,16 @@ Aktuálna obchodná stratégia je postavená na tom, že Jakub je osobný maklé
 
 ## OpenClaw a Telegram stav
 
-Overené 5. júna 2026:
+Overené 6. júna 2026:
 
 - OpenClaw gateway beží cez Docker/Colima na porte `18789`.
 - Host OpenClaw launchd service je vypnutý; aktívny watchdog je `ai.openclaw.docker`.
 - Docker agent `jakub-olsa` má routing binding `telegram -> jakub-olsa`.
 - Persistent smoke test cez Docker agenta prešiel odpoveďou `PERSISTENT_OK`.
-- Telegram bot cieľ je `@jakub_reality_bot` s menom `jakub_realitky`.
-- Docker Telegram channel ešte čaká na BotFather token pre `@jakub_reality_bot`. Token sa nesmie commitovať; nastavuje sa cez `ops/openclaw/configure-docker-telegram-token.sh`.
-- Po nastavení tokenu treba overiť inbound aj outbound Telegram správu.
+- Telegram bot cieľ je `@jakub_reality_bot` s menom `jakubolsa_reality`.
+- Docker Telegram channel je nakonfigurovaný cez tokenFile v Docker OpenClaw state; token a allowlist boli prenesené z MacBook OpenClaw state.
+- Docker polling zachytil pending pairing request od Jakuba a pairing bol schválený bez `--notify`; `pairing list` je prázdny.
+- Outbound Telegram správa z Docker runtime ešte nebola poslaná. Poslať až po potvrdení textu.
 
 Praktický runbook je v `docs/OPENCLAW_TELEGRAM_JAKUB.md`.
 

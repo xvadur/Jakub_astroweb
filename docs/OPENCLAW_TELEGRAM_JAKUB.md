@@ -16,10 +16,11 @@ Posledná aktualizácia: 6. jún 2026
 - Aktuálna vývojová vetva: `staging`.
 - Docker OpenClaw gateway je aktuálny runtime na `http://127.0.0.1:18789/`.
 - Telegram bot cieľ pre OpenClaw: `@jakub_reality_bot`.
-- Dnešná kontrola Docker state: `channels: {}` a `channelSummary: []`; Telegram channel ešte nie je pripojený v Docker configu.
-- `telegram-pairing.json` v host aj Docker OpenClaw state existuje, ale má prázdne `requests: []`.
+- Docker Telegram channel je nakonfigurovaný cez tokenFile v Docker OpenClaw state.
+- MacBook OpenClaw state obsahoval pôvodný token a `telegram-default-allowFrom.json`; oboje bolo prenesené do Docker state 6. júna 2026.
+- Pairing request od Jakuba bol schválený v Docker OpenClaw 6. júna 2026; `pairing list` je po schválení prázdny.
 - Routing binding už je v Docker configu: `telegram -> jakub-olsa`.
-- Ak bol Telegram včera spárovaný, neprežil to ako persistent Docker channel config; treba nahodiť bot token do Docker state a potom znovu overiť inbound správou.
+- Outbound správa Jakubovi z Docker runtime zatiaľ nebola poslaná; poslať až po potvrdení textu.
 - `openclaw channels status --deep` môže ukazovať `disconnected`, aj keď je bot nakonfigurovaný a beží v polling móde; rozhodujúci smoke test je inbound/outbound Telegram správa.
 - OpenClaw model auth treba pred plným demom obnoviť:
 
@@ -35,7 +36,8 @@ Overené 6. júna 2026:
 - Docker agent `jakub-olsa` existuje a smoke test cez `openai/gpt-5.5` prešiel.
 - Jakub Astro repo je mountnuté v kontajneri na `/home/node/Jakub_Astro`.
 - Routing binding je nastavený a overený: `telegram -> jakub-olsa`.
-- Docker Telegram channel ešte potrebuje vlastný bot token v Docker OpenClaw state; device/browser pairing ani host-side pairing sa automaticky neprenáša do Docker channel configu.
+- Docker Telegram channel je nakonfigurovaný a beží v polling mode.
+- Probe overenie vrátilo `@jakub_reality_bot` (`jakubolsa_reality`) a dostupné akcie `send`, `broadcast`, `poll`, `react`, `delete`, `edit`.
 
 Docker dashboard otvorí helper bez vypisovania gateway tokenu:
 
@@ -129,7 +131,19 @@ openclaw message send --channel telegram --target <JAKUB_CHAT_ID> --message "Aho
 
 Ak sa pairing request nezobrazí, vytiahnuť chat ID cez Telegram Bot API `getUpdates` z lokálnej konfigurácie, ale token nevypisovať ani neukladať do repa.
 
-Stav 5. júna 2026 večer: operátor potvrdil, že Telegram a OpenClaw sú spárované. Pri presune na Mac mini treba pairing a odoslanie test správy overiť znova.
+Stav 6. júna 2026: Docker runtime zachytil pending request od Jakuba a pairing bol schválený bez `--notify`. Ďalší smoke test je outbound správa cez Docker OpenClaw:
+
+```bash
+docker compose \
+  -f /Users/xvadur_mac/OpenClaw/docker/openclaw-source/docker-compose.yml \
+  -f /Users/xvadur_mac/Jakub_Astro/ops/openclaw/docker-compose.jakub.override.yml \
+  run --rm -e OPENCLAW_GATEWAY_PORT=18789 openclaw-cli message send \
+  --channel telegram \
+  --target <JAKUB_CHAT_ID> \
+  --message "Ahoj Jakub, OpenClaw Docker runtime je pripojený."
+```
+
+Neposielať outbound správu bez potvrdeného textu.
 
 ## Lead notifikácie z webu do Telegramu
 
