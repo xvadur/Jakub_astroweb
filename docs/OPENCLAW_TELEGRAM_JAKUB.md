@@ -21,6 +21,8 @@ Posledná aktualizácia: 6. jún 2026
 - Pairing request od Jakuba bol schválený v Docker OpenClaw 6. júna 2026; `pairing list` je po schválení prázdny.
 - Routing binding už je v Docker configu: `telegram -> jakub-olsa`.
 - Outbound test správa Jakubovi z Docker runtime bola poslaná 6. júna 2026 cez OpenClaw message tool (`messageId=19`).
+- Staging Worker `jakubastroweb-staging` má od 6. júna 2026 nastavené Telegram secrets pre priame notifikácie po úspešnej rezervácii z `/rezervacia/`.
+- Nasadený web ešte nemá plný OpenClaw handoff, kým lokálny Docker `/hooks/agent` nebude dostupný cez verejný HTTPS endpoint, napríklad Cloudflare Tunnel + Access.
 - `openclaw channels status --deep` môže ukazovať `disconnected`, aj keď je bot nakonfigurovaný a beží v polling móde; rozhodujúci smoke test je inbound/outbound Telegram správa.
 - OpenClaw model auth treba pred plným demom obnoviť:
 
@@ -147,29 +149,57 @@ Výsledok: Telegram `messageId=19`.
 
 ## Lead notifikácie z webu do Telegramu
 
-Najjednoduchšia produkčná cesta je:
+Aktuálna produkčná cesta pre rezervačný wizard je priamo v hlavnom Cloudflare Workeri:
 
 ```text
-Website form -> Cloudflare Worker -> Telegram Bot API -> Telegram chat/group
+Website /rezervacia
+  -> Cloudflare Worker workers/site-worker.js /api/book
+  -> Google Calendar event, ak sú nastavené Google secrets
+  -> Telegram Bot API, ak sú nastavené Telegram secrets
+  -> OpenClaw /hooks/agent, ak je nastavený verejný OpenClaw hook
 ```
 
-Worker je pripravený v `ops/telegram-worker`.
+Staging stav 6. júna 2026:
+
+- `jakubastroweb-staging` má nastavené `TELEGRAM_BOT_TOKEN` a `TELEGRAM_CHAT_ID`.
+- `/api/health` prešiel.
+- `/api/availability?date=2026-06-08` vracia `mode: "google"`.
+- Reálny `/api/book` po potvrdení odošle Jakubovi Telegram správu s lead detailmi.
+
+Secrets sa nastavujú na hlavný Worker:
 
 ```bash
-cd ops/telegram-worker
-cp wrangler.toml.example wrangler.toml
-wrangler secret put TELEGRAM_BOT_TOKEN
-wrangler secret put TELEGRAM_CHAT_ID
-wrangler deploy
+npx wrangler secret put TELEGRAM_BOT_TOKEN --name jakubastroweb-staging
+npx wrangler secret put TELEGRAM_CHAT_ID --name jakubastroweb-staging
 ```
 
-Potom v Astro env nastaviť:
+Starý `ops/telegram-worker` zostáva iba ako samostatná minimalistická šablóna, ak by bolo treba oddeliť lead-notifikačný Worker od hlavného webového Workera.
+
+## Web booking do OpenClaw
+
+Lokálny Docker OpenClaw hook beží na:
+
+```text
+http://127.0.0.1:18789/hooks/agent
+```
+
+Toto je použiteľné iba pre lokálne E2E testy. Nasadený Cloudflare Worker potrebuje verejnú HTTPS adresu, nie `localhost`. Odporúčaný ďalší krok je Cloudflare Tunnel + Access pred `/hooks/agent`, potom nastaviť staging secrets:
 
 ```bash
-PUBLIC_LEAD_ENDPOINT=https://your-worker.your-subdomain.workers.dev
+npx wrangler secret put OPENCLAW_HOOK_URL --name jakubastroweb-staging
+npx wrangler secret put OPENCLAW_HOOK_TOKEN --name jakubastroweb-staging
+npx wrangler secret put OPENCLAW_DELIVER --name jakubastroweb-staging
+npx wrangler secret put OPENCLAW_DELIVERY_CHANNEL --name jakubastroweb-staging
+npx wrangler secret put OPENCLAW_DELIVERY_TO --name jakubastroweb-staging
 ```
 
-Po zmene env treba reštartovať dev server alebo znovu buildnúť web.
+Odporúčané hodnoty pre fallback oznámenie z OpenClaw runu:
+
+```text
+OPENCLAW_DELIVER=announce
+OPENCLAW_DELIVERY_CHANNEL=telegram
+OPENCLAW_DELIVERY_TO=<Jakub chat id alebo trusted group id>
+```
 
 ## Bezpečnostné pravidlá
 

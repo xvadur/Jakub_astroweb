@@ -21,7 +21,8 @@ Aktualny lokalny stav 2026-06-06:
 - Portable compose override pre tento mount je v `ops/openclaw/docker-compose.jakub.override.yml`.
 - Telegram channel v Docker state je pripojeny cez tokenFile. Token a Telegram allowlist boli prenesene z MacBook OpenClaw state 2026-06-06.
 - Pairing request od Jakuba bol schvaleny v Docker OpenClaw 2026-06-06; `pairing list` je po schvaleni prazdny.
-- Webovy Worker je pripraveny poslat booking payload do OpenClaw webhooku, ked budu nastavene staging secrets.
+- Staging Worker `jakubastroweb-staging` ma od 2026-06-06 nastavene Telegram secrets, takze uspesny `/api/book` vie poslat Jakubovi priamu Telegram notifikaciu.
+- Webovy Worker je pripraveny poslat booking payload do OpenClaw webhooku, ked bude nastavena verejna HTTPS hook URL a staging OpenClaw secrets.
 
 ## Subory
 
@@ -228,6 +229,8 @@ install -m 644 /Users/xvadur_mac/Jakub_Astro/ops/openclaw/jakub-agent/HEARTBEAT.
 Cloudflare staging secrets:
 
 ```bash
+npx wrangler secret put TELEGRAM_BOT_TOKEN --name jakubastroweb-staging
+npx wrangler secret put TELEGRAM_CHAT_ID --name jakubastroweb-staging
 npx wrangler secret put OPENCLAW_HOOK_URL --name jakubastroweb-staging
 npx wrangler secret put OPENCLAW_HOOK_TOKEN --name jakubastroweb-staging
 npx wrangler secret put OPENCLAW_DELIVERY_TO --name jakubastroweb-staging
@@ -235,7 +238,11 @@ npx wrangler secret put OPENCLAW_CF_ACCESS_CLIENT_ID --name jakubastroweb-stagin
 npx wrangler secret put OPENCLAW_CF_ACCESS_CLIENT_SECRET --name jakubastroweb-staging
 ```
 
+Stav 2026-06-06: `jakubastroweb-staging` ma nastavene Google Calendar secrets aj `TELEGRAM_BOT_TOKEN`/`TELEGRAM_CHAT_ID`. Produkcny `jakubastroweb` secrets zatial nastaveny nema.
+
 `OPENCLAW_DELIVERY_TO` a Cloudflare Access secrets su volitelne. Ak OpenClaw nema posielat fallback odpoved do Telegramu, nechaj `OPENCLAW_DELIVER`, `OPENCLAW_DELIVERY_CHANNEL` a `OPENCLAW_DELIVERY_TO` prazdne.
+
+Nasadeny Cloudflare Worker nevie volat lokalne `localhost`/`127.0.0.1` hook URL. Pre realny OpenClaw handoff zo stagingu treba najprv spravit verejny HTTPS endpoint pre Docker OpenClaw, odporucane cez Cloudflare Tunnel + Access.
 
 ## Dolezite zdroje
 

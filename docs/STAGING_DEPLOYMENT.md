@@ -126,16 +126,23 @@ npx wrangler secret put TELEGRAM_CHAT_ID --name jakubastroweb-staging
 
 Repeat on `jakubastroweb` only after the staging flow is approved.
 
+Status 2026-06-06:
+
+- `jakubastroweb-staging` has Google Calendar and Telegram booking secrets configured.
+- `jakubastroweb` had no secrets during the 2026-06-06 check.
+- A staging smoke test confirmed `/api/availability` returns `mode: "google"`.
+
 ## OpenClaw handoff secrets
 
 The booking Worker can optionally hand off a successfully accepted booking to OpenClaw after the Calendar/booking response path. This is non-blocking and should be tested on staging first.
 
 Local preflight 2026-06-04:
 
-- Docker OpenClaw `/hooks/agent` is enabled on `http://127.0.0.1:18889/hooks/agent`.
+- Docker OpenClaw `/hooks/agent` is enabled on `http://127.0.0.1:18789/hooks/agent`.
 - Local Worker E2E test passed in mock mode: `/api/book` returned `200 OK`, `ctx.waitUntil` handed the booking to OpenClaw, and `jakub-olsa` created an internal admin case.
 - Current CRM blocker: HighLevel connector returns `401 Reauthentication required`; do not treat CRM write as live until reauth or a replacement backend is configured.
 - Staging still needs a public HTTPS URL for the local OpenClaw hook, for example Cloudflare Tunnel/Access.
+- Do not configure deployed Cloudflare Workers with a `localhost` or `127.0.0.1` OpenClaw hook URL. That only works for local Worker E2E tests.
 
 Local repo preflight 2026-06-05:
 

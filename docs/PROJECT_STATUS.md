@@ -40,7 +40,7 @@ Aktuálna obchodná stratégia je postavená na tom, že Jakub je osobný maklé
   - `GET /api/availability?date=YYYY-MM-DD`,
   - `POST /api/book`.
 - Wizard už odosiela booking payload na API namiesto priameho `mailto:` flow. Ak API zlyhá, ostáva núdzový email fallback.
-- Worker je pripravený na Google Calendar sync a Telegram notifikácie cez Cloudflare secrets.
+- Worker je pripravený na Google Calendar sync, priame Telegram notifikácie a non-blocking OpenClaw handoff cez Cloudflare secrets.
 - Produkcia má základnú SEO/AI indexačnú vrstvu:
   - `/robots.txt`,
   - `/sitemap.xml`,
@@ -69,6 +69,8 @@ Aktuálna obchodná stratégia je postavená na tom, že Jakub je osobný maklé
 - Docker OpenClaw `/hooks/agent` je lokálne zapnutý, chránený bearer tokenom mimo repozitára a obmedzený na agenta `jakub-olsa`.
 - Hook smoke test z 2026-06-04 prešiel: neautorizovaný request vracia `401`, autorizovaný request vytvorí `runId` a session `agent:jakub-olsa:main` ukladá odpoveď agenta.
 - Lokálny Worker E2E test z 2026-06-04 prešiel: `/api/book` v mock režime odovzdal test booking cez `ctx.waitUntil` do OpenClaw `/hooks/agent` a agent vytvoril interný admin case.
+- Staging Worker má od 2026-06-06 nastavené `TELEGRAM_BOT_TOKEN` a `TELEGRAM_CHAT_ID` secrets, takže úspešný `/api/book` vie poslať Jakubovi Telegram oznámenie s detailmi leadu.
+- Plný OpenClaw handoff z nasadeného staging webu ešte potrebuje verejný HTTPS endpoint pre lokálny Docker `/hooks/agent`, ideálne Cloudflare Tunnel + Access; Cloudflare Worker nesmie dostať `localhost` hook URL.
 - Aktuálny OpenClaw handoff blocker pre reálne CRM zapisovanie: HighLevel connector vracia `401 Reauthentication required`; agent správne nevytvára falošný CRM úspech.
 
 ## Rozhodnutia
@@ -80,7 +82,7 @@ Aktuálna obchodná stratégia je postavená na tom, že Jakub je osobný maklé
 - Telefonický kontakt zostáva na webe, pretože Jakub ho má aj na Instagrame a pre jeho typ práce dáva zmysel.
 - Produkcia sa chráni cez staging workflow: experimenty, OpenClaw mutácie, tracking, booking a lead magnet úpravy idú najprv na `https://staging.jakubolsa.sk/`.
 - Cloudflare API tokeny a iné tajomstvá sa nesmú ukladať do repozitára.
-- Booking funnel má zatiaľ mock dostupnosť, kým nie sú nastavené Google Calendar OAuth secrets. Na stagingu sa najprv otestuje Adamov Google kalendár, až potom Jakubov.
+- Booking funnel na stagingu už beží v Google Calendar móde cez Cloudflare secrets; aktuálne môže používať Adamov/testovací kalendár, kým sa flow neprepne na Jakubov kalendár.
 - Google Maps API kľúč sa nesmie ukladať do repozitára. Musí byť nastavený ako environment variable a obmedzený na povolené domény.
 - Google Calendar OAuth secrets a Telegram secrets sa nesmú ukladať do repozitára. Musia ísť do Cloudflare secrets.
 - OpenClaw hook URL/token a prípadné Cloudflare Access service tokeny sa nesmú ukladať do repozitára. Najprv sa nastavujú iba na `jakubastroweb-staging`.
@@ -98,18 +100,21 @@ Overené 6. júna 2026:
 - Docker Telegram channel je nakonfigurovaný cez tokenFile v Docker OpenClaw state; token a allowlist boli prenesené z MacBook OpenClaw state.
 - Docker polling zachytil pending pairing request od Jakuba a pairing bol schválený bez `--notify`; `pairing list` je prázdny.
 - Outbound Telegram smoke test z Docker runtime bol poslaný Jakubovi cez OpenClaw message tool 6. júna 2026 (`messageId=19`).
+- Cloudflare staging Worker `jakubastroweb-staging` má nastavené Telegram secrets pre priame webové notifikácie po rezervácii.
+- Staging API smoke test z 6. júna 2026 prešiel: `/api/health` vracia `ok: true` a `/api/availability?date=2026-06-08` beží v `google` móde s dostupnými slotmi.
 
 Praktický runbook je v `docs/OPENCLAW_TELEGRAM_JAKUB.md`.
 
 ## Cloudflare/Wrangler stav
 
-Overené 5. júna 2026:
+Overené 6. júna 2026:
 
-- Wrangler login na MacBooku je hotový cez OAuth.
+- Wrangler login na aktuálnom stroji je hotový cez OAuth.
 - Cloudflare účet: `yksvadur.ja@gmail.com`.
 - Cloudflare account ID: `002b0727daee60448cf72c0b08f7810f`.
 - OpenClaw môže používať `npx wrangler ...` cez lokálny macOS user profil, ale samostatný Cloudflare API token nie je uložený v OpenClaw secrets.
-- Pri presune na Mac mini je najčistejšie spustiť nový `npx wrangler@latest login` na Mac mini namiesto kopírovania OAuth tokenov.
+- Staging Worker `jakubastroweb-staging` má nastavené secrets: `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REFRESH_TOKEN`, `GOOGLE_CALENDAR_ID`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`.
+- Produkčný Worker `jakubastroweb` nemal pri kontrole 6. júna 2026 nastavené žiadne secrets; produkciu nastavovať až po potvrdení staging flow.
 
 Mac mini prenos je dokumentovaný v `docs/MAC_MINI_HANDOFF.md`.
 
