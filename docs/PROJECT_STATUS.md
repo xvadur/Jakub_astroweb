@@ -1,6 +1,6 @@
 # Stav projektu Jakub Olša web
 
-Posledná aktualizácia: 5. jún 2026
+Posledná aktualizácia: 6. jún 2026
 
 ## Aktuálny stav
 
@@ -57,10 +57,11 @@ Aktuálna obchodná stratégia je postavená na tom, že Jakub je osobný maklé
   - lokálne vytvorený oddelený agent `jakub-olsa`,
   - workspace `/Users/xvadur_mac/OpenClaw/workspaces/jakub-olsa`,
   - pripravený non-blocking Worker handoff po úspešnom `/api/book`,
-  - pripravený agent prompt, tool pravidlá, Supabase schema draft a runbook.
+  - pripravený agent prompt, user kontext, tool pravidlá, Supabase schema draft a runbook.
 - Docker runtime je nainštalovaný user-local cez Docker CLI + Colima a overený cez `hello-world`.
 - Docker OpenClaw je od 2026-06-05 aktívny lokálny runtime na `http://127.0.0.1:18789/` s vlastným config/workspace adresárom.
 - Docker agent `jakub-olsa` je overený cez `openclaw-cli agent` smoke test a používa `openai/gpt-5.5` cez OpenAI Codex runtime.
+- Docker agent core docs sú zosynchronizované v runtime workspace: `USER.md`, `IDENTITY.md`, `AGENTS.md`, `TOOLS.md`, `HEARTBEAT.md`.
 - Docker agent `jakub-olsa` má od 2026-06-05 priamy mount na Jakub Astro repo: host `/Users/xvadur_mac/Jakub_Astro` -> container `/home/node/Jakub_Astro`.
 - Astro repo connection smoke test cez agenta prešiel: agent odpovedal `CONNECTED`, package `clients-jakub-olsa`, `astro.config.mjs` existuje.
 - Host OpenClaw LaunchAgent `ai.openclaw.gateway` je disabled, aby nekolidoval s Docker runtime na porte `18789`.
