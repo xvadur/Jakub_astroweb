@@ -59,10 +59,12 @@ Aktuálna obchodná stratégia je postavená na tom, že Jakub je osobný maklé
   - pripravený non-blocking Worker handoff po úspešnom `/api/book`,
   - pripravený agent prompt, tool pravidlá, Supabase schema draft a runbook.
 - Docker runtime je nainštalovaný user-local cez Docker CLI + Colima a overený cez `hello-world`.
-- Docker OpenClaw pilot beží oddelene na `http://127.0.0.1:18889/` s vlastným config/workspace adresárom.
+- Docker OpenClaw je od 2026-06-05 aktívny lokálny runtime na `http://127.0.0.1:18789/` s vlastným config/workspace adresárom.
 - Docker agent `jakub-olsa` je overený cez `openclaw-cli agent` smoke test a používa `openai/gpt-5.5` cez OpenAI Codex runtime.
 - Docker agent `jakub-olsa` má od 2026-06-05 priamy mount na Jakub Astro repo: host `/Users/xvadur_mac/Jakub_Astro` -> container `/home/node/Jakub_Astro`.
 - Astro repo connection smoke test cez agenta prešiel: agent odpovedal `CONNECTED`, package `clients-jakub-olsa`, `astro.config.mjs` existuje.
+- Host OpenClaw LaunchAgent `ai.openclaw.gateway` je disabled, aby nekolidoval s Docker runtime na porte `18789`.
+- Docker OpenClaw LaunchAgent watchdog `ai.openclaw.docker` je enabled. Každé 2 minúty overuje Colima/Docker a `openclaw-gateway`.
 - Docker OpenClaw `/hooks/agent` je lokálne zapnutý, chránený bearer tokenom mimo repozitára a obmedzený na agenta `jakub-olsa`.
 - Hook smoke test z 2026-06-04 prešiel: neautorizovaný request vracia `401`, autorizovaný request vytvorí `runId` a session `agent:jakub-olsa:main` ukladá odpoveď agenta.
 - Lokálny Worker E2E test z 2026-06-04 prešiel: `/api/book` v mock režime odovzdal test booking cez `ctx.waitUntil` do OpenClaw `/hooks/agent` a agent vytvoril interný admin case.
@@ -87,12 +89,13 @@ Aktuálna obchodná stratégia je postavená na tom, že Jakub je osobný maklé
 
 Overené 5. júna 2026:
 
-- OpenClaw gateway beží lokálne cez launchd na porte `18789`.
-- Telegram bot v OpenClaw konfigurácii je `@jakub_reality_bot` s menom `jakub_realitky`.
-- Telegram token je uložený lokálne v `~/.openclaw/credentials/jakub-telegram-bot-token`, nie v repozitári.
-- Telegram channel bol nakonfigurovaný a beží v polling móde. Pred produkčným odovzdaním ho treba znova overiť správou v Telegrame.
-- Telegram/OpenClaw pairing treba pri presune na Mac mini overiť test správou, vrátane inbound aj outbound smeru.
-- OpenClaw model provider smoke test prešiel cez `openai-codex/gpt-5.5`. Ak auth pri deme zlyhá, obnoviť ho cez `openclaw models auth login --provider openai-codex`.
+- OpenClaw gateway beží cez Docker/Colima na porte `18789`.
+- Host OpenClaw launchd service je vypnutý; aktívny watchdog je `ai.openclaw.docker`.
+- Docker agent `jakub-olsa` má routing binding `telegram -> jakub-olsa`.
+- Persistent smoke test cez Docker agenta prešiel odpoveďou `PERSISTENT_OK`.
+- Telegram bot cieľ je `@jakub_reality_bot` s menom `jakub_realitky`.
+- Docker Telegram channel ešte čaká na BotFather token pre `@jakub_reality_bot`. Token sa nesmie commitovať; nastavuje sa cez `ops/openclaw/configure-docker-telegram-token.sh`.
+- Po nastavení tokenu treba overiť inbound aj outbound Telegram správu.
 
 Praktický runbook je v `docs/OPENCLAW_TELEGRAM_JAKUB.md`.
 

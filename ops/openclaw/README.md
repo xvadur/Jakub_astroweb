@@ -2,23 +2,24 @@
 
 Tento adresar drzi pripravene podklady pre samostatneho OpenClaw agenta pre Jakuba Olsu. Neobsahuje ziadne secrety.
 
-Aktualny lokalny stav 2026-06-03:
+Aktualny lokalny stav 2026-06-06:
 
 - OpenClaw CLI je na stroji dostupny, nebolo treba ho stahovat.
-- Gateway bezi lokalne na `http://127.0.0.1:18789/`.
+- Docker OpenClaw gateway bezi lokalne na `http://127.0.0.1:18789/`.
 - Vytvoreny je oddeleny agent `jakub-olsa`.
 - Agent workspace je mimo weboveho repozitara: `/Users/xvadur_mac/OpenClaw/workspaces/jakub-olsa`.
 - Docker runtime je dostupny cez user-local Docker CLI + Colima.
-- Docker OpenClaw gateway bezi oddelene na `http://127.0.0.1:18889/`.
+- Docker OpenClaw bridge port je mapovany na `http://127.0.0.1:18890/`.
 - Docker OpenClaw source checkout: `/Users/xvadur_mac/OpenClaw/docker/openclaw-source`.
 - Docker config: `/Users/xvadur_mac/OpenClaw/docker/state/openclaw-config`.
 - Docker workspace: `/Users/xvadur_mac/OpenClaw/docker/workspaces/docker-openclaw`.
 - Docker agent `jakub-olsa` je vytvoreny aj v Docker state.
+- Docker agent `jakub-olsa` ma routing binding `telegram -> jakub-olsa`, aby Telegram po konfiguracii kanala nespadol na default `main` agenta.
 - Jakub Astro repo je pre OpenClaw Docker agenta dostupne cez mount:
   - host: `/Users/xvadur_mac/Jakub_Astro`,
   - container: `/home/node/Jakub_Astro`.
 - Portable compose override pre tento mount je v `ops/openclaw/docker-compose.jakub.override.yml`.
-- Telegram channel este nie je pripojeny, lebo chyba `TELEGRAM_BOT_TOKEN`.
+- Telegram channel v Docker state este nie je pripojeny, lebo v Docker OpenClaw configu chyba Telegram bot token. Kontrola 2026-06-06 vratila `channels: {}`.
 - Webovy Worker je pripraveny poslat booking payload do OpenClaw webhooku, ked budu nastavene staging secrets.
 
 ## Subory
@@ -42,15 +43,53 @@ OpenClaw je vedlajsi efekt po bookingu. Nesmie byt v kritickej transakcii rezerv
 
 ## Docker pilot
 
-Docker pilot nepouziva host port `18789`, aby nekolidoval s existujucim LaunchAgent gateway.
+Docker runtime uz pouziva host port `18789`; povodny host LaunchAgent gateway musi ostat vypnuty, aby nekolidoval.
 
 ```bash
-curl -fsS http://127.0.0.1:18889/healthz
-curl -fsS http://127.0.0.1:18889/readyz
+curl -fsS http://127.0.0.1:18789/healthz
+curl -fsS http://127.0.0.1:18789/readyz
 docker compose -f /Users/xvadur_mac/OpenClaw/docker/openclaw-source/docker-compose.yml ps
 ```
 
-CLI prikazy spustane v Docker network namespace potrebuju interny port `18789`, aj ked host port je `18889`:
+## Persistentny Docker runtime
+
+Cielovy stav pre Jakuba je:
+
+- host OpenClaw LaunchAgent `ai.openclaw.gateway` je disabled, aby nebral port `18789`,
+- Docker/Colima je aktivny runtime,
+- OpenClaw Docker gateway bezi na `http://127.0.0.1:18789/`,
+- Docker container ma `restart: unless-stopped`,
+- macOS LaunchAgent `ai.openclaw.docker` kazde 2 minuty overi Docker/Colima a `openclaw-gateway`.
+
+Watchdog script:
+
+```bash
+/Users/xvadur_mac/Jakub_Astro/ops/openclaw/ensure-docker-openclaw.sh
+```
+
+LaunchAgent template:
+
+```bash
+/Users/xvadur_mac/Jakub_Astro/ops/openclaw/launchd/ai.openclaw.docker.plist
+```
+
+Logy:
+
+```bash
+/Users/xvadur_mac/Library/Logs/openclaw/docker-watchdog.log
+/Users/xvadur_mac/Library/Logs/openclaw/docker-watchdog.launchd.out.log
+/Users/xvadur_mac/Library/Logs/openclaw/docker-watchdog.launchd.err.log
+```
+
+Open Docker dashboard bez vypisovania tokenu do chatu:
+
+```bash
+/Users/xvadur_mac/Jakub_Astro/ops/openclaw/open-docker-dashboard.sh
+```
+
+Prehliadacovy dashboard je na host porte `18789`. CLI prikazy spustane v Docker network namespace tiez pouzivaju interny port `18789`.
+
+CLI prikazy spustane v Docker network namespace:
 
 ```bash
 docker compose -f /Users/xvadur_mac/OpenClaw/docker/openclaw-source/docker-compose.yml \
@@ -98,6 +137,39 @@ docker compose \
 ```
 
 Ocakavane: `CONNECTED`, package `clients-jakub-olsa`, `astro.config.mjs` existuje.
+
+Smoke test 2026-06-05 vecer presiel aj priamym agent callom:
+
+```text
+Jakub Docker agent pripraveny.
+```
+
+## Telegram v Docker OpenClaw
+
+Overene 2026-06-05:
+
+- Docker gateway bezi a je healthy.
+- Docker agent `jakub-olsa` funguje cez `openai/gpt-5.5`.
+- Routing binding je nastaveny:
+
+```text
+jakub-olsa <- telegram
+```
+
+Este chyba samotny Telegram channel token v Docker OpenClaw state. Ked bude token dostupny v subore mimo repozitara, nastavenie:
+
+```bash
+pbpaste | /Users/xvadur_mac/Jakub_Astro/ops/openclaw/configure-docker-telegram-token.sh
+```
+
+Potom Jakub posle botovi spravu a pairing sa overi cez:
+
+```bash
+docker compose \
+  -f /Users/xvadur_mac/OpenClaw/docker/openclaw-source/docker-compose.yml \
+  -f /Users/xvadur_mac/Jakub_Astro/ops/openclaw/docker-compose.jakub.override.yml \
+  run --rm -e OPENCLAW_GATEWAY_PORT=18789 openclaw-cli pairing list --channel telegram --json
+```
 
 ## Secrets mimo repozitara
 

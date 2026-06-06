@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>ai.openclaw.docker</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/Users/xvadur_mac/Jakub_Astro/ops/openclaw/ensure-docker-openclaw.sh</string>
+  </array>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>StartInterval</key>
+  <integer>120</integer>
+  <key>StandardOutPath</key>
+  <string>/Users/xvadur_mac/Library/Logs/openclaw/docker-watchdog.launchd.out.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/xvadur_mac/Library/Logs/openclaw/docker-watchdog.launchd.err.log</string>
+  <key>WorkingDirectory</key>
+  <string>/Users/xvadur_mac/Jakub_Astro</string>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>HOME</key>
+    <string>/Users/xvadur_mac</string>
+    <key>PATH</key>
+    <string>/Users/xvadur_mac/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+    <key>DOCKER_CONTEXT</key>
+    <string>colima</string>
+    <key>JAKUB_ASTRO_REPO_DIR</key>
+    <string>/Users/xvadur_mac/Jakub_Astro</string>
+  </dict>
+</dict>
+</plist>

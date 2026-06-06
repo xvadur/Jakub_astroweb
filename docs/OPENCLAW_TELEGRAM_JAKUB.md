@@ -1,6 +1,6 @@
 # OpenClaw + Telegram runbook pre Jakuba
 
-Posledná aktualizácia: 5. jún 2026
+Posledná aktualizácia: 6. jún 2026
 
 ## Cieľ stretnutia
 
@@ -10,18 +10,43 @@ Posledná aktualizácia: 5. jún 2026
 
 ## Aktuálny stav
 
-- Web je Astro projekt v `/Users/_xvadur/Jakub_astroweb`.
+- Web je Astro projekt v `/Users/xvadur_mac/Jakub_Astro`
+  (`/Users/xvadur_mac/Diera/active/jakub/Jakub_Astro`).
 - GitHub repo: `xvadur/Jakub_astroweb`.
-- Aktuálna vetva: `main`.
-- OpenClaw gateway beží lokálne na `ws://127.0.0.1:18789`.
-- Telegram bot pripojený k OpenClaw: `@jakub_reality_bot` (`jakub_realitky`).
-- Telegram token je uložený lokálne v `~/.openclaw/credentials/jakub-telegram-bot-token` s právami `600`.
-- Telegram pairing s Jakubom je podľa operátora hotový; pred produkčným použitím overiť testovacou správou.
+- Aktuálna vývojová vetva: `staging`.
+- Docker OpenClaw gateway je aktuálny runtime na `http://127.0.0.1:18789/`.
+- Telegram bot cieľ pre OpenClaw: `@jakub_reality_bot`.
+- Dnešná kontrola Docker state: `channels: {}` a `channelSummary: []`; Telegram channel ešte nie je pripojený v Docker configu.
+- `telegram-pairing.json` v host aj Docker OpenClaw state existuje, ale má prázdne `requests: []`.
+- Routing binding už je v Docker configu: `telegram -> jakub-olsa`.
+- Ak bol Telegram včera spárovaný, neprežil to ako persistent Docker channel config; treba nahodiť bot token do Docker state a potom znovu overiť inbound správou.
 - `openclaw channels status --deep` môže ukazovať `disconnected`, aj keď je bot nakonfigurovaný a beží v polling móde; rozhodujúci smoke test je inbound/outbound Telegram správa.
 - OpenClaw model auth treba pred plným demom obnoviť:
 
 ```bash
 openclaw models auth login --provider openai-codex
+```
+
+## Docker stav pre Jakub onboarding
+
+Overené 6. júna 2026:
+
+- Docker OpenClaw gateway beží na host porte `18789` a je healthy.
+- Docker agent `jakub-olsa` existuje a smoke test cez `openai/gpt-5.5` prešiel.
+- Jakub Astro repo je mountnuté v kontajneri na `/home/node/Jakub_Astro`.
+- Routing binding je nastavený a overený: `telegram -> jakub-olsa`.
+- Docker Telegram channel ešte potrebuje vlastný bot token v Docker OpenClaw state; device/browser pairing ani host-side pairing sa automaticky neprenáša do Docker channel configu.
+
+Docker dashboard otvorí helper bez vypisovania gateway tokenu:
+
+```bash
+/Users/xvadur_mac/Jakub_Astro/ops/openclaw/open-docker-dashboard.sh
+```
+
+Keď je BotFather token pre `@jakub_reality_bot` v clipboarde, Docker Telegram channel nastaví helper:
+
+```bash
+pbpaste | /Users/xvadur_mac/Jakub_Astro/ops/openclaw/configure-docker-telegram-token.sh
 ```
 
 ## Dva odlišné Telegram tokeny
@@ -35,7 +60,13 @@ Môžu byť rovnaké, ale praktickejšie je mať ich oddelené. OpenClaw bot má
 
 ## Nahodenie alebo výmena OpenClaw Telegram tokenu
 
-Token nedávať do histórie shellu ani do repozitára. `--token-file` v OpenClaw nie je jednorazový import, ale trvalá referencia na súbor. Preto musí token zostať v lokálnom credentials súbore mimo repozitára:
+Token nedávať do histórie shellu ani do repozitára. `--token-file` v OpenClaw nie je jednorazový import, ale trvalá referencia na súbor. Pre Docker použiť helper, ktorý token uloží mimo repozitára do bind-mounted OpenClaw state a zapíše channel config:
+
+```bash
+pbpaste | /Users/xvadur_mac/Jakub_Astro/ops/openclaw/configure-docker-telegram-token.sh
+```
+
+Ručný host-side ekvivalent, ak by sa nastavoval mimo Dockeru:
 
 ```bash
 TOKEN_FILE="$HOME/.openclaw/credentials/jakub-telegram-bot-token"
