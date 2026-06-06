@@ -72,6 +72,13 @@ Watchdog script:
 /Users/xvadur_mac/Jakub_Astro/ops/openclaw/ensure-docker-openclaw.sh
 ```
 
+Watchdog self-healing flow:
+
+- ak Docker/Colima nie je dostupny, skusi spustit Colimu,
+- spusti alebo dorovna `openclaw-gateway` cez `docker compose up -d`,
+- kontroluje `http://127.0.0.1:18789/readyz`,
+- ak gateway bezi, ale nie je ready, spravi explicitny `docker compose restart openclaw-gateway` a readiness kontrolu zopakuje.
+
 LaunchAgent template:
 
 ```bash

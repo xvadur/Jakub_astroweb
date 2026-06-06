@@ -54,14 +54,33 @@ docker compose \
   -f "$OVERRIDE_FILE" \
   up -d openclaw-gateway >>"$LOG_DIR/docker-watchdog.log" 2>&1
 
-for _ in {1..30}; do
-  if curl -fsS http://127.0.0.1:18789/readyz >/dev/null 2>&1; then
-    log "Docker OpenClaw ready on 127.0.0.1:18789"
-    exit 0
-  fi
-  sleep 2
-done
+wait_until_ready() {
+  for _ in {1..30}; do
+    if curl -fsS http://127.0.0.1:18789/readyz >/dev/null 2>&1; then
+      return 0
+    fi
+    sleep 2
+  done
 
-log "Docker OpenClaw did not become ready"
+  return 1
+}
+
+if wait_until_ready; then
+  log "Docker OpenClaw ready on 127.0.0.1:18789"
+  exit 0
+fi
+
+log "Docker OpenClaw not ready; restarting gateway"
+docker compose \
+  -f "$COMPOSE_FILE" \
+  -f "$OVERRIDE_FILE" \
+  restart openclaw-gateway >>"$LOG_DIR/docker-watchdog.log" 2>&1 || true
+
+if wait_until_ready; then
+  log "Docker OpenClaw ready on 127.0.0.1:18789 after restart"
+  exit 0
+fi
+
+log "Docker OpenClaw did not become ready after restart"
 docker compose -f "$COMPOSE_FILE" -f "$OVERRIDE_FILE" ps >>"$LOG_DIR/docker-watchdog.log" 2>&1 || true
 exit 1
