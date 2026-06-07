@@ -1,5 +1,6 @@
 const GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
 const GOOGLE_CALENDAR_API_URL = "https://www.googleapis.com/calendar/v3";
+const SUPABASE_REST_PREFIX = "/rest/v1";
 
 const DEFAULT_ALLOWED_ORIGINS = [
   "https://jakubolsa.sk",
@@ -18,6 +19,10 @@ const DEFAULT_MIN_LEAD_MINUTES = 0;
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
+
+    if (isDashboardPath(url.pathname) && !isDashboardPubliclyAllowed(url, env)) {
+      return notFound();
+    }
 
     if (url.pathname.startsWith("/api/")) {
       return handleApiRequest(request, env, ctx);
@@ -47,11 +52,15 @@ async function handleApiRequest(request, env, ctx) {
     }
 
     if (url.pathname === "/api/availability") {
-      return handleAvailability(request, env, corsHeaders);
+      return await handleAvailability(request, env, corsHeaders);
     }
 
     if (url.pathname === "/api/book") {
-      return handleBooking(request, env, ctx, corsHeaders);
+      return await handleBooking(request, env, ctx, corsHeaders);
+    }
+
+    if (url.pathname === "/api/dashboard/leads") {
+      return await handleDashboardLeads(request, env, corsHeaders);
     }
 
     return json({ ok: false, error: "API route not found" }, 404, corsHeaders);
@@ -166,6 +175,8 @@ async function handleBooking(request, env, ctx, headers) {
 
   let calendarEvent = null;
   let bookingStatus = "pending_calendar_config";
+  let crmStatus = "pending_supabase_config";
+  let crmRecords = null;
   let mode = "mock";
 
   if (googleEnabled) {
@@ -190,11 +201,34 @@ async function handleBooking(request, env, ctx, headers) {
     bookingStatus = "calendar_created";
   }
 
+  const crmResult = await createSupabaseBookingRecords(payload, {
+    env,
+    bookingStatus,
+    mode,
+    calendarEvent,
+    interval,
+    timeZone,
+  }).catch((error) => ({
+    ok: false,
+    error: error instanceof Error ? error.message : "Supabase CRM write failed",
+  }));
+
+  if (crmResult.ok) {
+    crmStatus = "crm_created";
+    crmRecords = crmResult.records;
+  } else if (crmResult.skipped) {
+    crmStatus = "crm_skipped";
+  } else {
+    crmStatus = "crm_failed";
+  }
+
   const telegramPromise = sendTelegramNotification(payload, {
     env,
     bookingStatus,
     mode,
     calendarEvent,
+    crmStatus,
+    crmRecords,
   });
   const openClawPromise = sendOpenClawHandoff(payload, {
     env,
@@ -203,6 +237,8 @@ async function handleBooking(request, env, ctx, headers) {
     calendarEvent,
     interval,
     timeZone,
+    crmStatus,
+    crmRecords,
   });
 
   ctx.waitUntil(telegramPromise.catch(() => null));
@@ -213,8 +249,58 @@ async function handleBooking(request, env, ctx, headers) {
       ok: true,
       mode,
       bookingStatus,
+      crmStatus,
+      crmRecords: crmRecords || {},
       eventId: calendarEvent?.id || "",
       eventLink: calendarEvent?.htmlLink || "",
+    },
+    200,
+    headers,
+  );
+}
+
+async function handleDashboardLeads(request, env, headers) {
+  if (request.method !== "GET") {
+    return json({ ok: false, error: "Method not allowed" }, 405, headers);
+  }
+
+  const url = new URL(request.url);
+
+  if (!isDashboardPubliclyAllowed(url, env)) {
+    return json({ ok: false, error: "API route not found" }, 404, headers);
+  }
+
+  if (!isDashboardCrmReadEnabled(env)) {
+    return json(
+      {
+        ok: true,
+        mode: "demo",
+        configured: false,
+        leads: getDemoDashboardLeads(),
+      },
+      200,
+      headers,
+    );
+  }
+
+  if (!hasSupabase(env)) {
+    return json({ ok: false, configured: false, error: "Supabase is not configured" }, 503, headers);
+  }
+
+  const tenant = await ensureSupabaseTenant(env);
+  const rows = await supabaseRequest(
+    env,
+    `/leads?select=id,created_at,status,intent,location,property_type,budget,time_horizon,source,qualification_score,next_follow_up_at,raw_payload,contacts(name,phone,email,source)&tenant_id=eq.${encodeURIComponent(
+      tenant.id,
+    )}&deleted_at=is.null&order=created_at.desc&limit=50`,
+    { method: "GET" },
+  );
+
+  return json(
+    {
+      ok: true,
+      mode: "supabase",
+      leads: Array.isArray(rows) ? rows.map(formatDashboardLead) : [],
     },
     200,
     headers,
@@ -252,6 +338,114 @@ function json(data, status = 200, headers = {}) {
       "Content-Type": "application/json; charset=utf-8",
     },
   });
+}
+
+function notFound() {
+  return new Response("Not found", {
+    status: 404,
+    headers: {
+      "Content-Type": "text/plain; charset=utf-8",
+      "Cache-Control": "no-store",
+    },
+  });
+}
+
+function isDashboardPath(pathname) {
+  return pathname === "/dashboard" || pathname.startsWith("/dashboard/");
+}
+
+function isDashboardPubliclyAllowed(url, env) {
+  const mode = clean(env.DASHBOARD_PUBLIC_MODE).toLowerCase() || "staging-demo";
+
+  if (mode === "off") return false;
+  if (mode === "enabled") return true;
+
+  return isLocalHost(url.hostname) || isStagingHost(url.hostname);
+}
+
+function isDashboardCrmReadEnabled(env) {
+  return clean(env.DASHBOARD_DATA_MODE).toLowerCase() === "crm";
+}
+
+function isLocalHost(hostname) {
+  return hostname === "localhost" || hostname === "127.0.0.1" || hostname === "[::1]" || hostname === "::1";
+}
+
+function isStagingHost(hostname) {
+  return hostname === "staging.jakubolsa.sk" || hostname.includes("jakubastroweb-staging");
+}
+
+function getDemoDashboardLeads() {
+  return [
+    {
+      id: "demo-petra-vrabcova",
+      name: "Petra Vrabcová",
+      grade: "B",
+      status: "Nový lead",
+      type: "Kupujúci",
+      property: "3-izb byt",
+      location: "Petržalka",
+      budget: "EUR 250,000",
+      timing: "3 mesiace",
+      source: "Demo web",
+      motivation: "Prvé bývanie. Chce si overiť možnosti pred obhliadkami.",
+      nextAction: "Zavolať a kvalifikovať lead.",
+      nextTime: "Zajtra, 10:00",
+      phone: "+421 900 000 001",
+      email: "petra.demo@example.test",
+    },
+    {
+      id: "demo-anna-dudasova",
+      name: "Anna Dudášová",
+      grade: "A",
+      status: "Kvalifikácia",
+      type: "Predávajúci",
+      property: "Rodinný dom",
+      location: "Rača",
+      budget: "EUR 450,000 očakáva",
+      timing: "6 mesiacov",
+      source: "Demo booking",
+      motivation: "Sťahovanie do zahraničia. Potrebuje reálnu cenovú stratégiu.",
+      nextAction: "Pripraviť trhové porovnanie.",
+      nextTime: "Zajtra, 10:00",
+      phone: "+421 900 000 002",
+      email: "anna.demo@example.test",
+    },
+    {
+      id: "demo-eva-krajcova",
+      name: "Eva Krajčová",
+      grade: "A",
+      status: "Konzultácia",
+      type: "Kupujúci",
+      property: "1,5-izb byt",
+      location: "Martinčekova",
+      budget: "Cena na vyžiadanie",
+      timing: "urgentné",
+      source: "Demo obhliadka",
+      motivation: "Prejavila veľký záujem po obhliadke.",
+      nextAction: "Zavolať a zistiť feedback.",
+      nextTime: "Dnes, 16:00",
+      phone: "+421 900 000 003",
+      email: "eva.demo@example.test",
+    },
+    {
+      id: "demo-juraj-novak",
+      name: "Juraj Novák",
+      grade: "B",
+      status: "Kontaktovaný",
+      type: "Predávajúci",
+      property: "3-izb byt",
+      location: "Staré Mesto",
+      budget: "neuvedené",
+      timing: "1-3 mesiace",
+      source: "Demo odporúčanie",
+      motivation: "Chce vedieť, či sa oplatí predaj pred rekonštrukciou.",
+      nextAction: "Dohodnúť konzultáciu.",
+      nextTime: "4. 6. 2026, 11:00",
+      phone: "+421 900 000 004",
+      email: "juraj.demo@example.test",
+    },
+  ];
 }
 
 async function readJsonPayload(request) {
@@ -484,6 +678,323 @@ async function sendOpenClawHandoff(payload, context) {
   } finally {
     clearTimeout(timeout);
   }
+}
+
+async function createSupabaseBookingRecords(payload, context) {
+  const { env, calendarEvent, interval, timeZone } = context;
+
+  if (!hasSupabase(env)) {
+    return { ok: false, skipped: true, reason: "missing_supabase_config" };
+  }
+
+  const tenant = await ensureSupabaseTenant(env);
+  const contact = await findOrCreateSupabaseContact(env, tenant.id, payload);
+  const lead = await createSupabaseLead(env, tenant.id, contact.id, payload, context);
+  const appointment = await createSupabaseAppointment(env, tenant.id, contact.id, lead.id, {
+    calendarEvent,
+    interval,
+    timeZone,
+    payload,
+  });
+
+  if (clean(payload.sprava)) {
+    await createSupabaseNote(env, tenant.id, "lead", lead.id, clean(payload.sprava), "web_booking");
+  }
+
+  return {
+    ok: true,
+    records: {
+      tenantId: tenant.id,
+      contactId: contact.id,
+      leadId: lead.id,
+      appointmentId: appointment.id,
+    },
+  };
+}
+
+async function ensureSupabaseTenant(env) {
+  const slug = clean(env.SUPABASE_TENANT_SLUG) || "jakub-olsa";
+  const name = clean(env.SUPABASE_TENANT_NAME) || "Jakub Olša";
+  const rows = await supabaseRequest(env, `/tenants?on_conflict=slug&select=id,slug,name`, {
+    method: "POST",
+    prefer: "resolution=merge-duplicates,return=representation",
+    body: { slug, name },
+  });
+  const tenant = firstRow(rows);
+
+  if (!tenant?.id) {
+    throw new Error("Supabase tenant bootstrap did not return tenant id");
+  }
+
+  return tenant;
+}
+
+async function findOrCreateSupabaseContact(env, tenantId, payload) {
+  const phone = clean(payload.telefon);
+  const email = clean(payload.email);
+  let existing = null;
+
+  if (phone) {
+    existing = firstRow(
+      await supabaseRequest(
+        env,
+        `/contacts?select=id,name,phone,email&tenant_id=eq.${encodeURIComponent(tenantId)}&phone=eq.${encodeURIComponent(
+          phone,
+        )}&deleted_at=is.null&limit=1`,
+        { method: "GET" },
+      ),
+    );
+  }
+
+  if (!existing && email) {
+    existing = firstRow(
+      await supabaseRequest(
+        env,
+        `/contacts?select=id,name,phone,email&tenant_id=eq.${encodeURIComponent(tenantId)}&email=eq.${encodeURIComponent(
+          email,
+        )}&deleted_at=is.null&limit=1`,
+        { method: "GET" },
+      ),
+    );
+  }
+
+  if (existing?.id) return existing;
+
+  const rows = await supabaseRequest(env, `/contacts?select=id,name,phone,email`, {
+    method: "POST",
+    body: {
+      tenant_id: tenantId,
+      name: clean(payload.meno),
+      phone,
+      email,
+      source: "web_booking",
+      notes_summary: clean(payload.sprava),
+      raw_payload: payload,
+    },
+  });
+
+  return firstRow(rows);
+}
+
+async function createSupabaseLead(env, tenantId, contactId, payload, context) {
+  const rows = await supabaseRequest(env, `/leads?select=id,status,intent`, {
+    method: "POST",
+    body: {
+      tenant_id: tenantId,
+      contact_id: contactId,
+      intent: mapLeadIntent(payload.zamer),
+      status: "new",
+      location: clean(payload.lokalita),
+      location_place_id: clean(payload.lokalita_place_id),
+      property_type: clean(payload.typ) || clean(payload.lead_title),
+      budget: clean(payload.rozpocet),
+      time_horizon: clean(payload.horizont),
+      source: "web_booking",
+      qualification_score: scoreLead(payload),
+      next_follow_up_at: buildFollowUpAt(context.interval?.start, context.timeZone),
+      raw_payload: {
+        ...payload,
+        booking_status: context.bookingStatus,
+        booking_mode: context.mode,
+        calendar_event_id: context.calendarEvent?.id || "",
+        calendar_event_link: context.calendarEvent?.htmlLink || "",
+      },
+    },
+  });
+
+  return firstRow(rows);
+}
+
+async function createSupabaseAppointment(env, tenantId, contactId, leadId, data) {
+  const { calendarEvent, interval, timeZone, payload } = data;
+  const rows = await supabaseRequest(env, `/appointments?select=id,status`, {
+    method: "POST",
+    body: {
+      tenant_id: tenantId,
+      contact_id: contactId,
+      lead_id: leadId,
+      google_event_id: calendarEvent?.id || "",
+      starts_at: interval?.start ? new Date(interval.start).toISOString() : null,
+      ends_at: interval?.end ? new Date(interval.end).toISOString() : null,
+      status: calendarEvent?.id ? "confirmed" : "requested",
+      qualification_payload: {
+        time_zone: timeZone,
+        preferred_date: clean(payload.datum),
+        preferred_time: clean(payload.cas),
+        raw_payload: payload,
+      },
+      source: "web_booking",
+    },
+  });
+
+  return firstRow(rows);
+}
+
+async function createSupabaseNote(env, tenantId, entityType, entityId, body, source) {
+  const rows = await supabaseRequest(env, `/notes?select=id`, {
+    method: "POST",
+    body: {
+      tenant_id: tenantId,
+      entity_type: entityType,
+      entity_id: entityId,
+      author_type: "system",
+      body,
+      source,
+    },
+  });
+
+  return firstRow(rows);
+}
+
+async function supabaseRequest(env, path, options = {}) {
+  const baseUrl = getSupabaseUrl(env);
+  const key = getSupabaseServiceKey(env);
+
+  if (!baseUrl || !key) {
+    throw new Error("Supabase URL or service key is missing");
+  }
+
+  const response = await fetch(`${baseUrl}${SUPABASE_REST_PREFIX}${path}`, {
+    method: options.method || "GET",
+    headers: {
+      apikey: key,
+      Authorization: `Bearer ${key}`,
+      "Content-Type": "application/json",
+      ...(options.prefer ? { Prefer: options.prefer } : options.method === "POST" ? { Prefer: "return=representation" } : {}),
+    },
+    body: options.body ? JSON.stringify(options.body) : undefined,
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`Supabase request failed: ${response.status} ${text.slice(0, 240)}`);
+  }
+
+  if (response.status === 204) return null;
+
+  return response.json();
+}
+
+function formatDashboardLead(row) {
+  const contact = row.contacts || {};
+  const raw = row.raw_payload || {};
+  const name = clean(contact.name) || clean(raw.meno) || "Bez mena";
+  const score = Number(row.qualification_score || 0);
+
+  return {
+    id: row.id,
+    name,
+    grade: score >= 80 ? "A" : score >= 55 ? "B" : "C",
+    status: mapDashboardStatus(row.status),
+    type: mapDashboardIntent(row.intent),
+    property: clean(row.property_type) || clean(raw.typ) || clean(raw.lead_title) || clean(raw.zamer) || "Neurčené",
+    location: clean(row.location) || clean(raw.lokalita) || "-",
+    budget: clean(row.budget) || "neuvedené",
+    timing: clean(row.time_horizon) || clean(raw.horizont) || "-",
+    source: clean(row.source) || clean(contact.source) || "CRM",
+    motivation: clean(raw.sprava) || "Bez poznámky.",
+    nextAction: buildDashboardNextAction(row),
+    nextTime: row.next_follow_up_at ? formatSkDateTime(row.next_follow_up_at) : "bez termínu",
+    phone: clean(contact.phone) || clean(raw.telefon),
+    email: clean(contact.email) || clean(raw.email),
+  };
+}
+
+function hasSupabase(env) {
+  return Boolean(getSupabaseUrl(env) && getSupabaseServiceKey(env));
+}
+
+function getSupabaseUrl(env) {
+  return clean(env.SUPABASE_URL).replace(/\/+$/, "");
+}
+
+function getSupabaseServiceKey(env) {
+  return clean(env.SUPABASE_SERVICE_ROLE_KEY) || clean(env.SUPABASE_SECRET_KEY);
+}
+
+function firstRow(rows) {
+  return Array.isArray(rows) ? rows[0] : rows;
+}
+
+function mapLeadIntent(value) {
+  const intent = clean(value).toLowerCase();
+
+  if (intent.includes("preda")) return "sell";
+  if (intent.includes("kúp") || intent.includes("kup")) return "buy";
+  if (intent.includes("prenáj") || intent.includes("prenaj")) return "rent";
+  if (intent.includes("možnos") || intent.includes("moznost")) return "estimate";
+  if (intent.includes("konzult")) return "consult";
+
+  return "unknown";
+}
+
+function mapDashboardIntent(intent) {
+  const labels = {
+    sell: "Predávajúci",
+    buy: "Kupujúci",
+    rent: "Prenájom",
+    consult: "Konzultácia",
+    estimate: "Zisťuje možnosti",
+    unknown: "Kontakt",
+  };
+
+  return labels[intent] || labels.unknown;
+}
+
+function mapDashboardStatus(status) {
+  const labels = {
+    new: "Nový lead",
+    qualified: "Kvalifikácia",
+    contacted: "Kontaktovaný",
+    meeting: "Konzultácia",
+    won: "Uzavretie",
+    lost: "Stratený",
+    archived: "Archivovaný",
+  };
+
+  return labels[status] || status || "Nový lead";
+}
+
+function buildDashboardNextAction(row) {
+  if (row.status === "new") return "Zavolať a kvalifikovať lead.";
+  if (row.status === "qualified") return "Pripraviť ďalší krok.";
+  if (row.status === "meeting") return "Pripraviť podklady ku konzultácii.";
+  return "Skontrolovať stav a určiť ďalší krok.";
+}
+
+function scoreLead(payload) {
+  let score = 35;
+
+  if (clean(payload.telefon)) score += 15;
+  if (clean(payload.email)) score += 10;
+  if (clean(payload.lokalita_place_id)) score += 10;
+  if (clean(payload.typ)) score += 10;
+  if (Array.isArray(payload.parametre) && payload.parametre.length) score += 10;
+  if (clean(payload.sprava)) score += 10;
+
+  return Math.min(score, 100);
+}
+
+function buildFollowUpAt(startMs, timeZone) {
+  if (!startMs) return null;
+  const followUp = new Date(startMs - 60 * 60 * 1000);
+
+  return Number.isNaN(followUp.getTime()) ? null : followUp.toISOString();
+}
+
+function formatSkDateTime(value) {
+  const parsed = new Date(value);
+
+  if (Number.isNaN(parsed.getTime())) return value;
+
+  return new Intl.DateTimeFormat("sk-SK", {
+    day: "numeric",
+    month: "numeric",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "Europe/Bratislava",
+  }).format(parsed);
 }
 
 function buildEventSummary(payload) {

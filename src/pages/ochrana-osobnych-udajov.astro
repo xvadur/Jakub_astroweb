@@ -1,4 +1,5 @@
 ---
+import "../styles/global.css";
 import { site } from "../data/site";
 
 const siteEnv = import.meta.env.PUBLIC_SITE_ENV ?? "production";
@@ -106,8 +107,10 @@ const canonicalUrl = new URL("/ochrana-osobnych-udajov/", site.siteUrl).toString
       <a class="back" href="/">Späť na web</a>
       <h1>Ochrana osobných údajov a cookies</h1>
       <p class="lead">
-        Na tomto webe predstavujem svoje služby realitného makléra. Kontakt prebieha cez
-        telefonát, email alebo rezervačný odkaz Google Kalendára.
+        Na tomto webe predstavujem svoje služby realitného makléra a umožňujem rezervovať
+        konzultáciu cez vlastný rezervačný wizard. Táto stránka popisuje pracovnú realitu
+        spracovania údajov; finálne právne znenie bude ešte prekontrolované právnym zázemím
+        Jakuba/BOSEN.
       </p>
 
       <h2>Prevádzkovateľ</h2>
@@ -119,48 +122,55 @@ const canonicalUrl = new URL("/ochrana-osobnych-udajov/", site.siteUrl).toString
 
       <h2>Aké údaje spracúvam</h2>
       <p>
-        Ak ma kontaktujete telefonicky alebo emailom, spracúvam údaje, ktoré mi poskytnete
-        v rámci komunikácie: najmä meno, telefón, email, informácie o nehnuteľnosti a obsah
-        správy. Ak si rezervujete telefonát cez Google Kalendár, údaje zadávate v rezervačnom
-        rozhraní služby Google.
+        Ak vyplníte rezervačný wizard alebo ma kontaktujete telefonicky či emailom, spracúvam
+        údaje, ktoré mi poskytnete v rámci komunikácie: najmä meno, telefón, email, zámer
+        konzultácie, typ nehnuteľnosti, lokalitu, parametre nehnuteľnosti, preferovaný termín,
+        časový horizont a obsah správy. Pri lokalite môže wizard použiť Google Places návrhy,
+        aby bola adresa overená.
       </p>
 
       <h2>Účel spracúvania</h2>
       <p>
         Údaje používam výlučne na spätné kontaktovanie a vybavenie vášho dopytu k predaju,
-        kúpe, prenájmu, odhadu ceny alebo konzultácii nehnuteľnosti. Ak sa z prvého kontaktu
-        stane spolupráca, ďalšie údaje sa riešia v rámci bežnej obchodnej komunikácie a
-        príslušnej dokumentácie.
+        kúpe, prenájmu, odhadu ceny alebo konzultácii nehnuteľnosti. Rezervačný wizard môže
+        vytvoriť udalosť v Google Kalendári, uložiť lead do interného CRM a poslať internú
+        notifikáciu, aby som vedel na požiadavku nadviazať.
       </p>
 
       <h2>Právny základ</h2>
       <p>
         Údaje spracúvam na základe vášho súhlasu alebo na základe oprávneného záujmu vybaviť
-        vašu požiadavku, podľa toho, akým spôsobom ma kontaktujete. Súhlas môžete kedykoľvek
-        odvolať emailom na kontaktnú adresu uvedenú vyššie.
+        vašu požiadavku, podľa toho, akým spôsobom ma kontaktujete. Ak sa komunikácia posunie
+        k spolupráci, spracovanie môže byť potrebné aj na vykonanie predzmluvných krokov alebo
+        plnenie zmluvy. Súhlas môžete kedykoľvek odvolať emailom na kontaktnú adresu uvedenú
+        vyššie.
       </p>
 
       <h2>Ako dlho údaje uchovávam</h2>
       <p>
         Údaje uchovávam iba počas obdobia potrebného na vybavenie dopytu a nadväzujúcu
         komunikáciu. Ak zo spolupráce nevznikne ďalší obchodný alebo zmluvný vzťah, údaje
-        z dopytu ďalej nepoužívam na marketingové účely.
+        z dopytu ďalej nepoužívam na marketingové účely. Presné retenčné lehoty budú nastavené
+        podľa finálneho právneho odporúčania.
       </p>
 
       <h2>Komu údaje poskytujem</h2>
       <p>
-        Údaje môžu byť technicky spracované poskytovateľom emailovej schránky, hostingu alebo
-        služby Google Kalendár, ak použijete rezervačný odkaz. Údaje neposkytujem tretím stranám
-        na marketingové účely.
+        Údaje môžu byť technicky spracované poskytovateľmi služieb, ktoré používam na prevádzku
+        webu a vybavenie rezervácie: Cloudflare pre hosting a serverové API, Google Calendar API
+        a Google Places pre kalendár a overenie lokality, Supabase pre interné CRM záznamy a
+        Telegram pre interné oznámenie o novej rezervácii. V budúcnosti môžu byť údaje spracované
+        aj v internom OpenClaw/OpenAI workflow na sumarizáciu leadu, návrh follow-upu alebo
+        prípravu podkladov. Údaje neposkytujem tretím stranám na marketingové účely.
       </p>
 
       <h2>Cookies</h2>
       <p>
-        Web nepoužíva analytické ani marketingové cookies. Rezervácia prebieha mimo tejto
-        stránky v rozhraní Google Kalendára, kde sa spracovanie riadi pravidlami služby Google.
-        Ak budú neskôr doplnené meracie nástroje, remarketing alebo iné cookies, ktoré nie sú
-        technicky nevyhnutné, web pred ich použitím doplním o cookie lištu s možnosťou súhlas
-        odmietnuť alebo zmeniť.
+        Web aktuálne nepoužíva analytické ani marketingové cookies. Rezervačný wizard môže
+        volať technické API služby Google a Cloudflare Worker bez toho, aby sa na webe spúšťal
+        remarketing. Ak budú neskôr doplnené analytiky, remarketing alebo iné cookies, ktoré nie
+        sú technicky nevyhnutné, web doplním o cookie lištu s možnosťou súhlas odmietnuť alebo
+        zmeniť.
       </p>
 
       <h2>Vaše práva</h2>
@@ -177,7 +187,7 @@ const canonicalUrl = new URL("/ochrana-osobnych-udajov/", site.siteUrl).toString
         aj na Úrad na ochranu osobných údajov Slovenskej republiky.
       </p>
 
-      <p class="updated">Posledná aktualizácia: 26. máj 2026</p>
+      <p class="updated">Posledná aktualizácia: 6. jún 2026</p>
     </main>
   </body>
 </html>
