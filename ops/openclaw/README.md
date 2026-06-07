@@ -94,6 +94,13 @@ node /home/node/Jakub_Astro/ops/openclaw/tools/supabase-crm.mjs crm.createContac
 
 Tool pri vytvarani alebo uprave entity automaticky zapisuje audit log do `audit_logs`. CRM V0 workspace zostava iba fallback, ked Supabase tool nie je nakonfigurovany alebo zlyha.
 
+Overene 2026-06-07:
+
+- service role key je ulozeny mimo repozitara v Docker OpenClaw state,
+- Docker gateway ma env `SUPABASE_SERVICE_ROLE_KEY_FILE`,
+- `crm.searchContacts` prebehol z kontajnera,
+- `crm.writeAuditLog` vytvoril audit log v Supabase.
+
 ## Docker pilot
 
 Docker runtime uz pouziva host port `18789`; povodny host LaunchAgent gateway musi ostat vypnuty, aby nekolidoval.

@@ -79,7 +79,11 @@ Aktuálna obchodná stratégia je postavená na tom, že Jakub je osobný maklé
 - Supabase schema bola spustená v Supabase SQL Editore a staging smoke test prešiel: test booking vytvoril Google Calendar event a Worker vrátil `crmStatus: "crm_created"`.
 - Plný OpenClaw handoff z nasadeného staging webu ešte potrebuje verejný HTTPS endpoint pre lokálny Docker `/hooks/agent`, ideálne Cloudflare Tunnel + Access; Cloudflare Worker nesmie dostať `localhost` hook URL.
 - OpenClaw má od 2026-06-07 pripravený lokálny deterministický Supabase CRM tool v `ops/openclaw/tools/supabase-crm.mjs` a runtime kópie agent docs sú zosynchronizované do Docker OpenClaw state.
-- Aktuálny OpenClaw blocker pre maklérskeho agenta: chýba verejný bezpečný hook/tunnel zo staging Workera do Docker OpenClaw a runtime Supabase service key konfigurácia pre OpenClaw tool. HighLevel `401` z older runbookov je historická stopa, nie aktuálny CRM smer.
+- OpenClaw Supabase service role key bol 7. júna 2026 uložený mimo repozitára do Docker OpenClaw state cez `ops/openclaw/configure-supabase-service-key.sh`.
+- OpenClaw CRM tool smoke test z Docker gateway prešiel:
+  - `crm.searchContacts` vrátil `ok: true`,
+  - `crm.writeAuditLog` vytvoril audit log `eca617b0-362f-4a16-9d7c-a03094d8b06f`.
+- Aktuálny OpenClaw blocker pre maklérskeho agenta: chýba verejný bezpečný hook/tunnel zo staging Workera do Docker OpenClaw. HighLevel `401` z older runbookov je historická stopa, nie aktuálny CRM smer.
 
 ## Rozhodnutia
 
@@ -149,8 +153,8 @@ Overené 6. júna 2026:
 
 - Vyčistiť smoke test dáta, ak nechceme test lead/event držať v staging kalendári a Supabase.
 - Pred reálnymi klientskymi dátami zamknúť `/dashboard/*` a `/api/dashboard/*` cez Cloudflare Access alebo vlastnú autentifikáciu a až potom zapnúť CRM read mód.
-- Pre OpenClaw runtime nastaviť Supabase service role key cez env alebo secret file mimo repozitára, potom spustiť CRM tool smoke test.
-- Helper na bezpečné uloženie key mimo repozitára: `ops/openclaw/configure-supabase-service-key.sh`.
+- Ďalší kritický krok: nastaviť Cloudflare Tunnel alebo ekvivalentný verejný bezpečný HTTPS endpoint pre OpenClaw `/hooks/agent`.
+- Helper na prípadnú rotáciu/obnovu Supabase key mimo repozitára: `ops/openclaw/configure-supabase-service-key.sh`.
 
 Mac mini prenos je dokumentovaný v `docs/MAC_MINI_HANDOFF.md`.
 

@@ -1,8 +1,18 @@
 services:
   openclaw-gateway:
+    environment:
+      SUPABASE_URL: ${SUPABASE_URL:-https://cnwfafunbzzelstnnxzr.supabase.co}
+      SUPABASE_TENANT_SLUG: ${SUPABASE_TENANT_SLUG:-jakub-olsa}
+      SUPABASE_TENANT_NAME: ${SUPABASE_TENANT_NAME:-Jakub Olša}
+      SUPABASE_SERVICE_ROLE_KEY_FILE: ${SUPABASE_SERVICE_ROLE_KEY_FILE:-/home/node/.openclaw/secrets/jakub-supabase-service-role-key}
     volumes:
       - ${JAKUB_ASTRO_REPO_DIR:-/Users/xvadur_mac/Jakub_Astro}:/home/node/Jakub_Astro
 
   openclaw-cli:
+    environment:
+      SUPABASE_URL: ${SUPABASE_URL:-https://cnwfafunbzzelstnnxzr.supabase.co}
+      SUPABASE_TENANT_SLUG: ${SUPABASE_TENANT_SLUG:-jakub-olsa}
+      SUPABASE_TENANT_NAME: ${SUPABASE_TENANT_NAME:-Jakub Olša}
+      SUPABASE_SERVICE_ROLE_KEY_FILE: ${SUPABASE_SERVICE_ROLE_KEY_FILE:-/home/node/.openclaw/secrets/jakub-supabase-service-role-key}
     volumes:
       - ${JAKUB_ASTRO_REPO_DIR:-/Users/xvadur_mac/Jakub_Astro}:/home/node/Jakub_Astro
