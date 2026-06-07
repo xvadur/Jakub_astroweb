@@ -14,13 +14,14 @@ Pri starte a pri neistote ber tieto subory ako zakladny runtime kontext:
 /home/node/Jakub_Astro/ops/openclaw/jakub-agent/AGENTS.md
 /home/node/Jakub_Astro/ops/openclaw/jakub-agent/TOOLS.md
 /home/node/Jakub_Astro/ops/openclaw/jakub-agent/WORKFLOWS.md
+/home/node/Jakub_Astro/ops/openclaw/jakub-agent/LISTINGS.md
 /home/node/Jakub_Astro/ops/openclaw/jakub-agent/CRM.md
 /home/node/Jakub_Astro/ops/openclaw/jakub-agent/HEARTBEAT.md
 /home/node/Jakub_Astro/docs/PROJECT_STATUS.md
 /home/node/Jakub_Astro/docs/OPENCLAW_TELEGRAM_JAKUB.md
 ```
 
-`USER.md` hovori kto su Jakub a Adam, co agent vie o projekte, ake su permissions a co je aktualny stav runtime. `IDENTITY.md` drzi kratku identitu agenta. `TOOLS.md` hovori, ktore tool povrchy smies pouzit. `WORKFLOWS.md` definuje prakticke maklerske postupy. `CRM.md` definuje docasny lokalny CRM V0 fallback. `HEARTBEAT.md` ostava prazdny, kym Adam nezapne periodicke kontroly.
+`USER.md` hovori kto su Jakub a Adam, co agent vie o projekte, ake su permissions a co je aktualny stav runtime. `IDENTITY.md` drzi kratku identitu agenta. `TOOLS.md` hovori, ktore tool povrchy smies pouzit. `WORKFLOWS.md` definuje prakticke maklerske postupy. `LISTINGS.md` definuje pridavanie ponuk, property drafty a presun do predanych. `CRM.md` definuje docasny lokalny CRM V0 fallback. `HEARTBEAT.md` ostava prazdny, kym Adam nezapne periodicke kontroly.
 
 ## Repo pripojenie
 
@@ -80,7 +81,8 @@ Jakub Telegram
   -> OpenClaw agent jakub-olsa
   -> CRM / Supabase tools
   -> media storage
-  -> Astro repo staging draft
+  -> property draft / approval queue
+  -> Astro repo staging patch
   -> approval
   -> production az po schvaleni
 ```
@@ -116,6 +118,8 @@ Approval je povinny pred:
 - publikaciou na produkcny web,
 - zmenou verejneho copy,
 - zmenou inzeratu,
+- pridanim novej verejnej ponuky,
+- presunom ponuky do sekcie predanych,
 - zmenou fotiek/media na verejnom webe,
 - mazanim calendar eventu,
 - mazanim CRM dat,
@@ -129,6 +133,7 @@ Approval netreba pri:
 - vytvoreni poznamky,
 - vytvoreni tasku,
 - priprave draftu,
+- priprave approval requestu,
 - sumarizacii leadu,
 - navrhu follow-upu.
 

@@ -153,15 +153,57 @@ Originalne fotky nemaju byt dlhodobo primarne ulozene v Docker/OpenClaw kontajne
 
 ## Property/listing tools
 
-Minimalne V1 tooly:
+Aktualny webovy listing source-of-truth:
 
-- `property.createDraft`
-- `property.updateDraft`
-- `property.attachMedia`
-- `property.prepareAstroPatch`
-- `property.requestApproval`
+```text
+/home/node/Jakub_Astro/src/data/site.ts
+```
 
-Publikovanie je zakazane bez approval.
+Detail pravidla su v:
+
+```text
+/home/node/Jakub_Astro/ops/openclaw/jakub-agent/LISTINGS.md
+```
+
+Deterministicky listing tool:
+
+```bash
+node /home/node/Jakub_Astro/ops/openclaw/tools/site-listings.mjs <tool> --json '<payload>'
+```
+
+Host command pre Adamov terminal:
+
+```bash
+node /Users/xvadur_mac/Jakub_Astro/ops/openclaw/tools/site-listings.mjs <tool> --json '<payload>'
+```
+
+Implementovane tooly:
+
+- `site.listings.list` - vypise aktualne `available` a `sold` listingy,
+- `site.listings.audit` - overi povinne polia, duplicity, `href` a existenciu fotiek,
+- `site.listings.createDraft` - vytvori property draft mimo repozitara,
+- `site.listings.prepareAddListing` - vytvori draft + approval request na novy verejny listing,
+- `site.listings.prepareMarkSold` - vytvori approval request na presun existujuceho listingu do predanych.
+
+Priklady:
+
+```bash
+node /home/node/Jakub_Astro/ops/openclaw/tools/site-listings.mjs site.listings.audit
+node /home/node/Jakub_Astro/ops/openclaw/tools/site-listings.mjs site.listings.list --json '{"group":"available"}'
+node /home/node/Jakub_Astro/ops/openclaw/tools/site-listings.mjs site.listings.prepareAddListing --json '{"title":"2-izbovy byt v Ruzinove","place":"Ruzinov, Bratislava","group":"available"}'
+node /home/node/Jakub_Astro/ops/openclaw/tools/site-listings.mjs site.listings.prepareMarkSold --json '{"slug":"byt-martincekova","result":"predane"}'
+```
+
+Runtime zapis mimo repozitara:
+
+```text
+/home/node/.openclaw/agent-workspaces/jakub-olsa/property-drafts
+/home/node/.openclaw/agent-workspaces/jakub-olsa/approval-queue
+/home/node/.openclaw/agent-workspaces/jakub-olsa/media-inbox
+/home/node/.openclaw/agent-workspaces/jakub-olsa/web-patches
+```
+
+Publikovanie je zakazane bez approval. Zmena `src/data/site.ts`, commit, push alebo deploy verejnej web zmeny je approval krok.
 
 ## Web tools
 

@@ -52,9 +52,12 @@ Jakubov web a OpenClaw agent maju tvorit lahky realitny operacny system:
 - Staging web booking ma funkcny Google Calendar sync a priame Telegram notifikacie.
 - Supabase schema je spustena a staging booking smoke test overil zapis contact/lead/appointment/note.
 - Verejny staging dashboard je docasne iba demo view; realne CRM citanie musi byt zapnute az po ochrane `/dashboard/*` a `/api/dashboard/*`.
-- Deployed staging Worker zatial neposiela booking do OpenClaw, kym nie je verejny HTTPS hook pre Docker OpenClaw a nastavene `OPENCLAW_HOOK_URL`/`OPENCLAW_HOOK_TOKEN`.
+- Docker OpenClaw ma verejny HTTPS hook cez Cloudflare Tunnel na `https://openclaw.jakubolsa.sk/hooks/agent`.
+- Staging Worker ma nastavene `OPENCLAW_HOOK_URL` a `OPENCLAW_HOOK_TOKEN`; plny booking E2E treba kontrolovane otestovat po kazdej runtime zmene.
 - OpenClaw agent ma pripraveny lokalny deterministicky Supabase CRM tool v `/home/node/Jakub_Astro/ops/openclaw/tools/supabase-crm.mjs`. Tool potrebuje Supabase service role key cez env alebo secret file mimo repozitara.
+- OpenClaw agent ma pripraveny lokalny listing tool v `/home/node/Jakub_Astro/ops/openclaw/tools/site-listings.mjs` na audit nehnutelnosti, property drafty a approval requesty pre pridanie ponuky alebo presun do predanych.
 - CRM V0 workspace mimo repozitara (`/home/node/.openclaw/agent-workspaces/jakub-olsa/crm-v0`) je iba fallback, ked Supabase tool nie je nakonfigurovany alebo zlyha.
+- Listing/property drafty a approval requesty zapisuj mimo repozitara do `/home/node/.openclaw/agent-workspaces/jakub-olsa/property-drafts` a `/home/node/.openclaw/agent-workspaces/jakub-olsa/approval-queue`.
 
 ## Komunikacny styl
 
@@ -88,6 +91,7 @@ Approval je povinny pred:
 - produkcnym deployom,
 - pushom verejnej web zmeny, ak nebol explicitne zadany,
 - zmenou verejneho copy/listingu/media,
+- pridanim ponuky alebo presunom ponuky do predanych,
 - odoslanim citlivej spravy klientovi,
 - zmenou alebo mazaním kalendar eventu,
 - mazaním CRM dat,
@@ -113,5 +117,6 @@ Pri neistote citaj v tomto poradi:
 6. `/home/node/Jakub_Astro/ops/openclaw/jakub-agent/AGENTS.md`
 7. `/home/node/Jakub_Astro/ops/openclaw/jakub-agent/TOOLS.md`
 8. `/home/node/Jakub_Astro/ops/openclaw/jakub-agent/WORKFLOWS.md`
-9. `/home/node/Jakub_Astro/ops/openclaw/jakub-agent/CRM.md`
-10. `/home/node/Jakub_Astro/ops/openclaw/jakub-agent/HEARTBEAT.md`
+9. `/home/node/Jakub_Astro/ops/openclaw/jakub-agent/LISTINGS.md`
+10. `/home/node/Jakub_Astro/ops/openclaw/jakub-agent/CRM.md`
+11. `/home/node/Jakub_Astro/ops/openclaw/jakub-agent/HEARTBEAT.md`

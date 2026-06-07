@@ -2,12 +2,12 @@
 
 Tento adresar drzi pripravene podklady pre samostatneho OpenClaw agenta pre Jakuba Olsu. Neobsahuje ziadne secrety.
 
-Aktualny lokalny stav 2026-06-06:
+Aktualny lokalny stav 2026-06-07:
 
 - OpenClaw CLI je na stroji dostupny, nebolo treba ho stahovat.
 - Docker OpenClaw gateway bezi lokalne na `http://127.0.0.1:18789/`.
 - Vytvoreny je oddeleny agent `jakub-olsa`.
-- Agent workspace je mimo weboveho repozitara: `/Users/xvadur_mac/OpenClaw/workspaces/jakub-olsa`.
+- Agent workspace je mimo weboveho repozitara: `/Users/xvadur_mac/OpenClaw/docker/state/openclaw-config/agent-workspaces/jakub-olsa`.
 - Docker runtime je dostupny cez user-local Docker CLI + Colima.
 - Docker OpenClaw bridge port je mapovany na `http://127.0.0.1:18890/`.
 - Docker OpenClaw source checkout: `/Users/xvadur_mac/OpenClaw/docker/openclaw-source`.
@@ -22,7 +22,7 @@ Aktualny lokalny stav 2026-06-06:
 - Telegram channel v Docker state je pripojeny cez tokenFile. Token a Telegram allowlist boli prenesene z MacBook OpenClaw state 2026-06-06.
 - Pairing request od Jakuba bol schvaleny v Docker OpenClaw 2026-06-06; `pairing list` je po schvaleni prazdny.
 - Staging Worker `jakubastroweb-staging` ma od 2026-06-06 nastavene Telegram secrets, takze uspesny `/api/book` vie poslat Jakubovi priamu Telegram notifikaciu.
-- Webovy Worker je pripraveny poslat booking payload do OpenClaw webhooku, ked bude nastavena verejna HTTPS hook URL a staging OpenClaw secrets.
+- Webovy Worker je pripraveny poslat booking payload do OpenClaw webhooku. Staging ma nastavene `OPENCLAW_HOOK_URL` a `OPENCLAW_HOOK_TOKEN`; po runtime zmenach treba spustit kontrolovany booking E2E.
 
 ## Subory
 
@@ -31,11 +31,13 @@ Aktualny lokalny stav 2026-06-06:
 - `jakub-agent/AGENTS.md` - pracovny system prompt / pravidla Jakub agenta.
 - `jakub-agent/TOOLS.md` - lokalne tool pravidla a integracne povrchy.
 - `jakub-agent/WORKFLOWS.md` - prakticke maklerske workflowy: lead, booking, follow-up, approval, review request, error cases.
+- `jakub-agent/LISTINGS.md` - pravidla pre pridanie ponuky, property drafty a presun do predanych.
 - `jakub-agent/CRM.md` - docasny CRM V0 rezim pre Telegram leady kym nie su hotove Supabase tools.
 - `jakub-agent/HEARTBEAT.md` - placeholder pre buduce periodicke kontroly.
 - `docker-compose.jakub.override.yml` - portable Docker Compose override, ktory mountne Jakub Astro repo do OpenClaw kontajnera.
 - `supabase/SUPABASE_SCHEMA.sql` - prvy navrh CRM schemy pre Supabase.
 - `tools/supabase-crm.mjs` - lokalny deterministicky Supabase CRM tool pre OpenClaw.
+- `tools/site-listings.mjs` - lokalny deterministicky listing tool pre audit, drafty a approval requesty.
 
 ## Kriticka architektura
 
@@ -148,6 +150,34 @@ Overene 2026-06-07:
 - Docker gateway ma env `SUPABASE_SERVICE_ROLE_KEY_FILE`,
 - `crm.searchContacts` prebehol z kontajnera,
 - `crm.writeAuditLog` vytvoril audit log v Supabase.
+
+## Web listings/property tool
+
+OpenClaw Docker agent vie auditovat verejne nehnutelnosti a pripravovat drafty alebo approval requesty:
+
+```bash
+node /home/node/Jakub_Astro/ops/openclaw/tools/site-listings.mjs site.listings.audit
+node /home/node/Jakub_Astro/ops/openclaw/tools/site-listings.mjs site.listings.list --json '{"group":"sold"}'
+node /home/node/Jakub_Astro/ops/openclaw/tools/site-listings.mjs site.listings.prepareAddListing --json '{"title":"2-izbovy byt v Ruzinove","place":"Ruzinov, Bratislava","group":"available"}'
+node /home/node/Jakub_Astro/ops/openclaw/tools/site-listings.mjs site.listings.prepareMarkSold --json '{"slug":"byt-martincekova","result":"predane"}'
+```
+
+Runtime zapis mimo repozitara:
+
+```text
+/Users/xvadur_mac/OpenClaw/docker/state/openclaw-config/agent-workspaces/jakub-olsa/property-drafts
+/Users/xvadur_mac/OpenClaw/docker/state/openclaw-config/agent-workspaces/jakub-olsa/approval-queue
+/Users/xvadur_mac/OpenClaw/docker/state/openclaw-config/agent-workspaces/jakub-olsa/media-inbox
+/Users/xvadur_mac/OpenClaw/docker/state/openclaw-config/agent-workspaces/jakub-olsa/web-patches
+```
+
+Overene 2026-06-07:
+
+- `site.listings.audit` presiel z hosta aj z Docker gateway,
+- aktualny web ma 7 listingov,
+- `available: 0`,
+- `sold: 7`,
+- audit nema duplicity, chybajuce povinne polia ani chybajuce fotky.
 
 ## Docker pilot
 
@@ -331,6 +361,7 @@ Repo source-of-truth pre agenta:
 /Users/xvadur_mac/Jakub_Astro/ops/openclaw/jakub-agent/IDENTITY.md
 /Users/xvadur_mac/Jakub_Astro/ops/openclaw/jakub-agent/AGENTS.md
 /Users/xvadur_mac/Jakub_Astro/ops/openclaw/jakub-agent/TOOLS.md
+/Users/xvadur_mac/Jakub_Astro/ops/openclaw/jakub-agent/LISTINGS.md
 /Users/xvadur_mac/Jakub_Astro/ops/openclaw/jakub-agent/CRM.md
 /Users/xvadur_mac/Jakub_Astro/ops/openclaw/jakub-agent/HEARTBEAT.md
 ```
@@ -342,6 +373,7 @@ Runtime kopie v Docker OpenClaw agent workspace:
 /Users/xvadur_mac/OpenClaw/docker/state/openclaw-config/agent-workspaces/jakub-olsa/IDENTITY.md
 /Users/xvadur_mac/OpenClaw/docker/state/openclaw-config/agent-workspaces/jakub-olsa/AGENTS.md
 /Users/xvadur_mac/OpenClaw/docker/state/openclaw-config/agent-workspaces/jakub-olsa/TOOLS.md
+/Users/xvadur_mac/OpenClaw/docker/state/openclaw-config/agent-workspaces/jakub-olsa/LISTINGS.md
 /Users/xvadur_mac/OpenClaw/docker/state/openclaw-config/agent-workspaces/jakub-olsa/CRM.md
 /Users/xvadur_mac/OpenClaw/docker/state/openclaw-config/agent-workspaces/jakub-olsa/HEARTBEAT.md
 ```
@@ -357,6 +389,12 @@ Tento adresar je mimo repozitara a moze obsahovat osobne udaje. Necommitovat.
 Po zmene source-of-truth docs zosynchronizuj runtime kopie:
 
 ```bash
+/Users/xvadur_mac/Jakub_Astro/ops/openclaw/sync-jakub-agent-runtime-docs.sh
+```
+
+Manualna alternativa:
+
+```bash
 install -m 644 /Users/xvadur_mac/Jakub_Astro/ops/openclaw/jakub-agent/USER.md \
   /Users/xvadur_mac/OpenClaw/docker/state/openclaw-config/agent-workspaces/jakub-olsa/USER.md
 install -m 644 /Users/xvadur_mac/Jakub_Astro/ops/openclaw/jakub-agent/IDENTITY.md \
@@ -365,6 +403,8 @@ install -m 644 /Users/xvadur_mac/Jakub_Astro/ops/openclaw/jakub-agent/AGENTS.md 
   /Users/xvadur_mac/OpenClaw/docker/state/openclaw-config/agent-workspaces/jakub-olsa/AGENTS.md
 install -m 644 /Users/xvadur_mac/Jakub_Astro/ops/openclaw/jakub-agent/TOOLS.md \
   /Users/xvadur_mac/OpenClaw/docker/state/openclaw-config/agent-workspaces/jakub-olsa/TOOLS.md
+install -m 644 /Users/xvadur_mac/Jakub_Astro/ops/openclaw/jakub-agent/LISTINGS.md \
+  /Users/xvadur_mac/OpenClaw/docker/state/openclaw-config/agent-workspaces/jakub-olsa/LISTINGS.md
 install -m 644 /Users/xvadur_mac/Jakub_Astro/ops/openclaw/jakub-agent/CRM.md \
   /Users/xvadur_mac/OpenClaw/docker/state/openclaw-config/agent-workspaces/jakub-olsa/CRM.md
 install -m 644 /Users/xvadur_mac/Jakub_Astro/ops/openclaw/jakub-agent/HEARTBEAT.md \

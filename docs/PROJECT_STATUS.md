@@ -1,6 +1,6 @@
 # Stav projektu Jakub Olša web
 
-Posledná aktualizácia: 6. jún 2026
+Posledná aktualizácia: 7. jún 2026
 
 ## Aktuálny stav
 
@@ -91,7 +91,26 @@ Aktuálna obchodná stratégia je postavená na tom, že Jakub je osobný maklé
   - health endpoint `https://openclaw.jakubolsa.sk/healthz` vracia `200`.
 - Staging Worker `jakubastroweb-staging` má nastavené `OPENCLAW_HOOK_URL` a `OPENCLAW_HOOK_TOKEN`.
 - Direct hook smoke test prešiel: bez tokenu `401`, s tokenom `200`, run id `66f863f3-6682-4f6a-8f55-fd16a9b87bd4`.
-- Aktuálny OpenClaw blocker pre maklérskeho agenta: ešte treba spustiť plný staging booking E2E po zapnutí hooku a ideálne pridať Access/service-token ochranu hook hostname. HighLevel `401` z older runbookov je historická stopa, nie aktuálny CRM smer.
+- OpenClaw Control UI origin fix bol urobený 7. júna 2026: povolené sú lokálne origins na porte `18789` a tunnel origin `https://openclaw.jakubolsa.sk`.
+- OpenClaw Telegram provider je overený 7. júna 2026:
+  - bot `@jakub_reality_bot` je platný,
+  - webhook je prázdny,
+  - channel status je `configured: true`, `running: true`, `connected: true`, `mode: "polling"`,
+  - routing binding `telegram -> jakub-olsa` existuje,
+  - pairing queue je prázdna.
+- OpenClaw má od 7. júna 2026 listing/property tool `ops/openclaw/tools/site-listings.mjs`:
+  - `site.listings.list`,
+  - `site.listings.audit`,
+  - `site.listings.createDraft`,
+  - `site.listings.prepareAddListing`,
+  - `site.listings.prepareMarkSold`.
+- Listing audit prešiel z hosta aj z Docker gateway: aktuálne je `total: 7`, `available: 0`, `sold: 7`, bez duplicít, bez chýbajúcich povinných polí a bez chýbajúcich fotiek.
+- Runtime agent workspace má core docs a pracovné priečinky pre property workflow:
+  - `property-drafts`,
+  - `approval-queue`,
+  - `media-inbox`,
+  - `web-patches`.
+- Aktuálny OpenClaw blocker pre maklérskeho agenta: ešte treba spustiť plný staging booking E2E po zapnutí hooku a ideálne pridať Access/service-token ochranu hook hostname. Potom treba otestovať reálny Telegram inbound od Jakuba. HighLevel `401` z older runbookov je historická stopa, nie aktuálny CRM smer.
 
 ## Rozhodnutia
 
@@ -124,7 +143,9 @@ Overené 6. júna 2026:
 - Staging API smoke test z 6. júna 2026 prešiel: `/api/health` vracia `ok: true` a `/api/availability?date=2026-06-08` beží v `google` móde s dostupnými slotmi.
 - OpenClaw agent docs boli 7. júna 2026 rozšírené o Supabase CRM tool a workflowy:
   - `ops/openclaw/tools/supabase-crm.mjs`,
-  - `ops/openclaw/jakub-agent/WORKFLOWS.md`.
+  - `ops/openclaw/tools/site-listings.mjs`,
+  - `ops/openclaw/jakub-agent/WORKFLOWS.md`,
+  - `ops/openclaw/jakub-agent/LISTINGS.md`.
 
 Praktický runbook je v `docs/OPENCLAW_TELEGRAM_JAKUB.md`.
 

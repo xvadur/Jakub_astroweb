@@ -1,3 +1,5 @@
+const publicEnv = import.meta.env ?? {};
+
 export const site = {
   brand: "Jakub Olša",
   role: "realitný maklér",
@@ -16,7 +18,7 @@ export const site = {
     instagram: "https://www.instagram.com/jakubolsa_reality?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==",
     instagramLabel: "@jakubolsa_reality",
   },
-  bookingUrl: import.meta.env.PUBLIC_BOOKING_URL ?? "",
+  bookingUrl: publicEnv.PUBLIC_BOOKING_URL ?? "",
   logoImage: "/images/brand/jakub-logo-mark-transparent.png",
   avatarImage: "/images/brand/jakub-face-avatar.jpg",
   bosenGroupLogo: "/images/brand/bosen-group-horizontal.jpg",
