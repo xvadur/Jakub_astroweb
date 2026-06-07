@@ -1,4 +1,5 @@
 ---
+import "../styles/global.css";
 import { site } from "../data/site";
 import { createHomeJsonLd, createPageMeta, serializeJsonLd } from "../data/seo";
 
@@ -137,6 +138,26 @@ const jsonLd = createHomeJsonLd(pageMeta);
           {
             site.backing.items.map((item) => (
               <article class="backing-item" data-reveal>
+                <h3>{item.title}</h3>
+                <p>{item.text}</p>
+              </article>
+            ))
+          }
+        </div>
+      </section>
+
+      <section class="section network-proof" aria-labelledby="network-title">
+        <div class="network-copy" data-reveal>
+          <p class="eyebrow">{site.network.eyebrow}</p>
+          <h2 id="network-title">{site.network.title}</h2>
+          <p>{site.network.text}</p>
+          <a class="button primary" href="/rezervacia/">Prejsť moju situáciu</a>
+        </div>
+        <div class="network-list">
+          {
+            site.network.items.map((item) => (
+              <article data-reveal>
+                <span>{item.kicker}</span>
                 <h3>{item.title}</h3>
                 <p>{item.text}</p>
               </article>
@@ -973,6 +994,70 @@ const jsonLd = createHomeJsonLd(pageMeta);
         color: var(--muted);
       }
 
+      .network-proof {
+        display: grid;
+        grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+        gap: 72px;
+        align-items: start;
+        background:
+          linear-gradient(110deg, rgba(11, 11, 10, 0.98), rgba(27, 27, 25, 0.94)),
+          var(--ink);
+        color: var(--white);
+      }
+
+      .network-proof .eyebrow {
+        color: var(--brass);
+      }
+
+      .network-copy {
+        position: sticky;
+        top: 118px;
+      }
+
+      .network-copy h2 {
+        max-width: 760px;
+      }
+
+      .network-copy > p:not(.eyebrow) {
+        max-width: 610px;
+        margin-bottom: 28px;
+        color: rgba(255, 250, 242, 0.74);
+        font-size: 18px;
+      }
+
+      .network-list {
+        display: grid;
+        border-top: 1px solid rgba(255, 250, 242, 0.16);
+      }
+
+      .network-list article {
+        display: grid;
+        grid-template-columns: 0.34fr 0.66fr;
+        gap: 24px;
+        padding: 28px 0;
+        border-bottom: 1px solid rgba(255, 250, 242, 0.16);
+      }
+
+      .network-list span {
+        color: var(--brass);
+        font-size: 13px;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .network-list h3 {
+        margin: 0 0 10px;
+        color: var(--white);
+        font-family: var(--font-display);
+        font-size: clamp(30px, 3vw, 44px);
+        font-weight: 650;
+      }
+
+      .network-list p {
+        margin: 0;
+        color: rgba(255, 250, 242, 0.68);
+      }
+
       .track-record {
         display: grid;
         grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
@@ -1608,6 +1693,7 @@ const jsonLd = createHomeJsonLd(pageMeta);
 
         .hero,
         .backing,
+        .network-proof,
         .split,
         .track-record,
         .positioning-panel,
@@ -1676,6 +1762,15 @@ const jsonLd = createHomeJsonLd(pageMeta);
 
         .backing {
           gap: 38px;
+        }
+
+        .network-copy {
+          position: static;
+        }
+
+        .network-list article {
+          grid-template-columns: 1fr;
+          gap: 10px;
         }
 
         .track-record,
