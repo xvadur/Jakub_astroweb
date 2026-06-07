@@ -121,7 +121,7 @@ Verejne veci pojdu von az po tvojom schvaleni.
 - Agent je oddeleny od Adamovho `main` agenta.
 - Webovy Worker po uspesnom `/api/book` vie spustit non-blocking OpenClaw handoff cez `OPENCLAW_HOOK_URL` + `OPENCLAW_HOOK_TOKEN`.
 - Handoff je mimo kritickej booking transakcie a bezi cez `ctx.waitUntil`.
-- Docker OpenClaw hooks su zapnute lokalne na `http://127.0.0.1:18889/hooks/agent`.
+- Docker OpenClaw hooks su zapnute lokalne na `http://127.0.0.1:18789/hooks/agent`.
 - Hook token je ulozeny mimo repozitara v `/Users/xvadur_mac/OpenClaw/docker/state/openclaw-config/secrets/jakub-hook-token.txt`.
 - Hook default session je `agent:jakub-olsa:main` a povoleny agent je iba `jakub-olsa`.
 - Pripravene dokumenty:
@@ -134,15 +134,14 @@ Verejne veci pojdu von az po tvojom schvaleni.
 
 ## Ostava ziskat / nastavit
 
-- `TELEGRAM_BOT_TOKEN`
-- `TELEGRAM_CHAT_ID`
 - public HTTPS hook URL cez Cloudflare Tunnel/Access alebo ekvivalent
-- staging Cloudflare secrets pre `jakubastroweb-staging`
-- Supabase projekt alebo ekvivalentny CRM backend
+- OpenClaw hook secrets pre `jakubastroweb-staging`
+- deterministicke Supabase CRM tools pre OpenClaw
+- auth/Access pred dashboardom, kym sa zapnu realne klientské data
 
 ## Docker pilot overeny - 2026-06-04
 
-- Docker OpenClaw gateway bezi na host porte `18889`.
+- Docker OpenClaw gateway bezi na host porte `18789`.
 - Gateway health/ready endpointy vracaju OK.
 - Docker agent `jakub-olsa` existuje s workspace:
   `/Users/xvadur_mac/OpenClaw/docker/state/openclaw-config/agent-workspaces/jakub-olsa`.
@@ -165,7 +164,7 @@ Verejne veci pojdu von az po tvojom schvaleni.
   - `POST /api/book` na lokalnom Workeri vratil `200 OK` v `mode: mock`,
   - booking bol cez `ctx.waitUntil` odovzdany do Docker OpenClaw `/hooks/agent`,
   - `jakub-olsa` spracoval web booking v session `agent:jakub-olsa:main`,
-  - HighLevel CRM connector vratil `401 Reauthentication required`,
+  - vtedy dostupny HighLevel CRM connector vratil `401 Reauthentication required`,
   - agent namiesto halucinovaneho CRM zapisu vytvoril interny admin case:
     `/Users/xvadur_mac/OpenClaw/docker/state/openclaw-config/agent-workspaces/jakub-olsa/admin-cases/2026-06-04-web-booking-16edb862.md`.
-- Docker OpenClaw zatial nema nakonfigurovany Telegram channel; onboarding sa zastavil na chybajucom `TELEGRAM_BOT_TOKEN`.
+- Docker OpenClaw ma nakonfigurovany Telegram channel a pairing Jakuba bol schvaleny 6. juna 2026.

@@ -70,15 +70,22 @@ Aktuálna obchodná stratégia je postavená na tom, že Jakub je osobný maklé
 - Hook smoke test z 2026-06-04 prešiel: neautorizovaný request vracia `401`, autorizovaný request vytvorí `runId` a session `agent:jakub-olsa:main` ukladá odpoveď agenta.
 - Lokálny Worker E2E test z 2026-06-04 prešiel: `/api/book` v mock režime odovzdal test booking cez `ctx.waitUntil` do OpenClaw `/hooks/agent` a agent vytvoril interný admin case.
 - Staging Worker má od 2026-06-06 nastavené `TELEGRAM_BOT_TOKEN` a `TELEGRAM_CHAT_ID` secrets, takže úspešný `/api/book` vie poslať Jakubovi Telegram oznámenie s detailmi leadu.
+- Staging Worker má od 2026-06-06 overenú Supabase CRM integráciu:
+  - non-secret konfigurácia je vo `wrangler.toml`,
+  - `SUPABASE_SERVICE_ROLE_KEY` je uložený iba ako Cloudflare secret na `jakubastroweb-staging`,
+  - `POST /api/book` po úspešnom bookingu skúsi zapísať kontakt, lead, appointment a poznámku do Supabase,
+  - `GET /api/dashboard/leads` je pripravený pre dashboard lead databázu, ale verejný staging teraz vracia iba demo dáta,
+  - stránka `/dashboard/leady/` sa pokúsi načítať leady z API a verejne má zobrazovať iba demo/test údaje, kým dashboard nie je zamknutý.
+- Supabase schema bola spustená v Supabase SQL Editore a staging smoke test prešiel: test booking vytvoril Google Calendar event a Worker vrátil `crmStatus: "crm_created"`.
 - Plný OpenClaw handoff z nasadeného staging webu ešte potrebuje verejný HTTPS endpoint pre lokálny Docker `/hooks/agent`, ideálne Cloudflare Tunnel + Access; Cloudflare Worker nesmie dostať `localhost` hook URL.
-- Aktuálny OpenClaw handoff blocker pre reálne CRM zapisovanie: HighLevel connector vracia `401 Reauthentication required`; agent správne nevytvára falošný CRM úspech.
+- Aktuálny OpenClaw blocker pre maklérskeho agenta: chýbajú deterministické Supabase CRM tools a verejný bezpečný hook. HighLevel `401` z older runbookov je historická stopa, nie aktuálny CRM smer.
 
 ## Rozhodnutia
 
 - n8n sa v prvej verzii nepoužíva.
 - Rezervačný wizard má ísť cez vlastný Cloudflare Worker backend, nie cez externý Calendly/Appointment Schedule ako primárny funnel.
 - Google Calendar bude zdroj pravdy pre dostupnosť. Worker musí pri bookingu urobiť druhý free/busy check, aby sa minimalizoval double-booking.
-- CRM nie je súčasť V1. Ak bude treba, pridá sa neskôr cez Cloudflare Worker, Google Sheet/Notion, OpenClaw alebo iný backend.
+- CRM-lite sa posúva do vlastného Supabase backendu. V1 web nesmie čítať CRM priamo z browsera cez service role; všetky zápisy/čítania idú cez Cloudflare Worker API.
 - Telefonický kontakt zostáva na webe, pretože Jakub ho má aj na Instagrame a pre jeho typ práce dáva zmysel.
 - Produkcia sa chráni cez staging workflow: experimenty, OpenClaw mutácie, tracking, booking a lead magnet úpravy idú najprv na `https://staging.jakubolsa.sk/`.
 - Cloudflare API tokeny a iné tajomstvá sa nesmú ukladať do repozitára.
@@ -114,7 +121,29 @@ Overené 6. júna 2026:
 - Cloudflare account ID: `002b0727daee60448cf72c0b08f7810f`.
 - OpenClaw môže používať `npx wrangler ...` cez lokálny macOS user profil, ale samostatný Cloudflare API token nie je uložený v OpenClaw secrets.
 - Staging Worker `jakubastroweb-staging` má nastavené secrets: `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REFRESH_TOKEN`, `GOOGLE_CALENDAR_ID`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`.
+- Staging Worker `jakubastroweb-staging` má nastavený aj `SUPABASE_SERVICE_ROLE_KEY` pre server-side CRM zápisy.
 - Produkčný Worker `jakubastroweb` nemal pri kontrole 6. júna 2026 nastavené žiadne secrets; produkciu nastavovať až po potvrdení staging flow.
+
+## Supabase CRM stav
+
+Overené 6. júna 2026:
+
+- Supabase projekt je pripojený cez server-side Worker konfiguráciu.
+- Reálne tajomstvá nie sú v repozitári; service role key je iba Cloudflare secret.
+- Schema z `ops/openclaw/supabase/SUPABASE_SCHEMA.sql` je spustená v Supabase.
+- Worker vie po bookingu vytvoriť:
+  - tenant `jakub-olsa`,
+  - kontakt,
+  - lead,
+  - appointment,
+  - poznámku z formulára.
+- Dashboard endpoint `GET /api/dashboard/leads` vie čítať lead databázu, ale verejný staging je nastavený na `mode: "demo"`, aby neukazoval reálne PII bez auth.
+- Staging smoke test vytvoril test lead `Supabase Smoke Test` a Google event `b8e7or7j54maq6arfsct3gt8jg`.
+
+Ďalší krok:
+
+- Vyčistiť smoke test dáta, ak nechceme test lead/event držať v staging kalendári a Supabase.
+- Pred reálnymi klientskymi dátami zamknúť `/dashboard/*` a `/api/dashboard/*` cez Cloudflare Access alebo vlastnú autentifikáciu a až potom zapnúť CRM read mód.
 
 Mac mini prenos je dokumentovaný v `docs/MAC_MINI_HANDOFF.md`.
 
@@ -220,6 +249,12 @@ TELEGRAM_BOT_TOKEN
 TELEGRAM_CHAT_ID
 ```
 
+- Pre Supabase CRM spustiť databázovú schemu a držať service role iba v Cloudflare secrets:
+
+```bash
+npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY --name jakubastroweb-staging
+```
+
 - Po schválení flow prepnúť Google OAuth secrets na Jakubov Google účet/kalendár.
 - Dokončiť Jakubov Google Calendar OAuth consent na cieľovom Macu, ak má OpenClaw/gog alebo Worker zapisovať alebo čítať interný kalendár.
 - Overiť, že `/api/availability` vracia obsadené sloty podľa Google kalendára a `/api/book` vytvorí event.
@@ -230,8 +265,8 @@ TELEGRAM_CHAT_ID
 
 ## Neskôr
 
-- CRM-lite: ukladať dopyty/rezervácie do Google Sheet, Notion alebo vlastnej databázy.
-- Notifikácie: Telegram alebo WhatsApp po odoslaní formulára/rezervácie.
+- CRM-lite: rozšíriť existujúci Supabase smer na plnohodnotné leady, nehnuteľnosti, tasky, poznámky a approval queue.
+- Notifikácie: Telegram je aktuálny smer; WhatsApp riešiť až ak Telegram nebude Jakubovi sedieť.
 - OpenClaw agent pre Jakuba: návrh full broker suite je zdokumentovaný v `docs/JAKUB_OPENCLAW_SUITE_ARCHITECTURE.md`.
 - OpenClaw runbook a prvý technický rez:
   - `docs/OPENCLAW_RUNBOOK_2026-06-03.md`,

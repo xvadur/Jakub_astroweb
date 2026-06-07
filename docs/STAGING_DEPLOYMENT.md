@@ -129,8 +129,67 @@ Repeat on `jakubastroweb` only after the staging flow is approved.
 Status 2026-06-06:
 
 - `jakubastroweb-staging` has Google Calendar and Telegram booking secrets configured.
+- `jakubastroweb-staging` also has the Supabase service role key configured as a Cloudflare secret for server-side CRM writes.
 - `jakubastroweb` had no secrets during the 2026-06-06 check.
 - A staging smoke test confirmed `/api/availability` returns `mode: "google"`.
+- A Supabase CRM smoke test confirmed `/api/book` can return `crmStatus: "crm_created"`.
+- Public staging dashboard/API is intentionally in demo mode. Real Supabase dashboard reads stay disabled until dashboard auth is in place.
+
+## Supabase CRM secrets and schema
+
+The Worker can optionally persist accepted booking leads into Supabase. The browser must never receive the service role key; dashboard reads go through Worker API routes.
+
+Non-secret defaults live in `wrangler.toml`:
+
+```text
+SUPABASE_URL
+SUPABASE_TENANT_SLUG
+SUPABASE_TENANT_NAME
+DASHBOARD_PUBLIC_MODE=staging-demo
+DASHBOARD_DATA_MODE=demo
+```
+
+Required staging secret:
+
+```bash
+npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY --name jakubastroweb-staging
+```
+
+Required Supabase database step:
+
+```text
+Supabase Dashboard -> SQL Editor -> run ops/openclaw/supabase/SUPABASE_SCHEMA.sql
+```
+
+Verification after schema exists:
+
+```bash
+curl https://staging.jakubolsa.sk/api/dashboard/leads
+```
+
+Expected result before real leads:
+
+```json
+{"ok":true,"mode":"demo","leads":[...]}
+```
+
+If the endpoint says `public.tenants` is missing, the SQL schema has not been run yet.
+
+Status 2026-06-06:
+
+- The schema was run in Supabase.
+- `GET /api/dashboard/leads` previously returned `mode: "supabase"` during smoke testing.
+- A test booking created a Google Calendar event and Supabase contact/lead/appointment records.
+- The public staging endpoint is now kept in `mode: "demo"` so smoke test PII is not exposed.
+
+Before storing real client data, protect:
+
+```text
+/dashboard/*
+/api/dashboard/*
+```
+
+Use Cloudflare Access or a proper app auth layer before the dashboard becomes operational with personal data. Only after that should `DASHBOARD_DATA_MODE=crm` be enabled.
 
 ## OpenClaw handoff secrets
 
@@ -140,7 +199,7 @@ Local preflight 2026-06-04:
 
 - Docker OpenClaw `/hooks/agent` is enabled on `http://127.0.0.1:18789/hooks/agent`.
 - Local Worker E2E test passed in mock mode: `/api/book` returned `200 OK`, `ctx.waitUntil` handed the booking to OpenClaw, and `jakub-olsa` created an internal admin case.
-- Current CRM blocker: HighLevel connector returns `401 Reauthentication required`; do not treat CRM write as live until reauth or a replacement backend is configured.
+- Historical note: an older HighLevel connector test returned `401 Reauthentication required`. Current CRM direction is Supabase; OpenClaw still needs deterministic Supabase tools before it can write CRM records reliably.
 - Staging still needs a public HTTPS URL for the local OpenClaw hook, for example Cloudflare Tunnel/Access.
 - Do not configure deployed Cloudflare Workers with a `localhost` or `127.0.0.1` OpenClaw hook URL. That only works for local Worker E2E tests.
 

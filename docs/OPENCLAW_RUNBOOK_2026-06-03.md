@@ -1,13 +1,15 @@
 # OpenClaw runbook pre Jakubov web - 2026-06-03
 
-Stav: OpenClaw je pripravene lokalne aj v Docker pilote; secrety nie su ulozene v repozitari.
+Stav: OpenClaw bezi cez Docker runtime; secrety nie su ulozene v repozitari.
+
+Poznamka 2026-06-06: starsie casti tohto runbooku spominali host port `18889`. Aktualny Docker runtime pouziva host port `18789`; povodny host LaunchAgent gateway musi ostat vypnuty, aby nekolidoval.
 
 ## Co je uz hotove
 
 - Lokalny OpenClaw CLI existuje: `/Users/xvadur_mac/.local/bin/openclaw`.
 - Gateway bezi lokalne na `http://127.0.0.1:18789/`.
 - Docker CLI + Colima su dostupne a Docker runtime bezi.
-- Docker OpenClaw gateway bezi oddelene na `http://127.0.0.1:18889/`.
+- Docker OpenClaw gateway bezi na `http://127.0.0.1:18789/`.
 - Vytvoreny je oddeleny agent:
 
 ```text
@@ -21,7 +23,7 @@ model: openai/gpt-5.5
 - Handoff sa spusti iba ked su nastavene `OPENCLAW_HOOK_URL` a `OPENCLAW_HOOK_TOKEN`.
 - Handoff je vedlajsi efekt cez `ctx.waitUntil`, takze nesmie pokazit booking transakciu.
 - Docker OpenClaw hooks su lokalne zapnute:
-  - endpoint: `http://127.0.0.1:18889/hooks/agent`,
+  - endpoint: `http://127.0.0.1:18789/hooks/agent`,
   - default session: `agent:jakub-olsa:main`,
   - allowed agent ids: `jakub-olsa`,
   - hook token je mimo repozitara: `/Users/xvadur_mac/OpenClaw/docker/state/openclaw-config/secrets/jakub-hook-token.txt`.
@@ -39,14 +41,14 @@ config: /Users/xvadur_mac/OpenClaw/docker/state/openclaw-config
 workspace: /Users/xvadur_mac/OpenClaw/docker/workspaces/docker-openclaw
 jakub astro host repo: /Users/xvadur_mac/Jakub_Astro
 jakub astro container repo: /home/node/Jakub_Astro
-host port: 18889
+host port: 18789
 container port: 18789
 image: ghcr.io/openclaw/openclaw:latest
 ```
 
 Docker pilot status 2026-06-04:
 
-- Gateway health/ready OK na `http://127.0.0.1:18889/`.
+- Gateway health/ready OK na `http://127.0.0.1:18789/`.
 - Docker agent `jakub-olsa` workspace:
   `/Users/xvadur_mac/OpenClaw/docker/state/openclaw-config/agent-workspaces/jakub-olsa`.
 - Jakub Astro repo je namountovane do Docker OpenClaw kontajnera:
@@ -83,7 +85,7 @@ Ocakavane: `CONNECTED`, package `clients-jakub-olsa`, `astro.config.mjs` existuj
 
 ```bash
 TOKEN="$(tr -d '\n' < /Users/xvadur_mac/OpenClaw/docker/state/openclaw-config/secrets/jakub-hook-token.txt)"
-curl -sS -X POST http://127.0.0.1:18889/hooks/agent \
+curl -sS -X POST http://127.0.0.1:18789/hooks/agent \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"agentId":"jakub-olsa","name":"Hook smoke test","message":"Odpovedz presne jednym slovom: OK","deliver":false,"timeoutSeconds":120}'
@@ -97,21 +99,19 @@ Ocakavane: `{"ok":true,"runId":"..."}`. V session `agent:jakub-olsa:main` je ulo
   - `POST /api/book` vratil `200 OK` a payload `ok:true`, `bookingStatus: pending_calendar_config`.
   - `ctx.waitUntil` odovzdal booking do OpenClaw `/hooks/agent`.
   - OpenClaw session `agent:jakub-olsa:main` spracovala task `Jakub web booking`.
-  - Agent zistil, ze HighLevel CRM connector vyzaduje reauth (`401 Reauthentication required`).
+  - Agent zistil, ze vtedy dostupny HighLevel CRM connector vyzadoval reauth (`401 Reauthentication required`).
   - Agent nevytvoril CRM kontakt/lead/task, nemenil kalendar, neposlal klientsku spravu a nevykonal verejnu zmenu.
   - Agent vytvoril interny admin case:
     `/Users/xvadur_mac/OpenClaw/docker/state/openclaw-config/agent-workspaces/jakub-olsa/admin-cases/2026-06-04-web-booking-16edb862.md`.
 
-Poznamka: pri Docker CLI pouzivaj interny gateway port `18789`, host port pre browser/curl je `18889`.
+Poznamka: pri Docker CLI aj host browser/curl pouzivaj gateway port `18789`.
 
 ## Co este chyba
 
-- Telegram bot token od BotFather.
-- Telegram chat id Jakuba alebo skupiny.
 - Public HTTPS cesta na lokalny OpenClaw hook.
 - Cloudflare staging secrets.
-- Supabase projekt alebo iny CRM backend.
-- Reauth alebo nahrada HighLevel CRM connectora, ak sa ma realne zapisovat contact/lead/task.
+- Deterministicke Supabase CRM tools pre OpenClaw.
+- Auth/Access pred dashboardom pred realnymi klientskymi datami.
 - `ripgrep` (`rg`) v OpenClaw agent workspace/image, aby agent nemusel fallbackovat na `find`.
 
 ## 1. Overit lokalny OpenClaw
@@ -129,11 +129,11 @@ Ocakavane:
 
 ## 1b. Overit Docker OpenClaw pilot
 
-Docker gateway host port je `18889`, aby nekolidoval s host LaunchAgent gateway na `18789`.
+Docker gateway host port je aktuálne `18789`; host LaunchAgent gateway ostáva vypnutý, aby nekolidoval.
 
 ```bash
-curl -fsS http://127.0.0.1:18889/healthz
-curl -fsS http://127.0.0.1:18889/readyz
+curl -fsS http://127.0.0.1:18789/healthz
+curl -fsS http://127.0.0.1:18789/readyz
 docker compose -f /Users/xvadur_mac/OpenClaw/docker/openclaw-source/docker-compose.yml ps
 ```
 
@@ -253,14 +253,14 @@ Restart:
 
 ```bash
 docker compose -f /Users/xvadur_mac/OpenClaw/docker/openclaw-source/docker-compose.yml restart openclaw-gateway
-curl -fsS http://127.0.0.1:18889/healthz
+curl -fsS http://127.0.0.1:18789/healthz
 ```
 
 Lokalny test:
 
 ```bash
 TOKEN="$(tr -d '\n' < /Users/xvadur_mac/OpenClaw/docker/state/openclaw-config/secrets/jakub-hook-token.txt)"
-curl -sS -X POST http://127.0.0.1:18889/hooks/agent \
+curl -sS -X POST http://127.0.0.1:18789/hooks/agent \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"agentId":"jakub-olsa","name":"Hook smoke test","message":"Odpovedz presne jednym slovom: OK","deliver":false,"timeoutSeconds":120}'

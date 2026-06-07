@@ -115,3 +115,32 @@ Decision:
 Reason:
 
 Lead quality matters more than raw form volume. Verified locality data will make future CRM, calendar, and pricing workflows cleaner.
+
+## 2026-06-07: Broker system direction after working MVP core
+
+The project is no longer only a public website. It is becoming a lightweight broker operating system for Jakub.
+
+Decision:
+
+- Keep `staging` and `main`.
+- Keep production conservative: public website only until auth/GDPR are ready.
+- Use Cloudflare Access with Google login as the preferred first dashboard auth layer.
+- Do not build a custom Astro login in V1 unless Cloudflare Access is insufficient.
+- Keep the public staging dashboard on demo data until auth is enabled.
+- Use Supabase as the database truth for CRM, leads, properties, tasks, notes, appointments, audit logs, and review workflows.
+- Cloudflare Worker owns booking transaction reliability: validation, Google Calendar availability, event creation, Telegram notification, and Supabase booking write.
+- OpenClaw is not the booking authority. OpenClaw handles operations after or around the booking: CRM tools, follow-ups, briefings, reviews, notifications, approvals, and web draft workflows.
+- Add a secure Cloudflare Tunnel/Access path from staging Worker to local Docker OpenClaw before enabling deployed OpenClaw handoff.
+- First follow-up/review channel should be email. SMS/WhatsApp can be researched later.
+- Legal/GDPR is a separate workstream. Before a lawyer is involved, prepare a factual processing map and exact questions.
+- Multi-tenant platform work comes after Jakub's pilot.
+
+Reason:
+
+The current system already has a real booking/Calendar/Supabase/OpenClaw foundation. The next risk is not design; it is exposing CRM data without auth, letting OpenClaw mutate data without deterministic tools, and mixing production with staging. This decision keeps the system stable while allowing the dashboard, agent workflow, review generation, and lead database to mature.
+
+Source roadmap:
+
+```text
+docs/BROKER_SYSTEM_ROADMAP_2026-06-07.md
+```
