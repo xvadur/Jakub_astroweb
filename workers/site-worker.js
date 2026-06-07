@@ -283,6 +283,18 @@ async function handleDashboardLeads(request, env, headers) {
     );
   }
 
+  if (!isDashboardCrmAccessAllowed(request, env)) {
+    return json(
+      {
+        ok: false,
+        mode: "locked",
+        error: "Dashboard CRM requires Cloudflare Access",
+      },
+      403,
+      headers,
+    );
+  }
+
   if (!hasSupabase(env)) {
     return json({ ok: false, configured: false, error: "Supabase is not configured" }, 503, headers);
   }
@@ -365,6 +377,14 @@ function isDashboardPubliclyAllowed(url, env) {
 
 function isDashboardCrmReadEnabled(env) {
   return clean(env.DASHBOARD_DATA_MODE).toLowerCase() === "crm";
+}
+
+function isDashboardCrmAccessAllowed(request, env) {
+  const email = clean(request.headers.get("CF-Access-Authenticated-User-Email")).toLowerCase();
+  if (!email) return false;
+
+  const allowedEmails = readList(env.DASHBOARD_ALLOWED_EMAILS, []).map((value) => value.toLowerCase());
+  return allowedEmails.includes(email);
 }
 
 function isLocalHost(hostname) {

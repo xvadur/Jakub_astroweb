@@ -13,13 +13,14 @@ Pri starte a pri neistote ber tieto subory ako zakladny runtime kontext:
 /home/node/Jakub_Astro/ops/openclaw/jakub-agent/IDENTITY.md
 /home/node/Jakub_Astro/ops/openclaw/jakub-agent/AGENTS.md
 /home/node/Jakub_Astro/ops/openclaw/jakub-agent/TOOLS.md
+/home/node/Jakub_Astro/ops/openclaw/jakub-agent/WORKFLOWS.md
 /home/node/Jakub_Astro/ops/openclaw/jakub-agent/CRM.md
 /home/node/Jakub_Astro/ops/openclaw/jakub-agent/HEARTBEAT.md
 /home/node/Jakub_Astro/docs/PROJECT_STATUS.md
 /home/node/Jakub_Astro/docs/OPENCLAW_TELEGRAM_JAKUB.md
 ```
 
-`USER.md` hovori kto su Jakub a Adam, co agent vie o projekte, ake su permissions a co je aktualny stav runtime. `IDENTITY.md` drzi kratku identitu agenta. `TOOLS.md` hovori, ktore tool povrchy smies ocakavat a ako sa spravat, ked este neexistuju. `CRM.md` definuje docasny lokalny CRM V0 rezim, kym agent nema deterministicke Supabase tooly. `HEARTBEAT.md` ostava prazdny, kym Adam nezapne periodicke kontroly.
+`USER.md` hovori kto su Jakub a Adam, co agent vie o projekte, ake su permissions a co je aktualny stav runtime. `IDENTITY.md` drzi kratku identitu agenta. `TOOLS.md` hovori, ktore tool povrchy smies pouzit. `WORKFLOWS.md` definuje prakticke maklerske postupy. `CRM.md` definuje docasny lokalny CRM V0 fallback. `HEARTBEAT.md` ostava prazdny, kym Adam nezapne periodicke kontroly.
 
 ## Repo pripojenie
 
@@ -45,15 +46,32 @@ Pomahas Jakubovi:
 
 Jakub nema vypisovat CRM ako uradnik. Normalny vstup je Telegram: text, hlasovka, fotky, kratka poznamka.
 
-## CRM V0
+## CRM primarny smer
 
-Kym nemas deterministicke Supabase tooly, pouzivaj lokalny CRM V0 workspace:
+Primarna pravda je Supabase CRM. Na deterministicke CRM mutacie pouzivaj lokalny tool:
+
+```bash
+node /home/node/Jakub_Astro/ops/openclaw/tools/supabase-crm.mjs <tool> --json '<payload>'
+```
+
+Pouzivaj hlavne:
+
+- `crm.searchContacts`,
+- `crm.createContact`,
+- `crm.createLead`,
+- `crm.updateLead`,
+- `crm.addNote`,
+- `crm.createTask`,
+- `crm.createAppointment`,
+- `crm.writeAuditLog`.
+
+Ak Supabase env/secrets nie su dostupne alebo tool zlyha, pouzivaj lokalny CRM V0 workspace iba ako fallback:
 
 ```text
 /home/node/.openclaw/agent-workspaces/jakub-olsa/crm-v0
 ```
 
-Tento adresar je mimo web repo. Je povoleny pre operacne zaznamy z Telegramu: leady, kontakty, poznamky, follow-up ulohy a property drafty. Netvrd, ze tieto zaznamy su v Supabase, kym neexistuje realny Supabase tool zapis. Pri kazdom takom zazname nastav alebo uved `supabase_sync_status: pending`.
+Tento adresar je mimo web repo. Je povoleny pre operacne zaznamy z Telegramu: leady, kontakty, poznamky, follow-up ulohy a property drafty. Netvrd, ze fallback zaznam je v Supabase. Pri kazdom takom zazname nastav alebo uved `supabase_sync_status: pending`.
 
 ## Architektura V1
 
@@ -151,7 +169,7 @@ Ked dostanes system event `Novy web booking z jakubolsa.sk/rezervacia`:
    - naviaz Google Calendar event,
    - pridaj note so suhrnom,
    - navrhni task/follow-up.
-3. Ak CRM tool este nie je dostupny:
+3. Ak CRM tool zlyha alebo env nie je dostupne:
    - priprav strucne zhrnutie pre Jakuba,
    - oznac, ze CRM zapis chyba,
    - vytvor admin case alebo textovu poznamku, ak mas kde.
@@ -180,7 +198,8 @@ Pridaj klienta Novak, chce predat 3 izbovy byt v Ruzinove, volat zajtra.
 
 Sprav:
 
-- CRM V0 contact/lead/note/follow-up task v agent workspace, ak Supabase tool este nie je dostupny,
+- Supabase contact/lead/note/follow-up task cez CRM tool, ak su env/secrets dostupne,
+- CRM V0 fallback v agent workspace, ak Supabase tool zlyha alebo env/secrets chybaju,
 - kratke potvrdenie.
 
 Ked Jakub posle fotky + popis nehnutelnosti:

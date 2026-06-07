@@ -1,10 +1,16 @@
-# CRM.md - Jakub OpenClaw CRM V0
+# CRM.md - Jakub OpenClaw CRM fallback
 
-Tento subor definuje okamzity CRM rezim pre agenta `jakub-olsa`.
+Tento subor definuje fallback CRM rezim pre agenta `jakub-olsa`.
 
 ## Stav
 
-Supabase je cielovy CRM backend pre web booking a dashboard, ale OpenClaw agent zatial nema deterministicke Supabase tooly. Kym tieto tooly nie su hotove, agent smie pouzivat lokalnu CRM V0 databazu vo svojom OpenClaw workspace.
+Supabase je cielovy CRM backend pre web booking, dashboard a OpenClaw. OpenClaw ma pripraveny lokalny deterministicky Supabase tool:
+
+```bash
+node /home/node/Jakub_Astro/ops/openclaw/tools/supabase-crm.mjs <tool> --json '<payload>'
+```
+
+Lokalna CRM V0 databaza vo workspace sa pouziva iba vtedy, ked Supabase tool nie je dostupny, chyba env/secret, alebo zapis zlyha.
 
 Runtime path v kontajneri:
 
@@ -20,9 +26,9 @@ Host path:
 
 Toto nie je web repo a nesmie sa commitovat do GitHubu.
 
-## Ucel
+## Ucel fallbacku
 
-CRM V0 sluzi na to, aby Jakub mohol cez Telegram hned zacat posielat:
+CRM V0 sluzi na to, aby Jakub mohol cez Telegram dalej pracovat aj vtedy, ked realny Supabase zapis nie je dostupny. Fallback vie drzat:
 
 - nove kontakty,
 - predajne alebo kupne leady,
@@ -31,7 +37,7 @@ CRM V0 sluzi na to, aby Jakub mohol cez Telegram hned zacat posielat:
 - zakladne property/listing drafty,
 - admin pripady pre Adama.
 
-Agent ma z kratkej Telegram spravy vytvorit strukturovany zaznam a vratit Jakubovi kratke potvrdenie.
+Agent ma z kratkej Telegram spravy najprv skusit Supabase tool. Ak zlyha, vytvori strukturovany fallback zaznam a vrati Jakubovi kratke potvrdenie bez technickych detailov.
 
 Technicke chyby, nepodarene vyhladavanie, path chyby alebo tool diagnostiku neposielaj Jakubovi. Zapis ich do `crm-v0/audit/` alebo admin case a Jakubovi vrat iba prakticky stav.
 
@@ -106,7 +112,7 @@ Ked Jakub napise napr.:
 Pridaj klienta Novak, chce predat 3 izbovy byt v Ruzinove, volat zajtra.
 ```
 
-Agent ma:
+Agent ma najprv pouzit Supabase tooly. Ak nie su dostupne, fallback:
 
 1. vytvorit alebo doplnit lead v `crm-v0/leads/`,
 2. vytvorit task v `crm-v0/tasks/`, ak je jasny follow-up,
@@ -130,13 +136,13 @@ Chýba: telefón
 
 ## Sync do Supabase
 
-Kym nie su hotove deterministicke Supabase tooly, kazdy V0 zaznam ma mat:
+Kazdy V0 zaznam ma mat:
 
 ```text
 supabase_sync_status: pending
 ```
 
-Po vytvoreni Supabase toolov sa tieto zaznamy mozu migrovat alebo synchronizovat.
+Po stabilnom Supabase runtime sa tieto zaznamy mozu migrovat alebo synchronizovat. Nikdy netvrd, ze fallback zaznam je v Supabase, kym nebol realne zapisany.
 
 ## GDPR/PII poznamka
 

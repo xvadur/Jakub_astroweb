@@ -78,7 +78,8 @@ Aktuálna obchodná stratégia je postavená na tom, že Jakub je osobný maklé
   - stránka `/dashboard/leady/` sa pokúsi načítať leady z API a verejne má zobrazovať iba demo/test údaje, kým dashboard nie je zamknutý.
 - Supabase schema bola spustená v Supabase SQL Editore a staging smoke test prešiel: test booking vytvoril Google Calendar event a Worker vrátil `crmStatus: "crm_created"`.
 - Plný OpenClaw handoff z nasadeného staging webu ešte potrebuje verejný HTTPS endpoint pre lokálny Docker `/hooks/agent`, ideálne Cloudflare Tunnel + Access; Cloudflare Worker nesmie dostať `localhost` hook URL.
-- Aktuálny OpenClaw blocker pre maklérskeho agenta: chýbajú deterministické Supabase CRM tools a verejný bezpečný hook. HighLevel `401` z older runbookov je historická stopa, nie aktuálny CRM smer.
+- OpenClaw má od 2026-06-07 pripravený lokálny deterministický Supabase CRM tool v `ops/openclaw/tools/supabase-crm.mjs` a runtime kópie agent docs sú zosynchronizované do Docker OpenClaw state.
+- Aktuálny OpenClaw blocker pre maklérskeho agenta: chýba verejný bezpečný hook/tunnel zo staging Workera do Docker OpenClaw a runtime Supabase service key konfigurácia pre OpenClaw tool. HighLevel `401` z older runbookov je historická stopa, nie aktuálny CRM smer.
 
 ## Rozhodnutia
 
@@ -109,6 +110,9 @@ Overené 6. júna 2026:
 - Outbound Telegram smoke test z Docker runtime bol poslaný Jakubovi cez OpenClaw message tool 6. júna 2026 (`messageId=19`).
 - Cloudflare staging Worker `jakubastroweb-staging` má nastavené Telegram secrets pre priame webové notifikácie po rezervácii.
 - Staging API smoke test z 6. júna 2026 prešiel: `/api/health` vracia `ok: true` a `/api/availability?date=2026-06-08` beží v `google` móde s dostupnými slotmi.
+- OpenClaw agent docs boli 7. júna 2026 rozšírené o Supabase CRM tool a workflowy:
+  - `ops/openclaw/tools/supabase-crm.mjs`,
+  - `ops/openclaw/jakub-agent/WORKFLOWS.md`.
 
 Praktický runbook je v `docs/OPENCLAW_TELEGRAM_JAKUB.md`.
 
@@ -138,12 +142,14 @@ Overené 6. júna 2026:
   - appointment,
   - poznámku z formulára.
 - Dashboard endpoint `GET /api/dashboard/leads` vie čítať lead databázu, ale verejný staging je nastavený na `mode: "demo"`, aby neukazoval reálne PII bez auth.
+- Worker má ochrannú poistku: ak sa dashboard prepne do CRM módu, `/api/dashboard/leads` vráti Supabase dáta iba pri Cloudflare Access emaili z allowlistu.
 - Staging smoke test vytvoril test lead `Supabase Smoke Test` a Google event `b8e7or7j54maq6arfsct3gt8jg`.
 
 Ďalší krok:
 
 - Vyčistiť smoke test dáta, ak nechceme test lead/event držať v staging kalendári a Supabase.
 - Pred reálnymi klientskymi dátami zamknúť `/dashboard/*` a `/api/dashboard/*` cez Cloudflare Access alebo vlastnú autentifikáciu a až potom zapnúť CRM read mód.
+- Pre OpenClaw runtime nastaviť Supabase service role key cez env alebo secret file mimo repozitára, potom spustiť CRM tool smoke test.
 
 Mac mini prenos je dokumentovaný v `docs/MAC_MINI_HANDOFF.md`.
 

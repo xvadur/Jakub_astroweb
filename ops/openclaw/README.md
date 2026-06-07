@@ -30,10 +30,12 @@ Aktualny lokalny stav 2026-06-06:
 - `jakub-agent/IDENTITY.md` - kratka identita agenta pre OpenClaw runtime.
 - `jakub-agent/AGENTS.md` - pracovny system prompt / pravidla Jakub agenta.
 - `jakub-agent/TOOLS.md` - lokalne tool pravidla a integracne povrchy.
+- `jakub-agent/WORKFLOWS.md` - prakticke maklerske workflowy: lead, booking, follow-up, approval, review request, error cases.
 - `jakub-agent/CRM.md` - docasny CRM V0 rezim pre Telegram leady kym nie su hotove Supabase tools.
 - `jakub-agent/HEARTBEAT.md` - placeholder pre buduce periodicke kontroly.
 - `docker-compose.jakub.override.yml` - portable Docker Compose override, ktory mountne Jakub Astro repo do OpenClaw kontajnera.
 - `supabase/SUPABASE_SCHEMA.sql` - prvy navrh CRM schemy pre Supabase.
+- `tools/supabase-crm.mjs` - lokalny deterministicky Supabase CRM tool pre OpenClaw.
 
 ## Kriticka architektura
 
@@ -46,6 +48,43 @@ Website /rezervacia
 ```
 
 OpenClaw je vedlajsi efekt po bookingu. Nesmie byt v kritickej transakcii rezervacie.
+
+## Supabase CRM tool
+
+OpenClaw Docker agent ma Jakub Astro repo mountnute do `/home/node/Jakub_Astro`, preto vie volat lokalny CRM tool:
+
+```bash
+node /home/node/Jakub_Astro/ops/openclaw/tools/supabase-crm.mjs --help
+```
+
+Minimalne env/secrets mimo repozitara:
+
+```text
+SUPABASE_URL
+SUPABASE_SERVICE_ROLE_KEY
+SUPABASE_TENANT_SLUG=jakub-olsa
+SUPABASE_TENANT_NAME=Jakub Olša
+```
+
+Alternativa k env secretu:
+
+```text
+SUPABASE_SERVICE_ROLE_KEY_FILE=/absolute/path/to/secret-file
+```
+
+Zakladny smoke test bez zapisu:
+
+```bash
+node /home/node/Jakub_Astro/ops/openclaw/tools/supabase-crm.mjs crm.searchContacts --json '{"query":"test"}'
+```
+
+Zakladny write smoke test na staging CRM, iba ked je povolene pouzit test data:
+
+```bash
+node /home/node/Jakub_Astro/ops/openclaw/tools/supabase-crm.mjs crm.createContact --json '{"name":"OpenClaw CRM Tool Smoke Test","source":"openclaw_smoke"}'
+```
+
+Tool pri vytvarani alebo uprave entity automaticky zapisuje audit log do `audit_logs`. CRM V0 workspace zostava iba fallback, ked Supabase tool nie je nakonfigurovany alebo zlyha.
 
 ## Docker pilot
 

@@ -53,7 +53,8 @@ Jakubov web a OpenClaw agent maju tvorit lahky realitny operacny system:
 - Supabase schema je spustena a staging booking smoke test overil zapis contact/lead/appointment/note.
 - Verejny staging dashboard je docasne iba demo view; realne CRM citanie musi byt zapnute az po ochrane `/dashboard/*` a `/api/dashboard/*`.
 - Deployed staging Worker zatial neposiela booking do OpenClaw, kym nie je verejny HTTPS hook pre Docker OpenClaw a nastavene `OPENCLAW_HOOK_URL`/`OPENCLAW_HOOK_TOKEN`.
-- OpenClaw agent zatial nema priamy deterministicky Supabase tool. Pre Jakubove Telegram vstupy pouziva docasny CRM V0 workspace mimo repozitara: `/home/node/.openclaw/agent-workspaces/jakub-olsa/crm-v0`.
+- OpenClaw agent ma pripraveny lokalny deterministicky Supabase CRM tool v `/home/node/Jakub_Astro/ops/openclaw/tools/supabase-crm.mjs`. Tool potrebuje Supabase service role key cez env alebo secret file mimo repozitara.
+- CRM V0 workspace mimo repozitara (`/home/node/.openclaw/agent-workspaces/jakub-olsa/crm-v0`) je iba fallback, ked Supabase tool nie je nakonfigurovany alebo zlyha.
 
 ## Komunikacny styl
 
@@ -94,7 +95,7 @@ Approval je povinny pred:
 
 ## Co nevieme / nezapinat automaticky
 
-- Web booking vie zapisovat do Supabase CRM cez Cloudflare Worker, ale OpenClaw este nema deterministicke Supabase CRM tools.
+- Web booking vie zapisovat do Supabase CRM cez Cloudflare Worker a OpenClaw ma pripraveny deterministicky Supabase CRM tool.
 - Supabase schema je staging-overena, ale pred ostrymi klientskymi datami treba auth, audit, cleanup smoke dat a rotaciu service role key.
 - Google Calendar booking flow ma byt riadeny cez Worker/Calendar, nie priamo agentom bez approval.
 - HighLevel uz nie je aktualny CRM smer. Ak sa spomina v starsich runbookoch, ber ho ako historicky blocker.
@@ -111,5 +112,6 @@ Pri neistote citaj v tomto poradi:
 5. `/home/node/Jakub_Astro/ops/openclaw/jakub-agent/IDENTITY.md`
 6. `/home/node/Jakub_Astro/ops/openclaw/jakub-agent/AGENTS.md`
 7. `/home/node/Jakub_Astro/ops/openclaw/jakub-agent/TOOLS.md`
-8. `/home/node/Jakub_Astro/ops/openclaw/jakub-agent/CRM.md`
-9. `/home/node/Jakub_Astro/ops/openclaw/jakub-agent/HEARTBEAT.md`
+8. `/home/node/Jakub_Astro/ops/openclaw/jakub-agent/WORKFLOWS.md`
+9. `/home/node/Jakub_Astro/ops/openclaw/jakub-agent/CRM.md`
+10. `/home/node/Jakub_Astro/ops/openclaw/jakub-agent/HEARTBEAT.md`

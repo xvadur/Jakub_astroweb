@@ -28,8 +28,37 @@ Pravidla:
 Aktualny stav:
 
 - Web booking vie zapisovat do Supabase cez Cloudflare Worker.
-- OpenClaw agent zatial nema priamy deterministicky Supabase tool.
-- Kym Supabase tool neexistuje, pouzivaj lokalny CRM V0 workspace definovany v `CRM.md`.
+- OpenClaw agent ma pripraveny lokalny deterministicky Supabase tool v mountnutom Jakub Astro repozitari.
+- CRM V0 workspace definovany v `CRM.md` je uz iba fallback, ked Supabase env/secrets nie su dostupne alebo tool zlyha.
+
+Runtime command v OpenClaw Docker kontejnery:
+
+```bash
+node /home/node/Jakub_Astro/ops/openclaw/tools/supabase-crm.mjs <tool> --json '<payload>'
+```
+
+Host command pre Adamov terminal:
+
+```bash
+node /Users/xvadur_mac/Jakub_Astro/ops/openclaw/tools/supabase-crm.mjs <tool> --json '<payload>'
+```
+
+Tool necita ziadne secrety z repozitara. Potrebuje env:
+
+```text
+SUPABASE_URL
+SUPABASE_SERVICE_ROLE_KEY
+SUPABASE_TENANT_SLUG=jakub-olsa
+SUPABASE_TENANT_NAME=Jakub Olša
+```
+
+Alternativne moze service role key citat zo suboru mimo repozitara:
+
+```text
+SUPABASE_SERVICE_ROLE_KEY_FILE=/absolute/path/to/secret-file
+```
+
+Nikdy nevypisuj service role key do odpovede, logu ani markdownu.
 
 Minimalne V1 tooly:
 
@@ -42,6 +71,19 @@ Minimalne V1 tooly:
 - `crm.createAppointment`
 - `crm.writeAuditLog`
 
+Implementovane lokalnym toolom:
+
+```bash
+node /home/node/Jakub_Astro/ops/openclaw/tools/supabase-crm.mjs crm.searchContacts --json '{"query":"Novak"}'
+node /home/node/Jakub_Astro/ops/openclaw/tools/supabase-crm.mjs crm.createContact --json '{"name":"Jan Novak","phone":"+421...","source":"telegram"}'
+node /home/node/Jakub_Astro/ops/openclaw/tools/supabase-crm.mjs crm.createLead --json '{"contact_id":"uuid","intent":"sell","property_type":"byt","location":"Ruzinov","source":"telegram"}'
+node /home/node/Jakub_Astro/ops/openclaw/tools/supabase-crm.mjs crm.updateLead --json '{"lead_id":"uuid","status":"qualified","next_follow_up_at":"2026-06-08T09:00:00+02:00"}'
+node /home/node/Jakub_Astro/ops/openclaw/tools/supabase-crm.mjs crm.addNote --json '{"entity_type":"lead","entity_id":"uuid","body":"Volal, chce predat byt."}'
+node /home/node/Jakub_Astro/ops/openclaw/tools/supabase-crm.mjs crm.createTask --json '{"lead_id":"uuid","title":"Zavolat klientovi","due_at":"2026-06-08T09:00:00+02:00"}'
+node /home/node/Jakub_Astro/ops/openclaw/tools/supabase-crm.mjs crm.createAppointment --json '{"contact_id":"uuid","lead_id":"uuid","starts_at":"2026-06-08T09:00:00+02:00","ends_at":"2026-06-08T09:30:00+02:00","source":"telegram"}'
+node /home/node/Jakub_Astro/ops/openclaw/tools/supabase-crm.mjs crm.writeAuditLog --json '{"actor_type":"agent","action":"manual.audit","entity_type":"lead","entity_id":"uuid","after":{"summary":"..."} }'
+```
+
 CRM mutacie bez approval su povolene, ak:
 
 - ide o vytvorenie contact/lead/note/task z jednoznacneho vstupu,
@@ -49,6 +91,12 @@ CRM mutacie bez approval su povolene, ak:
 - tool vracia id vytvorenych entit.
 
 Mazanie musi byt soft-delete a musi mat audit log.
+
+Ak Supabase tool zlyha, nepredstieraj uspesny zapis. Sprav jednu z tychto veci:
+
+- ak ide o Jakubov bezny Telegram vstup, zapis CRM V0 fallback a oznac `supabase_sync_status: pending`,
+- ak ide o web booking handoff, vytvor admin/error case alebo audit poznamku,
+- Adamovi napis technicky dovod: chybajuca env, auth, schema, RLS, alebo konkretna Supabase chyba.
 
 ## CRM V0 workspace
 

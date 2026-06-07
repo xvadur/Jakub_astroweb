@@ -46,9 +46,9 @@ Cloudflare drží verejný booking a bezpečné API. Supabase drží obchodné d
 
 ### OpenClaw
 
-- OpenClaw ešte nie je nakonfigurovaný ako plnohodnotný maklérsky agent.
-- Chýbajú dobré spojenia s webom a Supabase.
-- Chýbajú briefingy, review workflowy a jasné maklérske lanes.
+- OpenClaw ešte nie je nakonfigurovaný ako plnohodnotný maklérsky agent, ale má prvý deterministický Supabase CRM tool a workflow dokumentáciu.
+- Chýba verejný bezpečný hook zo staging webu do lokálneho Docker OpenClaw.
+- Chýba runtime Supabase service key konfigurácia pre OpenClaw tool.
 - OpenClaw nemá byť booking autorita; booking drží Cloudflare Worker.
 - OpenClaw má robiť:
   - notifikácie,
@@ -63,7 +63,8 @@ Cloudflare drží verejný booking a bezpečné API. Supabase drží obchodné d
 ### Supabase
 
 - Supabase je cieľová databázová pravda.
-- OpenClaw potrebuje deterministické Supabase tools.
+- OpenClaw má prvý lokálny deterministický Supabase tool:
+  - `ops/openclaw/tools/supabase-crm.mjs`.
 - Web booking už vie zapisovať Supabase cez Worker, ale dashboard aj OpenClaw tools treba dopojiť produkčne.
 
 ### Web <-> OpenClaw tunnel
@@ -130,17 +131,18 @@ Cloudflare drží verejný booking a bezpečné API. Supabase drží obchodné d
 
 ## P1 - aby OpenClaw bol maklérsky agent
 
-1. Vytvoriť Supabase CRM tools:
+1. Rozšíriť a otestovať Supabase CRM tools:
    - contact search/create/update,
    - lead create/update,
    - note create,
    - task create/update,
    - appointment read/link,
    - audit log write.
-2. Nastaviť Cloudflare Tunnel/Access pre OpenClaw hook.
-3. Nastaviť staging `OPENCLAW_HOOK_URL` a `OPENCLAW_HOOK_TOKEN`.
-4. Otestovať booking -> OpenClaw -> CRM/audit.
-5. Vytvoriť OpenClaw briefing workflow:
+2. Nastaviť OpenClaw runtime Supabase env alebo secret file mimo repozitára.
+3. Nastaviť Cloudflare Tunnel/Access pre OpenClaw hook.
+4. Nastaviť staging `OPENCLAW_HOOK_URL` a `OPENCLAW_HOOK_TOKEN`.
+5. Otestovať booking -> OpenClaw -> CRM/audit.
+6. Vytvoriť OpenClaw briefing workflow:
    - dnešné hovory,
    - nové leady,
    - urgentné follow-upy,
@@ -153,4 +155,3 @@ Cloudflare drží verejný booking a bezpečné API. Supabase drží obchodné d
 3. Pripraviť Google review email workflow.
 4. Rozšíriť SEO/AI obsah: FAQ, lokálne služby, recenzie, referenčné predaje.
 5. Pripraviť právny/GDPR research pre právnika.
-
