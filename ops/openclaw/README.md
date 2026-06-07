@@ -72,6 +72,14 @@ Alternativa k env secretu:
 SUPABASE_SERVICE_ROLE_KEY_FILE=/absolute/path/to/secret-file
 ```
 
+Bezpecne ulozenie service role key do OpenClaw state mimo repozitara:
+
+```bash
+pbpaste | /Users/xvadur_mac/Jakub_Astro/ops/openclaw/configure-supabase-service-key.sh
+```
+
+Helper vypise iba cestu k secret file, nikdy hodnotu secretu.
+
 Zakladny smoke test bez zapisu:
 
 ```bash

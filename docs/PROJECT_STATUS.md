@@ -150,6 +150,7 @@ Overené 6. júna 2026:
 - Vyčistiť smoke test dáta, ak nechceme test lead/event držať v staging kalendári a Supabase.
 - Pred reálnymi klientskymi dátami zamknúť `/dashboard/*` a `/api/dashboard/*` cez Cloudflare Access alebo vlastnú autentifikáciu a až potom zapnúť CRM read mód.
 - Pre OpenClaw runtime nastaviť Supabase service role key cez env alebo secret file mimo repozitára, potom spustiť CRM tool smoke test.
+- Helper na bezpečné uloženie key mimo repozitára: `ops/openclaw/configure-supabase-service-key.sh`.
 
 Mac mini prenos je dokumentovaný v `docs/MAC_MINI_HANDOFF.md`.
 
