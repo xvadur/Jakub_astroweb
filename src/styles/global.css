@@ -1,0 +1,38 @@
+@layer tokens {
+  :root {
+    --paper: #f6f1e8;
+    --paper-strong: #e9dfcf;
+    --ink: #0b0b0a;
+    --charcoal: #1b1b19;
+    --muted: #6f6a62;
+    --muted-warm: #726b61;
+    --olive: #8a8d91;
+    --wine: #9a5c32;
+    --brass: #d8b878;
+    --brass-muted: #b8945b;
+    --white: #fffaf2;
+    --line: rgba(11, 11, 10, 0.16);
+    --line-on-dark: rgba(255, 250, 242, 0.16);
+    --shadow: 0 24px 70px rgba(11, 11, 10, 0.2);
+    --font-body: "Instrument Sans", system-ui, sans-serif;
+    --font-display: "Newsreader", Georgia, serif;
+  }
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  :where(a) {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  :where(img) {
+    display: block;
+    max-width: 100%;
+  }
+}

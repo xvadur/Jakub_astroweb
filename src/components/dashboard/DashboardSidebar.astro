@@ -1,0 +1,273 @@
+---
+import { site } from "../../data/site";
+
+type Props = {
+  active?: "overview" | "leady" | "openclaw" | "nehnutelnosti" | "kalendar" | "ulohy";
+};
+
+const { active = "overview" } = Astro.props;
+
+const navItems = [
+  { id: "overview", label: "Prehľad", href: "/dashboard/", icon: "⌂" },
+  { id: "leady", label: "Lead zoznam", href: "/dashboard/leady/", icon: "◎" },
+  { id: "openclaw", label: "OpenClaw", href: "/dashboard/#openclaw", icon: "▣" },
+  { id: "nehnutelnosti", label: "Nehnuteľnosti", href: "/dashboard/#nehnutelnosti", icon: "▤" },
+  { id: "kalendar", label: "Kalendár", href: "/dashboard/#kalendar", icon: "◷" },
+  { id: "ulohy", label: "Úlohy", href: "/dashboard/#ulohy", icon: "✓" },
+] as const;
+---
+
+<aside class="dashboard-sidebar">
+  <div class="dashboard-brand-suite">
+    <a class="dashboard-brand-lockup" href="/dashboard/" aria-label="Prejsť na dashboard prehľad">
+      <span class="dashboard-brand-mark">
+        <img src={site.avatarImage} alt="" loading="eager" />
+      </span>
+      <span>
+        <strong>{site.brand}</strong>
+        <span>{site.role} | BOSEN Group</span>
+      </span>
+    </a>
+  </div>
+
+  <div class="dashboard-timebox" aria-label="Aktuálny čas">
+    <time datetime="2026-06-06" data-dashboard-date>sobota 6. júna 2026</time>
+    <strong data-dashboard-time>18:24</strong>
+  </div>
+
+  <nav class="dashboard-side-nav" aria-label="Dashboard navigácia">
+    {
+      navItems.map((item) => (
+        <a class={active === item.id ? "active" : ""} href={item.href}>
+          <span>{item.icon}</span>
+          <span>{item.label}</span>
+        </a>
+      ))
+    }
+  </nav>
+
+  <div class="dashboard-side-meta">
+    <strong>OpenClaw</strong>
+    Booking a CRM bežia na stagingu. Verejný dashboard používa demo dáta, kým nebude zamknutý prístup.
+  </div>
+</aside>
+
+<style>
+  :global(.dashboard-app-shell) {
+    display: grid;
+    min-height: 100svh;
+    grid-template-columns: 280px minmax(0, 1fr);
+  }
+
+  :global(.dashboard-content) {
+    min-width: 0;
+  }
+
+  .dashboard-sidebar {
+    position: sticky;
+    top: 0;
+    display: flex;
+    height: 100svh;
+    flex-direction: column;
+    gap: 24px;
+    padding: 24px;
+    background: #111827;
+    color: #f9fafb;
+  }
+
+  .dashboard-brand-suite {
+    display: grid;
+    gap: 12px;
+  }
+
+  .dashboard-brand-lockup {
+    display: grid;
+    grid-template-columns: 54px minmax(0, 1fr);
+    gap: 14px;
+    align-items: center;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .dashboard-brand-mark {
+    display: block;
+    overflow: hidden;
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    border: 2px solid rgba(211, 154, 45, 0.7);
+    background: #d39a2d;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+  }
+
+  .dashboard-brand-mark img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .dashboard-brand-lockup strong {
+    display: block;
+    font-size: 18px;
+    line-height: 1.15;
+  }
+
+  .dashboard-brand-lockup span span {
+    color: #aab4c2;
+    font-size: 13px;
+  }
+
+  .dashboard-timebox {
+    display: grid;
+    gap: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    padding: 14px;
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .dashboard-timebox time {
+    color: #aab4c2;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .dashboard-timebox strong {
+    color: #fff;
+    font-size: 28px;
+    line-height: 1;
+  }
+
+  .dashboard-side-nav {
+    display: grid;
+    gap: 8px;
+  }
+
+  .dashboard-side-nav a {
+    display: grid;
+    grid-template-columns: 32px 1fr;
+    gap: 10px;
+    align-items: center;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    padding: 11px 12px;
+    color: #cbd5e1;
+    font-size: 15px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .dashboard-side-nav a:hover,
+  .dashboard-side-nav a.active {
+    border-color: rgba(211, 154, 45, 0.35);
+    background: rgba(211, 154, 45, 0.14);
+    color: #fff;
+  }
+
+  .dashboard-side-meta {
+    margin-top: auto;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 14px;
+    padding: 14px;
+    color: #aab4c2;
+    font-size: 13px;
+    line-height: 1.35;
+  }
+
+  .dashboard-side-meta strong {
+    display: block;
+    margin-bottom: 6px;
+    color: #fff;
+  }
+
+  @media (max-width: 1120px) {
+    :global(.dashboard-app-shell) {
+      grid-template-columns: 1fr;
+    }
+
+    .dashboard-sidebar {
+      position: static;
+      height: auto;
+    }
+
+    .dashboard-side-nav {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .dashboard-side-meta {
+      display: none;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .dashboard-sidebar {
+      gap: 14px;
+      padding: 18px 14px;
+    }
+
+    .dashboard-brand-lockup {
+      grid-template-columns: 46px minmax(0, 1fr);
+      gap: 10px;
+    }
+
+    .dashboard-brand-mark {
+      width: 46px;
+      height: 46px;
+    }
+
+    .dashboard-brand-lockup strong {
+      font-size: 16px;
+    }
+
+    .dashboard-side-nav {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .dashboard-side-nav a {
+      grid-template-columns: 26px 1fr;
+      gap: 8px;
+      padding: 10px;
+      font-size: 14px;
+    }
+
+    .dashboard-timebox {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: end;
+      padding: 10px 12px;
+    }
+
+    .dashboard-timebox strong {
+      font-size: 22px;
+    }
+  }
+</style>
+
+<script>
+  const dateNode = document.querySelector("[data-dashboard-date]");
+  const timeNode = document.querySelector("[data-dashboard-time]");
+
+  const updateDashboardClock = () => {
+    const now = new Date();
+    if (dateNode) {
+      dateNode.textContent = new Intl.DateTimeFormat("sk-SK", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+        timeZone: "Europe/Bratislava",
+      }).format(now);
+    }
+    if (timeNode) {
+      timeNode.textContent = new Intl.DateTimeFormat("sk-SK", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+        timeZone: "Europe/Bratislava",
+      }).format(now);
+    }
+  };
+
+  updateDashboardClock();
+  window.setInterval(updateDashboardClock, 30000);
+</script>

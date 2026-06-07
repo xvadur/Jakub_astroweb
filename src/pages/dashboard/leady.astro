@@ -1,0 +1,1010 @@
+---
+import "../../styles/global.css";
+import { site } from "../../data/site";
+import DashboardSidebar from "../../components/dashboard/DashboardSidebar.astro";
+
+const leads = [
+  {
+    id: "petra-vrabcova",
+    name: "Petra Vrabcová",
+    grade: "B",
+    status: "Nový lead",
+    type: "Kupujúci",
+    property: "3-izb byt",
+    location: "Petržalka",
+    budget: "EUR 250,000",
+    timing: "3 mesiace",
+    source: "Web rezervácia",
+    motivation: "Prvé bývanie, chce sa odsťahovať z nájmu.",
+    nextAction: "Zavolať a kvalifikovať lead.",
+    nextTime: "Zajtra, 10:00",
+    phone: "+421 905 123 456",
+    email: "petra.vrabcova@example.com",
+  },
+  {
+    id: "anna-dudasova",
+    name: "Anna Dudášová",
+    grade: "A",
+    status: "Kvalifikácia",
+    type: "Predávajúci",
+    property: "Rodinný dom",
+    location: "Rača",
+    budget: "Očakáva EUR 450,000",
+    timing: "6 mesiacov",
+    source: "Odporúčanie",
+    motivation: "Sťahovanie do zahraničia, potrebuje realistickú cenu.",
+    nextAction: "Pripraviť trhové porovnanie.",
+    nextTime: "Zajtra, konzultácia",
+    phone: "+421 911 345 678",
+    email: "anna.dudasova@example.com",
+  },
+  {
+    id: "tomas-bena",
+    name: "Tomáš Beňa",
+    grade: "A",
+    status: "Konzultácia",
+    type: "Kupujúci",
+    property: "4-izb byt",
+    location: "Ružinov",
+    budget: "EUR 320,000",
+    timing: "2 mesiace",
+    source: "BOSEN sieť",
+    motivation: "Rozširuje rodinu, potrebuje praktické bývanie.",
+    nextAction: "Poslať tri vhodné ponuky.",
+    nextTime: "Do konca dňa",
+    phone: "+421 908 456 789",
+    email: "tomas.bena@example.com",
+  },
+  {
+    id: "eva-krajcova",
+    name: "Eva Krajčová",
+    grade: "A",
+    status: "Obhliadka",
+    type: "Kupujúci",
+    property: "1,5-izb byt, Martinčekova",
+    location: "Bratislava",
+    budget: "Cena na vyžiadanie",
+    timing: "Urgentné",
+    source: "Vlastná sieť",
+    motivation: "Nutne potrebuje bývanie, po obhliadke prejavila veľký záujem.",
+    nextAction: "Follow-up po obhliadke.",
+    nextTime: "Pred 18 hodinami",
+    phone: "+421 915 567 890",
+    email: "eva.krajcova@example.com",
+  },
+  {
+    id: "juraj-novak",
+    name: "Juraj Novák",
+    grade: "B",
+    status: "Obhliadka",
+    type: "Kupujúci",
+    property: "3-izb byt",
+    location: "Staré Mesto",
+    budget: "EUR 360,000",
+    timing: "1-2 mesiace",
+    source: "Reklama",
+    motivation: "Hľadá investičný byt s dobrým prenájmom.",
+    nextAction: "Dohodnúť druhú obhliadku.",
+    nextTime: "4. jún, 11:00",
+    phone: "+421 907 678 901",
+    email: "juraj.novak@example.com",
+  },
+  {
+    id: "zuzana-horvatova",
+    name: "Zuzana Horvátová",
+    grade: "A",
+    status: "Uzavretie",
+    type: "Predávajúci",
+    property: "Polyfunkčný objekt",
+    location: "Podunajské Biskupice",
+    budget: "810,000 EUR",
+    timing: "Zmluvy",
+    source: "BOSEN sieť",
+    motivation: "Rieši podpis a finálne podklady.",
+    nextAction: "Pripraviť podpis zmluvy.",
+    nextTime: "Zajtra, 15:30",
+    phone: "+421 912 789 012",
+    email: "zuzana.horvatova@example.com",
+  },
+];
+
+const firstLead = leads[0];
+---
+
+<!doctype html>
+<html lang="sk">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2" />
+    <link rel="icon" type="image/png" href="/favicon.png?v=2" />
+    <link rel="icon" href="/favicon.ico?v=2" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta
+      name="description"
+      content="Lead zoznam pre interný dashboard Jakuba Olšu a OpenClaw realitný workflow."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <title>Lead zoznam | Staging dashboard | {site.brand}</title>
+    <style>
+      :root {
+        --bg: #f6f7f8;
+        --panel: #ffffff;
+        --panel-soft: #f4f6f8;
+        --line: #dfe4ea;
+        --line-strong: #cfd7df;
+        --text: #172033;
+        --muted: #687382;
+        --gold: #d39a2d;
+        --gold-soft: #fff7eb;
+        --green: #20a84f;
+        --green-soft: #edf9f1;
+        --cyan: #12a8bc;
+        --cyan-soft: #eefbfe;
+        --purple: #875cff;
+        --purple-soft: #f3efff;
+        --danger: #e23a55;
+        --danger-soft: #fff0f3;
+        --shadow: 0 10px 28px rgba(21, 31, 45, 0.08);
+        --radius: 18px;
+        --sidebar: #111827;
+        --font-body: "Instrument Sans", system-ui, sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--font-body);
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      button {
+        font: inherit;
+      }
+
+      .app-shell {
+        display: grid;
+        min-height: 100svh;
+        grid-template-columns: 280px minmax(0, 1fr);
+      }
+
+      .sidebar {
+        position: sticky;
+        top: 0;
+        display: flex;
+        height: 100svh;
+        flex-direction: column;
+        gap: 24px;
+        padding: 24px;
+        background: var(--sidebar);
+        color: #f9fafb;
+      }
+
+      .brand-lockup {
+        display: grid;
+        grid-template-columns: 46px minmax(0, 1fr);
+        gap: 12px;
+        align-items: center;
+      }
+
+      .brand-mark {
+        display: grid;
+        width: 46px;
+        height: 46px;
+        place-items: center;
+        border-radius: 50%;
+        background: var(--gold);
+        color: #fff;
+        font-weight: 800;
+      }
+
+      .brand-lockup strong {
+        display: block;
+        font-size: 18px;
+      }
+
+      .brand-lockup span {
+        color: #aab4c2;
+        font-size: 13px;
+      }
+
+      .side-nav {
+        display: grid;
+        gap: 8px;
+      }
+
+      .side-nav a {
+        display: grid;
+        grid-template-columns: 32px 1fr;
+        gap: 10px;
+        align-items: center;
+        border: 1px solid transparent;
+        border-radius: 12px;
+        padding: 11px 12px;
+        color: #cbd5e1;
+        font-size: 15px;
+        font-weight: 700;
+      }
+
+      .side-nav a:hover,
+      .side-nav a.active {
+        border-color: rgba(211, 154, 45, 0.35);
+        background: rgba(211, 154, 45, 0.14);
+        color: #fff;
+      }
+
+      .side-meta {
+        margin-top: auto;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 14px;
+        padding: 14px;
+        color: #aab4c2;
+        font-size: 13px;
+      }
+
+      .side-meta strong {
+        display: block;
+        margin-bottom: 6px;
+        color: #fff;
+      }
+
+      .content {
+        width: min(1320px, 100%);
+        margin: 0 auto;
+        padding: 30px;
+      }
+
+      .topbar {
+        display: flex;
+        gap: 18px;
+        align-items: start;
+        justify-content: space-between;
+        margin-bottom: 26px;
+      }
+
+      .eyebrow {
+        margin: 0 0 8px;
+        color: var(--gold);
+        font-size: 13px;
+        font-weight: 800;
+        text-transform: uppercase;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin-top: 0;
+      }
+
+      h1 {
+        margin-bottom: 10px;
+        font-size: clamp(34px, 5vw, 54px);
+        line-height: 1;
+        letter-spacing: 0;
+      }
+
+      .lead-intro {
+        max-width: 680px;
+        margin-bottom: 0;
+        color: var(--muted);
+        font-size: 17px;
+        line-height: 1.55;
+      }
+
+      .status-chip {
+        display: inline-flex;
+        min-height: 34px;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #bfeacb;
+        border-radius: 999px;
+        padding: 6px 13px;
+        background: var(--green-soft);
+        color: var(--green);
+        font-size: 13px;
+        font-weight: 800;
+        white-space: nowrap;
+      }
+
+      .metrics {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 16px;
+        margin-bottom: 28px;
+      }
+
+      .metric-card,
+      .panel {
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--panel);
+        box-shadow: var(--shadow);
+      }
+
+      .metric-card {
+        padding: 18px;
+      }
+
+      .metric-card span {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .metric-card strong {
+        font-size: 30px;
+        font-weight: 500;
+      }
+
+      .page-divider {
+        width: 100%;
+        height: 1px;
+        margin: 0 0 28px;
+        border: 0;
+        background: var(--line-strong);
+      }
+
+      .workspace {
+        display: block;
+      }
+
+      .panel {
+        padding: 24px;
+      }
+
+      .panel-head {
+        display: flex;
+        gap: 14px;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+      }
+
+      .panel-head h2 {
+        margin: 0;
+        font-size: 24px;
+      }
+
+      .searchbar {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+
+      .searchbar input {
+        min-height: 46px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 0 16px;
+        background: var(--panel-soft);
+        color: var(--text);
+        font: inherit;
+      }
+
+      .searchbar button,
+      .primary-action {
+        border: 0;
+        border-radius: 999px;
+        background: var(--text);
+        color: #fff;
+        cursor: pointer;
+        font-weight: 800;
+      }
+
+      .searchbar button {
+        padding: 0 18px;
+      }
+
+      .lead-list {
+        display: grid;
+        gap: 12px;
+      }
+
+      .lead-row {
+        display: grid;
+        width: 100%;
+        grid-template-columns: 44px minmax(0, 1fr) auto;
+        gap: 14px;
+        align-items: center;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 15px;
+        background: #fff;
+        color: inherit;
+        cursor: pointer;
+        text-align: left;
+      }
+
+      .lead-row:hover,
+      .lead-row.is-active {
+        border-color: var(--gold);
+        background: #fffdf8;
+      }
+
+      .lead-row:focus-visible {
+        outline: 3px solid rgba(211, 154, 45, 0.28);
+        outline-offset: 2px;
+      }
+
+      .avatar {
+        display: grid;
+        width: 44px;
+        height: 44px;
+        place-items: center;
+        border-radius: 50%;
+        background: var(--cyan-soft);
+        color: var(--cyan);
+        font-weight: 900;
+      }
+
+      .lead-row.is-hot .avatar,
+      .detail-hero.is-hot .avatar {
+        background: var(--gold-soft);
+        color: var(--gold);
+      }
+
+      .lead-main {
+        min-width: 0;
+      }
+
+      .lead-name {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+        margin-bottom: 5px;
+        font-weight: 800;
+      }
+
+      .grade {
+        display: inline-flex;
+        border: 1px solid #eed4a5;
+        border-radius: 5px;
+        padding: 1px 6px;
+        color: var(--gold);
+        font-size: 12px;
+        font-weight: 800;
+      }
+
+      .lead-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 14px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .pill {
+        display: inline-flex;
+        min-height: 30px;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 4px 12px;
+        background: var(--panel-soft);
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+
+      .pill.green {
+        border-color: #bfeacb;
+        background: var(--green-soft);
+        color: var(--green);
+      }
+
+      .pill.gold {
+        border-color: #edd4a6;
+        background: var(--gold-soft);
+        color: var(--gold);
+      }
+
+      .pill.cyan {
+        border-color: #bdeaf0;
+        background: var(--cyan-soft);
+        color: var(--cyan);
+      }
+
+      .drawer-shell {
+        position: fixed;
+        inset: 0;
+        z-index: 50;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(360px, 460px);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 180ms ease;
+      }
+
+      .drawer-shell.is-open {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .drawer-backdrop {
+        border: 0;
+        background: rgba(17, 24, 39, 0.45);
+        cursor: pointer;
+      }
+
+      .detail-card {
+        height: 100svh;
+        overflow: auto;
+        border-left: 1px solid var(--line);
+        border-radius: 0;
+        box-shadow: -20px 0 42px rgba(21, 31, 45, 0.16);
+        transform: translateX(100%);
+        transition: transform 220ms ease;
+      }
+
+      .drawer-shell.is-open .detail-card {
+        transform: translateX(0);
+      }
+
+      .drawer-head {
+        display: flex;
+        gap: 14px;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 22px;
+      }
+
+      .drawer-head h2 {
+        margin: 0;
+        font-size: 22px;
+      }
+
+      .drawer-close {
+        display: grid;
+        width: 40px;
+        height: 40px;
+        place-items: center;
+        border: 1px solid var(--line);
+        border-radius: 50%;
+        background: var(--panel-soft);
+        color: var(--text);
+        cursor: pointer;
+        font-size: 20px;
+        font-weight: 800;
+      }
+
+      .detail-hero {
+        display: grid;
+        grid-template-columns: 56px 1fr;
+        gap: 14px;
+        align-items: center;
+        margin-bottom: 22px;
+      }
+
+      .detail-hero .avatar {
+        width: 56px;
+        height: 56px;
+        font-size: 20px;
+      }
+
+      .detail-hero h2 {
+        margin-bottom: 5px;
+        font-size: 26px;
+      }
+
+      .detail-hero p {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      .detail-grid {
+        display: grid;
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+
+      .detail-item {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 13px;
+        background: var(--panel-soft);
+      }
+
+      .detail-item span {
+        display: block;
+        margin-bottom: 5px;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 800;
+        text-transform: uppercase;
+      }
+
+      .detail-item strong {
+        font-size: 16px;
+      }
+
+      .detail-note {
+        border: 1px solid #edd4a6;
+        border-radius: 16px;
+        padding: 16px;
+        background: var(--gold-soft);
+      }
+
+      .detail-note h3 {
+        margin-bottom: 8px;
+        font-size: 17px;
+      }
+
+      .detail-note p {
+        margin-bottom: 0;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      .actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 18px;
+      }
+
+      .primary-action,
+      .secondary-action {
+        display: inline-flex;
+        min-height: 46px;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        padding: 0 14px;
+        text-align: center;
+      }
+
+      .secondary-action {
+        border: 1px solid var(--line);
+        background: var(--panel-soft);
+        color: var(--text);
+        font-weight: 800;
+      }
+
+      @media (max-width: 1120px) {
+        .app-shell {
+          grid-template-columns: 1fr;
+        }
+
+        .sidebar {
+          position: static;
+          height: auto;
+        }
+
+        .side-nav {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .side-meta {
+          display: none;
+        }
+
+        .drawer-shell {
+          grid-template-columns: minmax(0, 1fr) minmax(340px, 420px);
+        }
+      }
+
+      @media (max-width: 720px) {
+        .content,
+        .sidebar {
+          padding: 18px 14px;
+        }
+
+        .side-nav {
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .topbar {
+          display: grid;
+        }
+
+        .metrics {
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .searchbar,
+        .lead-row,
+        .detail-hero,
+        .actions {
+          grid-template-columns: 1fr;
+        }
+
+        .lead-row {
+          align-items: start;
+        }
+
+        .drawer-shell {
+          grid-template-columns: 1fr;
+        }
+
+        .drawer-backdrop {
+          display: none;
+        }
+
+        .detail-card {
+          width: 100%;
+          border-left: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="dashboard-app-shell">
+      <DashboardSidebar active="leady" />
+
+      <main class="content dashboard-content">
+        <section class="metrics" aria-label="Lead metriky">
+          <article class="metric-card"><span>Aktívne leady</span><strong>6</strong></article>
+          <article class="metric-card"><span>Kvalita A</span><strong>3</strong></article>
+          <article class="metric-card"><span>Vyžadujú follow-up</span><strong>2</strong></article>
+          <article class="metric-card"><span>Napojené na nehnuteľnosť</span><strong>6/6</strong></article>
+        </section>
+
+        <hr class="page-divider" />
+
+        <section class="workspace">
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Lead zoznam</h2>
+              <span class="pill gold">klik otvorí detail</span>
+            </div>
+            <div class="searchbar">
+              <input type="search" placeholder="Hľadať meno, lokalitu alebo typ nehnuteľnosti" aria-label="Hľadať lead" />
+              <button type="button">Filtrovať</button>
+            </div>
+
+            <div class="lead-list" data-lead-list>
+              {leads.map((lead, index) => (
+                <button
+                  type="button"
+                  class={`lead-row ${lead.grade === "A" ? "is-hot" : ""}`}
+                  data-lead={JSON.stringify(lead)}
+                  aria-pressed="false"
+                >
+                  <span class="avatar">{lead.name.slice(0, 1)}</span>
+                  <span class="lead-main">
+                    <span class="lead-name">
+                      {lead.name}
+                      <span class="grade">{lead.grade}</span>
+                    </span>
+                    <span class="lead-meta">
+                      <span>{lead.type}</span>
+                      <span>{lead.property}</span>
+                      <span>{lead.location}</span>
+                      <span>{lead.budget}</span>
+                    </span>
+                  </span>
+                  <span class={lead.status === "Uzavretie" ? "pill green" : lead.grade === "A" ? "pill gold" : "pill cyan"}>
+                    {lead.status}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </article>
+        </section>
+      </main>
+    </div>
+
+    <div class="drawer-shell" data-drawer aria-hidden="true">
+      <button class="drawer-backdrop" type="button" data-drawer-close aria-label="Zavrieť detail leadu"></button>
+      <aside class="panel detail-card" role="dialog" aria-modal="true" aria-labelledby="lead-detail-title">
+            <div class="drawer-head">
+              <h2 id="lead-detail-title">Detail leadu</h2>
+              <button class="drawer-close" type="button" data-drawer-close aria-label="Zavrieť detail leadu">×</button>
+            </div>
+            <div class={`detail-hero ${firstLead.grade === "A" ? "is-hot" : ""}`}>
+              <span class="avatar" data-detail-initial>{firstLead.name.slice(0, 1)}</span>
+              <div>
+                <h2 data-detail-name>{firstLead.name}</h2>
+                <p data-detail-type>{firstLead.type} · {firstLead.status}</p>
+              </div>
+            </div>
+
+            <div class="detail-grid">
+              <div class="detail-item">
+                <span>Nehnuteľnosť</span>
+                <strong data-detail-property>{firstLead.property}</strong>
+              </div>
+              <div class="detail-item">
+                <span>Lokalita</span>
+                <strong data-detail-location>{firstLead.location}</strong>
+              </div>
+              <div class="detail-item">
+                <span>Rozpočet / očakávanie</span>
+                <strong data-detail-budget>{firstLead.budget}</strong>
+              </div>
+              <div class="detail-item">
+                <span>Časový rámec</span>
+                <strong data-detail-timing>{firstLead.timing}</strong>
+              </div>
+              <div class="detail-item">
+                <span>Zdroj</span>
+                <strong data-detail-source>{firstLead.source}</strong>
+              </div>
+              <div class="detail-item">
+                <span>Kontakt</span>
+                <strong data-detail-contact>{firstLead.phone}</strong>
+              </div>
+            </div>
+
+            <div class="detail-note">
+              <h3>Motivácia a ďalší krok</h3>
+              <p data-detail-motivation>{firstLead.motivation}</p>
+              <p style="margin-top: 12px;"><strong>Akcia:</strong> <span data-detail-action>{firstLead.nextAction}</span></p>
+              <p style="margin-top: 8px;"><strong>Termín:</strong> <span data-detail-time>{firstLead.nextTime}</span></p>
+            </div>
+
+            <div class="actions">
+              <a class="primary-action" href="/rezervacia/">Vytvoriť task</a>
+              <a class="secondary-action" data-detail-phone-link href={`tel:${firstLead.phone.replace(/[^\d+]/g, "")}`}>Zavolať</a>
+            </div>
+          </aside>
+    </div>
+
+    <script>
+      const leadList = document.querySelector("[data-lead-list]");
+      let rows = Array.from(document.querySelectorAll("[data-lead]"));
+      const drawer = document.querySelector("[data-drawer]");
+      const closeButtons = Array.from(document.querySelectorAll("[data-drawer-close]"));
+      const detail = {
+        hero: document.querySelector(".detail-hero"),
+        initial: document.querySelector("[data-detail-initial]"),
+        name: document.querySelector("[data-detail-name]"),
+        type: document.querySelector("[data-detail-type]"),
+        property: document.querySelector("[data-detail-property]"),
+        location: document.querySelector("[data-detail-location]"),
+        budget: document.querySelector("[data-detail-budget]"),
+        timing: document.querySelector("[data-detail-timing]"),
+        source: document.querySelector("[data-detail-source]"),
+        contact: document.querySelector("[data-detail-contact]"),
+        motivation: document.querySelector("[data-detail-motivation]"),
+        action: document.querySelector("[data-detail-action]"),
+        time: document.querySelector("[data-detail-time]"),
+        phoneLink: document.querySelector("[data-detail-phone-link]"),
+      };
+
+      function setText(node, value) {
+        if (node) node.textContent = value;
+      }
+
+      function escapeHtml(value) {
+        return String(value || "")
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#039;");
+      }
+
+      function getStatusClass(lead) {
+        if (lead.status === "Uzavretie") return "pill green";
+        if (lead.grade === "A") return "pill gold";
+        return "pill cyan";
+      }
+
+      function renderLeadRow(lead) {
+        const leadJson = escapeHtml(JSON.stringify(lead));
+        const hotClass = lead.grade === "A" ? "is-hot" : "";
+        const initial = escapeHtml((lead.name || "?").slice(0, 1));
+        const meta = [lead.type, lead.property, lead.location, lead.budget]
+          .filter(Boolean)
+          .map((item) => `<span>${escapeHtml(item)}</span>`)
+          .join("");
+
+        return `
+          <button type="button" class="lead-row ${hotClass}" data-lead="${leadJson}" aria-pressed="false">
+            <span class="avatar">${initial}</span>
+            <span class="lead-main">
+              <span class="lead-name">
+                ${escapeHtml(lead.name)}
+                <span class="grade">${escapeHtml(lead.grade)}</span>
+              </span>
+              <span class="lead-meta">${meta}</span>
+            </span>
+            <span class="${getStatusClass(lead)}">${escapeHtml(lead.status)}</span>
+          </button>
+        `;
+      }
+
+      function renderLeadRows(leads) {
+        if (!leadList || !Array.isArray(leads) || !leads.length) return;
+        leadList.innerHTML = leads.map(renderLeadRow).join("");
+        bindRows();
+      }
+
+      function openDrawer() {
+        drawer?.classList.add("is-open");
+        drawer?.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeDrawer() {
+        drawer?.classList.remove("is-open");
+        drawer?.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+      }
+
+      closeButtons.forEach((button) => {
+        button.addEventListener("click", closeDrawer);
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") closeDrawer();
+      });
+
+      function bindRows() {
+        rows = Array.from(document.querySelectorAll("[data-lead]"));
+        rows.forEach((row) => {
+          row.addEventListener("click", () => {
+            const lead = JSON.parse(row.dataset.lead || "{}");
+            rows.forEach((item) => {
+              item.classList.remove("is-active");
+              item.setAttribute("aria-pressed", "false");
+            });
+            row.classList.add("is-active");
+            row.setAttribute("aria-pressed", "true");
+
+            setText(detail.initial, (lead.name || "?").slice(0, 1));
+            setText(detail.name, lead.name);
+            setText(detail.type, `${lead.type} · ${lead.status}`);
+            setText(detail.property, lead.property);
+            setText(detail.location, lead.location);
+            setText(detail.budget, lead.budget);
+            setText(detail.timing, lead.timing);
+            setText(detail.source, lead.source);
+            setText(detail.contact, lead.phone);
+            setText(detail.motivation, lead.motivation);
+            setText(detail.action, lead.nextAction);
+            setText(detail.time, lead.nextTime);
+            detail.hero?.classList.toggle("is-hot", lead.grade === "A");
+            if (detail.phoneLink && lead.phone) {
+              detail.phoneLink.setAttribute("href", `tel:${lead.phone.replace(/[^\d+]/g, "")}`);
+            }
+            openDrawer();
+          });
+        });
+      }
+
+      async function loadSupabaseLeads() {
+        try {
+          const response = await fetch("/api/dashboard/leads", {
+            headers: { Accept: "application/json" },
+          });
+
+          if (!response.ok) return;
+
+          const data = await response.json();
+
+          if (data?.ok && Array.isArray(data.leads)) {
+            renderLeadRows(data.leads);
+          }
+        } catch {
+          // Keep static fallback data when API is unavailable.
+        }
+      }
+
+      bindRows();
+      loadSupabaseLeads();
+    </script>
+  </body>
+</html>
