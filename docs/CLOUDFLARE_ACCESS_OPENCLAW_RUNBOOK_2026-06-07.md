@@ -130,16 +130,18 @@ Odporúčaný názov tunnelu:
 jakub-openclaw-hook
 ```
 
-Odporúčaný hostname:
+Aktuálny hostname:
 
 ```text
-openclaw.staging.jakubolsa.sk
+openclaw.jakubolsa.sk
 ```
+
+Poznámka: pôvodne zvažovaný hostname `openclaw.staging.jakubolsa.sk` sa nepoužíva. Jednoúrovňový subdomain `openclaw.jakubolsa.sk` je praktickejší kvôli Cloudflare TLS certifikátu.
 
 Minimálny cieľ:
 
 ```text
-https://openclaw.staging.jakubolsa.sk/hooks/agent
+https://openclaw.jakubolsa.sk/hooks/agent
   -> http://127.0.0.1:18789/hooks/agent
 ```
 
@@ -150,7 +152,23 @@ npx wrangler tunnel list --config wrangler.toml
 npx wrangler tunnel create jakub-openclaw-hook --config wrangler.toml
 ```
 
-Stabilný named tunnel potrebuje aj route/hostname konfiguráciu v Cloudflare dashboarde alebo cez `cloudflared` config. Ak sa použije iba `wrangler tunnel quick-start`, URL bude dočasná a nie je vhodná ako permanentný Worker secret.
+Stabilný named tunnel už bol vytvorený:
+
+```text
+id: 350e365a-37f3-436d-8747-6ab0dd6efc8d
+name: jakub-openclaw-hook
+hostname: openclaw.jakubolsa.sk
+service: http://127.0.0.1:18789
+```
+
+DNS záznam:
+
+```text
+openclaw.jakubolsa.sk
+  CNAME 350e365a-37f3-436d-8747-6ab0dd6efc8d.cfargotunnel.com
+```
+
+Tunnel beží cez launchd agent `ai.openclaw.tunnel.jakub`.
 
 ## 5. Worker secrets pre OpenClaw handoff
 
@@ -160,6 +178,8 @@ Po stabilnom HTTPS hooku nastaviť iba na staging Worker:
 npx wrangler secret put OPENCLAW_HOOK_URL --name=jakubastroweb-staging --config wrangler.toml
 npx wrangler secret put OPENCLAW_HOOK_TOKEN --name=jakubastroweb-staging --config wrangler.toml
 ```
+
+Stav 2026-06-07: tieto dva secrets sú nastavené na `jakubastroweb-staging`.
 
 Ak je hook za Cloudflare Access service tokenom:
 
@@ -181,3 +201,14 @@ Staging booking má po dokončení spraviť:
 5. OpenClaw vytvorí audit/follow-up alebo aspoň admin case.
 
 Ak OpenClaw hook zlyhá, booking nesmie zlyhať. OpenClaw je post-booking side effect.
+
+## 7. Overené smoke testy
+
+```text
+https://openclaw.jakubolsa.sk/healthz -> 200
+POST /hooks/agent bez tokenu -> 401
+POST /hooks/agent s tokenom -> 200
+runId: 66f863f3-6682-4f6a-8f55-fd16a9b87bd4
+```
+
+Plný booking E2E cez staging `/api/book` zatiaľ nebol spustený po zapnutí hooku, aby sme nevytvárali nový kalendárový event a Telegram notifikáciu bez potreby.

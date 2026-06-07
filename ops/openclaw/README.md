@@ -49,6 +49,54 @@ Website /rezervacia
 
 OpenClaw je vedlajsi efekt po bookingu. Nesmie byt v kritickej transakcii rezervacie.
 
+## Cloudflare Tunnel pre OpenClaw hook
+
+Tunnel:
+
+```text
+id: 350e365a-37f3-436d-8747-6ab0dd6efc8d
+name: jakub-openclaw-hook
+hostname: openclaw.jakubolsa.sk
+service: http://127.0.0.1:18789
+```
+
+DNS:
+
+```text
+openclaw.jakubolsa.sk
+  CNAME 350e365a-37f3-436d-8747-6ab0dd6efc8d.cfargotunnel.com
+```
+
+Poznamka: povodne skusany hostname `openclaw.staging.jakubolsa.sk` bol odstraneny, pretoze double-subdomain tvar moze narazit na univerzalny certifikat. Pouzivame jednourovnovy subdomain `openclaw.jakubolsa.sk`.
+
+Run script:
+
+```bash
+/Users/xvadur_mac/Jakub_Astro/ops/openclaw/run-openclaw-tunnel.sh
+```
+
+Persistent launchd agent:
+
+```bash
+/Users/xvadur_mac/Jakub_Astro/ops/openclaw/install-openclaw-tunnel-launchagent.sh
+launchctl print gui/$(id -u)/ai.openclaw.tunnel.jakub
+```
+
+Logy:
+
+```text
+/Users/xvadur_mac/Library/Logs/openclaw/openclaw-tunnel.out.log
+/Users/xvadur_mac/Library/Logs/openclaw/openclaw-tunnel.err.log
+```
+
+Overene 2026-06-07:
+
+- launchd agent `ai.openclaw.tunnel.jakub` bezi,
+- `wrangler tunnel info` hlasi tunnel `healthy`,
+- `https://openclaw.jakubolsa.sk/healthz` vracia `200`,
+- neautorizovany `/hooks/agent` request vracia `401`,
+- autorizovany `/hooks/agent` smoke test vratil run id `66f863f3-6682-4f6a-8f55-fd16a9b87bd4`.
+
 ## Supabase CRM tool
 
 OpenClaw Docker agent ma Jakub Astro repo mountnute do `/home/node/Jakub_Astro`, preto vie volat lokalny CRM tool:

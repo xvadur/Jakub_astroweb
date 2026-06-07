@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>ai.openclaw.tunnel.jakub</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/Users/xvadur_mac/Jakub_Astro/ops/openclaw/run-openclaw-tunnel.sh</string>
+  </array>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>StandardOutPath</key>
+  <string>/Users/xvadur_mac/Library/Logs/openclaw/openclaw-tunnel.out.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/xvadur_mac/Library/Logs/openclaw/openclaw-tunnel.err.log</string>
+  <key>WorkingDirectory</key>
+  <string>/Users/xvadur_mac/Jakub_Astro</string>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>JAKUB_ASTRO_REPO_DIR</key>
+    <string>/Users/xvadur_mac/Jakub_Astro</string>
+    <key>NPX_BIN</key>
+    <string>/Users/xvadur_mac/.local/bin/npx</string>
+    <key>OPENCLAW_TUNNEL_ID</key>
+    <string>350e365a-37f3-436d-8747-6ab0dd6efc8d</string>
+    <key>PATH</key>
+    <string>/Users/xvadur_mac/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+  </dict>
+</dict>
+</plist>

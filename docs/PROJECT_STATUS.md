@@ -83,7 +83,15 @@ Aktuálna obchodná stratégia je postavená na tom, že Jakub je osobný maklé
 - OpenClaw CRM tool smoke test z Docker gateway prešiel:
   - `crm.searchContacts` vrátil `ok: true`,
   - `crm.writeAuditLog` vytvoril audit log `eca617b0-362f-4a16-9d7c-a03094d8b06f`.
-- Aktuálny OpenClaw blocker pre maklérskeho agenta: chýba verejný bezpečný hook/tunnel zo staging Workera do Docker OpenClaw. HighLevel `401` z older runbookov je historická stopa, nie aktuálny CRM smer.
+- Cloudflare Tunnel pre OpenClaw hook bol vytvorený 7. júna 2026:
+  - tunnel id `350e365a-37f3-436d-8747-6ab0dd6efc8d`,
+  - hostname `openclaw.jakubolsa.sk`,
+  - origin `http://127.0.0.1:18789`,
+  - launchd agent `ai.openclaw.tunnel.jakub`,
+  - health endpoint `https://openclaw.jakubolsa.sk/healthz` vracia `200`.
+- Staging Worker `jakubastroweb-staging` má nastavené `OPENCLAW_HOOK_URL` a `OPENCLAW_HOOK_TOKEN`.
+- Direct hook smoke test prešiel: bez tokenu `401`, s tokenom `200`, run id `66f863f3-6682-4f6a-8f55-fd16a9b87bd4`.
+- Aktuálny OpenClaw blocker pre maklérskeho agenta: ešte treba spustiť plný staging booking E2E po zapnutí hooku a ideálne pridať Access/service-token ochranu hook hostname. HighLevel `401` z older runbookov je historická stopa, nie aktuálny CRM smer.
 
 ## Rozhodnutia
 
@@ -153,7 +161,7 @@ Overené 6. júna 2026:
 
 - Vyčistiť smoke test dáta, ak nechceme test lead/event držať v staging kalendári a Supabase.
 - Pred reálnymi klientskymi dátami zamknúť `/dashboard/*` a `/api/dashboard/*` cez Cloudflare Access alebo vlastnú autentifikáciu a až potom zapnúť CRM read mód.
-- Ďalší kritický krok: nastaviť Cloudflare Tunnel alebo ekvivalentný verejný bezpečný HTTPS endpoint pre OpenClaw `/hooks/agent`.
+- Ďalší kritický krok: spustiť kontrolovaný staging booking E2E a overiť calendar -> Supabase -> Telegram -> OpenClaw handoff.
 - Helper na prípadnú rotáciu/obnovu Supabase key mimo repozitára: `ops/openclaw/configure-supabase-service-key.sh`.
 
 Mac mini prenos je dokumentovaný v `docs/MAC_MINI_HANDOFF.md`.
