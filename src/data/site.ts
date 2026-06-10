@@ -225,6 +225,8 @@ export const site = {
       highlights: ["Nový Ružinov", "77 m²", "terasa 34,8 m²", "pivničná kobka", "parkovacie státie"],
       detail:
         "Byt v projekte Landora kombinuje moderné mestské bývanie, veľkú terasu a praktickú dispozíciu. Denná časť je prepojená s kuchyňou a jedálňou, dve samostatné izby dávajú priestor pre spálňu, detskú izbu alebo pracovňu. K bytu patrí pivničná kobka a parkovacie státie.",
+      bosenUrl:
+        "https://www.bosen.sk/nehnutelnost/12297827-bosen-vkusne-zariadeny-3-izbovy-byt-s-terasou-mestska-vila-landora-novy-ruzinov",
       href: "/nehnutelnosti/landora-novy-ruzinov-3-izbovy-byt/",
       cta: "Pozrieť ponuku",
     },
@@ -257,6 +259,8 @@ export const site = {
       highlights: ["Staré Mesto", "predzáhradka", "4 izby", "zariadený byt", "parkovacie státie"],
       detail:
         "Byt na Drotárskej ceste je vhodný pre klientov, ktorí chcú pokojné bývanie v zelenej časti Starého Mesta a zároveň rýchly prístup do centra. Dispozícia ponúka tri samostatné izby, veľkú dennú časť s kuchyňou a výstupom do predzáhradky. Prenajíma sa zariadený a má vonkajšie parkovacie státie.",
+      bosenUrl:
+        "https://www.bosen.sk/nehnutelnost/12297639-bosen-4-izbovy-byt-s-predzahradkou-bratislava-stare-mesto-150m2",
       href: "/nehnutelnosti/drotarska-cesta-4-izbovy-byt-prenajom/",
       cta: "Pozrieť prenájom",
     },
