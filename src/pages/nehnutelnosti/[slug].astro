@@ -87,6 +87,13 @@ const jsonLd = createListingJsonLd(listing, pageMeta);
             <span>{listing.place}</span>
             <strong>{listing.price}</strong>
           </div>
+          {
+            bosenUrl ? (
+              <a class="hero-bosen-link" href={bosenUrl} target="_blank" rel="noreferrer">
+                Pozrieť inzerát na BOSEN Group
+              </a>
+            ) : null
+          }
         </div>
         <img src={listing.image} alt="" />
       </section>
@@ -422,6 +429,27 @@ const jsonLd = createListingJsonLd(listing, pageMeta);
 
       .meta-row span {
         color: var(--muted);
+      }
+
+      .hero-bosen-link {
+        display: inline-flex;
+        min-height: 48px;
+        align-items: center;
+        gap: 12px;
+        margin-top: 28px;
+        border: 1px solid var(--brass-muted);
+        border-radius: 6px;
+        padding: 0 18px;
+        background: var(--ink);
+        color: var(--white);
+        font-weight: 800;
+        box-shadow: 0 14px 38px rgba(11, 11, 10, 0.12);
+      }
+
+      .hero-bosen-link::after {
+        content: "↗";
+        font-size: 18px;
+        line-height: 1;
       }
 
       .detail-hero > img {
