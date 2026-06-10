@@ -202,11 +202,11 @@ export const site = {
     },
     {
       slug: "byt-martincekova",
-      group: "available",
-      status: "V predaji",
+      group: "sold",
+      status: "Predané",
       title: "1,5-izbový byt na Martinčekovej ulici",
       place: "Martinčekova ulica, Bratislava",
-      price: "cena na vyžiadanie",
+      price: "predané",
       image: "/images/listings/martincekova-byt/01-obyvacka.jpg",
       gallery: [
         "/images/listings/martincekova-byt/01-obyvacka.jpg",
@@ -215,20 +215,20 @@ export const site = {
         "/images/listings/martincekova-byt/04-spalna.jpg",
         "/images/listings/martincekova-byt/05-kupelna.jpg",
       ],
-      note: "Útulný 1,5-izbový byt po kompletnej rekonštrukcii. Aktuálne v ponuke na Martinčekovej ulici v Bratislave.",
+      note: "Útulný 1,5-izbový byt po kompletnej rekonštrukcii na Martinčekovej ulici v Bratislave. Predaj je uzavretý.",
       summary:
-        "Aktuálne ponúkaný 1,5-izbový byt po kompletnej rekonštrukcii na Martinčekovej ulici v Bratislave.",
+        "Predaj 1,5-izbového bytu po kompletnej rekonštrukcii na Martinčekovej ulici v Bratislave.",
       specs: [
         { label: "Typ", value: "1,5-izbový byt" },
         { label: "Stav", value: "kompletná rekonštrukcia" },
         { label: "Lokalita", value: "Martinčekova ulica, Bratislava" },
-        { label: "Cena", value: "na vyžiadanie" },
+        { label: "Výsledok", value: "predané" },
       ],
-      highlights: ["aktuálne v ponuke", "1,5-izbový byt", "kompletná rekonštrukcia", "Martinčekova ulica"],
+      highlights: ["predané", "1,5-izbový byt", "kompletná rekonštrukcia", "Martinčekova ulica"],
       detail:
-        "Tento 1,5-izbový byt po kompletnej rekonštrukcii je aktuálne v ponuke. Je vhodný ako hotové mestské bývanie aj ako praktická investičná nehnuteľnosť v Bratislave.",
+        "Pri tomto byte bolo dôležité ukázať hotové mestské bývanie po kompletnej rekonštrukcii a zároveň praktický investičný potenciál v Bratislave. Predaj je uzavretý.",
       href: "/nehnutelnosti/byt-martincekova/",
-      cta: "Pozrieť ponuku",
+      cta: "Pozrieť predaj",
     },
     {
       slug: "byt-salviova",
