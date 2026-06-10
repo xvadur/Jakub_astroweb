@@ -171,6 +171,68 @@ export const site = {
   },
   listings: [
     {
+      slug: "landora-novy-ruzinov-3-izbovy-byt",
+      group: "available",
+      status: "V predaji",
+      title: "3-izbový byt s terasou v projekte Landora",
+      place: "Bajkalská 45B, Nový Ružinov",
+      price: "349 900 € vrátane parkovacieho státia",
+      image: "/images/listings/landora-novy-ruzinov-3-izbovy-byt/01-obyvacka.jpg",
+      gallery: [
+        "/images/listings/landora-novy-ruzinov-3-izbovy-byt/01-obyvacka.jpg",
+        "/images/listings/landora-novy-ruzinov-3-izbovy-byt/02-terasa.jpg",
+        "/images/listings/landora-novy-ruzinov-3-izbovy-byt/03-kuchyna.jpg",
+        "/images/listings/landora-novy-ruzinov-3-izbovy-byt/04-izba.jpg",
+      ],
+      note: "Vkusne zariadený 3-izbový byt v rezidenčnom projekte Landora s veľkou terasou orientovanou na juh a východ.",
+      summary:
+        "Predaj priestranného 3-izbového bytu v Novom Ružinove s výmerou 77 m², terasou 34,8 m², pivničnou kobkou a parkovacím státím.",
+      specs: [
+        { label: "Typ", value: "3-izbový byt" },
+        { label: "Výmera bytu", value: "77 m²" },
+        { label: "Terasa", value: "34,8 m²" },
+        { label: "Pivnica", value: "2,18 m²" },
+        { label: "Cena", value: "349 900 € vrátane parkovania" },
+      ],
+      highlights: ["Nový Ružinov", "77 m²", "terasa 34,8 m²", "pivničná kobka", "parkovacie státie"],
+      detail:
+        "Byt v projekte Landora kombinuje moderné mestské bývanie, veľkú terasu a praktickú dispozíciu. Denná časť je prepojená s kuchyňou a jedálňou, dve samostatné izby dávajú priestor pre spálňu, detskú izbu alebo pracovňu. K bytu patrí pivničná kobka a parkovacie státie.",
+      href: "/nehnutelnosti/landora-novy-ruzinov-3-izbovy-byt/",
+      cta: "Pozrieť ponuku",
+    },
+    {
+      slug: "drotarska-cesta-4-izbovy-byt-prenajom",
+      group: "available",
+      status: "Na prenájom",
+      title: "4-izbový byt s predzáhradkou na Drotárskej ceste",
+      place: "Drotárska cesta 41a, Bratislava-Staré Mesto",
+      price: "1 600 € / mesiac + energie, internet a parkovanie",
+      image: "/images/listings/drotarska-cesta-4-izbovy-byt-prenajom/01-obyvacka.jpg",
+      gallery: [
+        "/images/listings/drotarska-cesta-4-izbovy-byt-prenajom/01-obyvacka.jpg",
+        "/images/listings/drotarska-cesta-4-izbovy-byt-prenajom/02-kuchyna.jpg",
+        "/images/listings/drotarska-cesta-4-izbovy-byt-prenajom/03-spalna.jpg",
+        "/images/listings/drotarska-cesta-4-izbovy-byt-prenajom/04-izba.jpg",
+        "/images/listings/drotarska-cesta-4-izbovy-byt-prenajom/05-predzahradka.jpg",
+        "/images/listings/drotarska-cesta-4-izbovy-byt-prenajom/06-kupelna.jpg",
+      ],
+      note: "Kompletne zariadený 4-izbový byt na prízemí s predzáhradkou a vonkajším parkovacím miestom v tichej časti Starého Mesta.",
+      summary:
+        "Prenájom zariadeného 4-izbového bytu na Drotárskej ceste s podlahovou plochou 90 m², celkovou plochou 150 m² a vlastným parkovacím státím.",
+      specs: [
+        { label: "Typ", value: "4-izbový byt" },
+        { label: "Podlahová plocha", value: "90 m²" },
+        { label: "Celková plocha", value: "150 m²" },
+        { label: "Podlažie", value: "prízemie" },
+        { label: "Cena", value: "1 600 € / mesiac + poplatky" },
+      ],
+      highlights: ["Staré Mesto", "predzáhradka", "4 izby", "zariadený byt", "parkovacie státie"],
+      detail:
+        "Byt na Drotárskej ceste je vhodný pre klientov, ktorí chcú pokojné bývanie v zelenej časti Starého Mesta a zároveň rýchly prístup do centra. Dispozícia ponúka tri samostatné izby, veľkú dennú časť s kuchyňou a výstupom do predzáhradky. Prenajíma sa zariadený a má vonkajšie parkovacie státie.",
+      href: "/nehnutelnosti/drotarska-cesta-4-izbovy-byt-prenajom/",
+      cta: "Pozrieť prenájom",
+    },
+    {
       slug: "byt-mamateyova",
       group: "sold",
       status: "Predané",
