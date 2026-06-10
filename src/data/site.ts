@@ -167,7 +167,7 @@ export const site = {
     eyebrow: "Nehnuteľnosti",
     title: "Aktuálne ponuky a predaje, ktoré ukazujú môj spôsob práce.",
     text:
-      "Ponúkané byty držím oddelene od referenčných predajov, aby bolo hneď jasné, čo je aktuálne na trhu a čo je už uzavretý výsledok.",
+      "Aktuálne ponúkané nehnuteľnosti držím oddelene od referenčných predajov, aby bolo hneď jasné, čo je aktuálne na trhu a čo je už uzavretý výsledok.",
   },
   listings: [
     {
@@ -201,6 +201,40 @@ export const site = {
         "https://www.bosen.sk/nehnutelnost/12297827-bosen-vkusne-zariadeny-3-izbovy-byt-s-terasou-mestska-vila-landora-novy-ruzinov",
       href: "/nehnutelnosti/landora-novy-ruzinov-3-izbovy-byt/",
       cta: "Pozrieť ponuku",
+    },
+    {
+      slug: "solosnicka-karlova-ves-rodinny-dom",
+      group: "available",
+      status: "V predaji",
+      title: "8-izbový rodinný dom s dvoma bytovými jednotkami",
+      place: "Sološnická 4, Bratislava-Karlova Ves",
+      price: "789 000 €",
+      image: "/images/listings/solosnicka-karlova-ves-rodinny-dom/01-exterier.jpg",
+      gallery: [
+        "/images/listings/solosnicka-karlova-ves-rodinny-dom/01-exterier.jpg",
+        "/images/listings/solosnicka-karlova-ves-rodinny-dom/02-obyvacka.jpg",
+        "/images/listings/solosnicka-karlova-ves-rodinny-dom/03-kuchyna.jpg",
+        "/images/listings/solosnicka-karlova-ves-rodinny-dom/04-izba.jpg",
+        "/images/listings/solosnicka-karlova-ves-rodinny-dom/05-terasa.jpg",
+        "/images/listings/solosnicka-karlova-ves-rodinny-dom/06-pohlad.jpg",
+      ],
+      note: "Rodinný dom v Karlovej Vsi s dvoma bytovými jednotkami, veľkou výmerou a kompletným technickým zázemím.",
+      summary:
+        "Predaj 8-izbového rodinného domu na Sološnickej ulici v Karlovej Vsi s podlahovou plochou 361 m², celkovou plochou 414 m² a dvoma vonkajšími parkovacími státiami.",
+      specs: [
+        { label: "Typ", value: "rodinný dom" },
+        { label: "Počet izieb", value: "8" },
+        { label: "Podlahová plocha", value: "361 m²" },
+        { label: "Celková plocha", value: "414 m²" },
+        { label: "Cena", value: "789 000 €" },
+      ],
+      highlights: ["Karlova Ves", "Sološnická 4", "8 izieb", "2 bytové jednotky", "361 m²", "2 parkovacie státia"],
+      detail:
+        "Dom na Sološnickej ulici je vhodný pre klientov, ktorí hľadajú veľkorysé bývanie v Karlovej Vsi alebo nehnuteľnosť s možnosťou oddeleného fungovania dvoch bytových jednotiek. Ponúka 8 izieb, loggiu, terasu, garáž, pivnicu, špajzu a dve vonkajšie parkovacie státia.",
+      bosenUrl:
+        "https://www.bosen.sk/nehnutelnost/12297803-bosen-8-izbovy-rodinny-dom-s-dvoma-bytovymi-jednotkami-bratislava-karlova-ves",
+      href: "/nehnutelnosti/solosnicka-karlova-ves-rodinny-dom/",
+      cta: "Pozrieť dom",
     },
     {
       slug: "drotarska-cesta-4-izbovy-byt-prenajom",
