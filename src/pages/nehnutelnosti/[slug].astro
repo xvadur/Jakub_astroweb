@@ -11,6 +11,7 @@ export function getStaticPaths() {
 const { listing } = Astro.props;
 const gallery = listing.gallery?.length ? listing.gallery : [listing.image];
 const isSold = listing.group === "sold";
+const bosenUrl = listing.bosenUrl ?? "";
 const hasInstagram = site.contact.instagram.startsWith("http");
 ---
 
@@ -110,6 +111,13 @@ const hasInstagram = site.contact.instagram.startsWith("http");
           <h2>{isSold ? "Povedzte mi o vašej nehnuteľnosti." : "Dohodnite si so mnou obhliadku alebo krátky rozhovor."}</h2>
         </div>
         <div class="cta-actions">
+          {
+            bosenUrl ? (
+              <a class="button secondary bosen-button" href={bosenUrl} target="_blank" rel="noreferrer">
+                Pozrieť inzerát na BOSEN
+              </a>
+            ) : null
+          }
           <a class="button primary" href="/rezervacia/">Rezervovať konzultáciu</a>
           <a class="button secondary" href={`mailto:${site.contact.email}`}>{site.contact.email}</a>
         </div>
@@ -513,6 +521,17 @@ const hasInstagram = site.contact.instagram.startsWith("http");
 
       .button.secondary {
         color: var(--white);
+      }
+
+      .bosen-button {
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .bosen-button::after {
+        content: "↗";
+        font-size: 18px;
+        line-height: 1;
       }
 
       footer {
