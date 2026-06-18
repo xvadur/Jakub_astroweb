@@ -96,6 +96,7 @@ const consentConfig = {
     const googleAdsId = String(config.googleAdsId || "").trim();
     const googleAdsConversionLabel = String(config.googleAdsConversionLabel || "").trim();
     const analyticsEnabled = analyticsMode !== "disabled";
+    const debugMode = analyticsMode === "test";
     let googleTagLoaded = false;
     let pageViewSent = false;
 
@@ -193,13 +194,14 @@ const consentConfig = {
 
       if (consent.analytics && ga4MeasurementId) {
         loadGoogleTag(ga4MeasurementId);
-        window.gtag("config", ga4MeasurementId, { send_page_view: false });
+        window.gtag("config", ga4MeasurementId, { send_page_view: false, debug_mode: debugMode });
         if (!pageViewSent) {
           pageViewSent = true;
           window.gtag("event", "page_view", {
             page_location: window.location.href,
             page_path: window.location.pathname,
             page_title: document.title,
+            debug_mode: debugMode,
           });
         }
       }
@@ -265,7 +267,10 @@ const consentConfig = {
         const consent = readConsent();
         if (!analyticsEnabled || !consent?.analytics || !ga4MeasurementId) return false;
         applyConsent(consent);
-        window.gtag("event", eventName, sanitizeEventParams(params));
+        window.gtag("event", eventName, {
+          ...sanitizeEventParams(params),
+          debug_mode: debugMode,
+        });
         return true;
       },
       trackLeadConversion: (params = {}) => {
