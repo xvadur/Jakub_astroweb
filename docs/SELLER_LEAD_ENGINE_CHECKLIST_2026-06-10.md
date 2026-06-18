@@ -228,5 +228,5 @@ This makes the upside larger than a one-time website fee if attribution and reve
 - [x] Add seller FAQ content.
 - [x] Add structured data updates.
 - [x] Run local build.
-- [ ] Deploy to staging.
+- [x] Deploy to staging.
 - [ ] Run a small paid search test after Jakub calendar is connected.

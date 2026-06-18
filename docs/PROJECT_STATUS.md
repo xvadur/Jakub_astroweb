@@ -1,6 +1,6 @@
 # Stav projektu Jakub Olša web
 
-Posledná aktualizácia: 17. jún 2026
+Posledná aktualizácia: 18. jún 2026
 
 ## Aktuálny stav
 
@@ -46,13 +46,26 @@ BOSEN služby sú pre Jakubov web formulované opatrne: Jakub koordinuje oceneni
   - `POST /api/book`.
 - Wizard už odosiela booking payload na API namiesto priameho `mailto:` flow. Ak API zlyhá, ostáva núdzový email fallback.
 - Worker je pripravený na Google Calendar sync, priame Telegram notifikácie a non-blocking OpenClaw handoff cez Cloudflare secrets.
-- Produkcia má základnú SEO/AI indexačnú vrstvu:
+- Produkcia má SEO/AI indexačnú vrstvu pripravenú na launch:
   - `/robots.txt`,
   - `/sitemap.xml`,
   - `/llms.txt`,
-  - canonical URL na homepage, rezervácii, privacy stránke a detailoch nehnuteľností,
-  - OpenGraph URL/image metadata.
+  - canonical URL na homepage, rezervácii, privacy stránke, seller landing page a detailoch nehnuteľností,
+  - OpenGraph URL/image metadata,
+  - `Person`, `RealEstateAgent`, `Service`, `BreadcrumbList` a seller `FAQPage` structured data,
+  - seller page `/predaj-bytu-bratislava/` so 16 viditeľnými FAQ otázkami.
 - Staging build blokuje crawling cez `/robots.txt` a stránky majú `noindex,nofollow,noarchive`.
+- Cookie/consent vrstva je implementovaná a nasadená na staging:
+  - voliteľná analytika a marketing,
+  - GA4 test mode na stagingu s `G-E8EE4LE3NQ`,
+  - `generate_lead` event po úspešnej rezervácii,
+  - Google Ads conversion scaffold bez aktívneho Ads ID/label.
+- Lead attribution pipeline je implementovaná:
+  - UTM, `gclid`, `gbraid`, `wbraid`, referrer, landing path a timestamp,
+  - prenos cez `/api/book`,
+  - uloženie do Supabase `raw_payload`,
+  - zahrnutie v Telegram a OpenClaw handoff payload,
+  - zobrazenie source/attribution v lead dashboarde.
 - Pripravené sú večerné pracovné dokumenty:
   - `docs/MEETING_DEMO_PATH_2026-06-03.md`,
   - `docs/BOSEN_COPY_WORKSHOP_2026-06-03.md`,
@@ -75,7 +88,12 @@ BOSEN služby sú pre Jakubov web formulované opatrne: Jakub koordinuje oceneni
 - Hook smoke test z 2026-06-04 prešiel: neautorizovaný request vracia `401`, autorizovaný request vytvorí `runId` a session `agent:jakub-olsa:main` ukladá odpoveď agenta.
 - Lokálny Worker E2E test z 2026-06-04 prešiel: `/api/book` v mock režime odovzdal test booking cez `ctx.waitUntil` do OpenClaw `/hooks/agent` a agent vytvoril interný admin case.
 - Staging Worker má od 2026-06-06 nastavené `TELEGRAM_BOT_TOKEN` a `TELEGRAM_CHAT_ID` secrets, takže úspešný `/api/book` vie poslať Jakubovi Telegram oznámenie s detailmi leadu.
-- Očakávaný aktuálny follow-up po web bookingu je priama Telegram notifikácia po úspešnom leade; klientsky email follow-up a review request workflow ešte treba dorobiť.
+- Očakávaný aktuálny follow-up po web bookingu je priama Telegram notifikácia po úspešnom leade.
+- Klientsky confirmation email scaffold je pripravený cez Resend:
+  - odoslanie je vypnuté, kým nebude nastavené `EMAIL_PROVIDER=resend`, `RESEND_API_KEY` a overený sender,
+  - booking sa nerozbije pri email chybe,
+  - úspech/zlyhanie sa zapisuje do `email_messages`,
+  - email failure vytvára admin case.
 - Staging Worker má od 2026-06-06 overenú Supabase CRM integráciu:
   - non-secret konfigurácia je vo `wrangler.toml`,
   - `SUPABASE_SERVICE_ROLE_KEY` je uložený iba ako Cloudflare secret na `jakubastroweb-staging`,

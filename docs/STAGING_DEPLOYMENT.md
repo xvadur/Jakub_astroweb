@@ -25,7 +25,8 @@ Staging is deployed as a separate Cloudflare Worker:
 - Custom route: `staging.jakubolsa.sk/*`
 - Public staging URL: `https://staging.jakubolsa.sk/`
 - Workers.dev fallback: `https://jakubastroweb-staging.yksvadur-ja.workers.dev/`
-- Last verified: 3 June 2026
+- Last verified: 18 June 2026
+- Last deployed version: `6c4540ac-5406-4a0a-ba97-300fea55f97d`
 
 The staging page currently returns:
 
@@ -46,7 +47,7 @@ npx wrangler deploy --config wrangler.toml --name=jakubastroweb
 Staging deploy command:
 
 ```bash
-PUBLIC_SITE_ENV=staging npm run build
+PUBLIC_SITE_ENV=staging PUBLIC_ANALYTICS_MODE=test PUBLIC_GA4_MEASUREMENT_ID=G-E8EE4LE3NQ npm run build
 npx wrangler deploy --config wrangler.toml --name=jakubastroweb-staging
 ```
 
