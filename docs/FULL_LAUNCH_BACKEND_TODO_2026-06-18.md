@@ -138,7 +138,7 @@ Client receives useful emails around interactions with Jakub.
 ### Tasks
 
 - [ ] Choose provider:
-  - [ ] Resend,
+  - [x] Resend,
   - [ ] Postmark,
   - [ ] Mailgun,
   - [ ] Cloudflare Email Workers if suitable.
@@ -146,26 +146,26 @@ Client receives useful emails around interactions with Jakub.
   - [ ] SPF,
   - [ ] DKIM,
   - [ ] DMARC.
-- [ ] Store API key as Cloudflare secret only.
+- [x] Store API key as Cloudflare secret only.
 - [ ] Add Worker email abstraction:
-  - [ ] `sendClientConfirmationEmail`,
+  - [x] `sendClientConfirmationEmail`,
   - [ ] later `sendClientReminderEmail`,
   - [ ] later `sendReviewRequestEmail`.
-- [ ] Send confirmation email after successful booking.
-- [ ] Create admin case if email sending fails.
-- [ ] Store provider message id / send status in Supabase note or future email log table.
+- [x] Send confirmation email after successful booking.
+- [x] Create admin case if email sending fails.
+- [x] Store provider message id / send status in Supabase note or future email log table.
 
 ### Confirmation email content
 
 Must include:
 
-- [ ] confirmation that request was received,
-- [ ] selected date/time,
-- [ ] Jakub's contact,
-- [ ] summary of submitted property/context,
-- [ ] what happens next,
-- [ ] reschedule/cancel instruction,
-- [ ] privacy/footer text.
+- [x] confirmation that request was received,
+- [x] selected date/time,
+- [x] Jakub's contact,
+- [x] summary of submitted property/context,
+- [x] what happens next,
+- [x] reschedule/cancel instruction,
+- [x] privacy/footer text.
 
 ### Reminder email content
 
@@ -179,14 +179,14 @@ Future task:
 
 ### Acceptance criteria
 
-- [ ] Booking succeeds even if email provider fails.
-- [ ] Email failure creates admin case.
-- [ ] No secrets in repo.
-- [ ] Email contains no fake promises or unverified legal wording.
+- [x] Booking succeeds even if email provider fails.
+- [x] Email failure creates admin case.
+- [x] No secrets in repo.
+- [x] Email contains no fake promises or unverified legal wording.
 
 ### Adam input needed
 
-- [ ] Provider choice.
+- [x] Provider choice.
 - [ ] Sender email/domain.
 - [ ] Whether confirmation email should be sent before Jakub's real mail/calendar is connected.
 

@@ -128,6 +128,24 @@ npx wrangler secret put TELEGRAM_CHAT_ID --name jakubastroweb-staging
 
 Repeat on `jakubastroweb` only after the staging flow is approved.
 
+Optional client confirmation email after successful booking:
+
+```bash
+npx wrangler secret put RESEND_API_KEY --name jakubastroweb-staging
+```
+
+Required non-secret vars when testing email:
+
+```bash
+EMAIL_PROVIDER=resend
+EMAIL_FROM="Jakub Olša <rezervacie@jakubolsa.sk>"
+EMAIL_REPLY_TO="..."
+JAKUB_CONTACT_EMAIL="..."
+JAKUB_CONTACT_PHONE="..."
+```
+
+If `EMAIL_PROVIDER` is empty, `disabled` or `off`, the booking flow skips client email and still returns success.
+
 Status 2026-06-06:
 
 - `jakubastroweb-staging` has Google Calendar and Telegram booking secrets configured.

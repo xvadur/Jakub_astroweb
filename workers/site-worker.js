@@ -1,5 +1,6 @@
 const GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
 const GOOGLE_CALENDAR_API_URL = "https://www.googleapis.com/calendar/v3";
+const RESEND_EMAILS_API_URL = "https://api.resend.com/emails";
 const SUPABASE_REST_PREFIX = "/rest/v1";
 
 const DEFAULT_ALLOWED_ORIGINS = [
@@ -259,6 +260,16 @@ async function handleBooking(request, env, ctx, headers) {
     crmStatus,
     crmRecords,
   });
+  const clientEmailPromise = sendClientConfirmationEmail(payload, {
+    env,
+    bookingStatus,
+    mode,
+    calendarEvent,
+    interval,
+    timeZone,
+    crmStatus,
+    crmRecords,
+  });
 
   if (crmStatus === "crm_failed") {
     ctx.waitUntil(
@@ -306,6 +317,49 @@ async function handleBooking(request, env, ctx, headers) {
         }),
       }).catch(() => null),
     ),
+  );
+  ctx.waitUntil(
+    clientEmailPromise
+      .then((result) =>
+        recordClientConfirmationEmail(env, payload, {
+          result,
+          bookingStatus,
+          mode,
+          calendarEvent,
+          crmStatus,
+          crmRecords,
+        }).catch(() => null),
+      )
+      .catch((error) =>
+        Promise.allSettled([
+          recordClientConfirmationEmail(env, payload, {
+            result: {
+              ok: false,
+              provider: clean(env.EMAIL_PROVIDER).toLowerCase() || "unknown",
+              recipientEmail: clean(payload.email),
+              subject: "Potvrdenie konzultácie s Jakubom Olšom",
+              errorSummary: error instanceof Error ? error.message : "Unknown email error",
+            },
+            bookingStatus,
+            mode,
+            calendarEvent,
+            crmStatus,
+            crmRecords,
+          }),
+          createSupabaseAdminCase(env, {
+            tenantId: crmRecords?.tenantId,
+            severity: "medium",
+            title: "Client confirmation email failed",
+            description: buildAdminCaseDescription(payload, {
+              service: "client_email",
+              bookingStatus,
+              mode,
+              crmStatus,
+              error: error instanceof Error ? error.message : "Unknown email error",
+            }),
+          }),
+        ]),
+      ),
   );
 
   return json(
@@ -764,6 +818,150 @@ async function sendOpenClawHandoff(payload, context) {
   }
 }
 
+async function sendClientConfirmationEmail(payload, context) {
+  const { env } = context;
+  const provider = clean(env.EMAIL_PROVIDER).toLowerCase();
+  const recipient = clean(payload.email);
+
+  if (!recipient) return { ok: false, skipped: true, reason: "missing_recipient_email" };
+  if (!provider || provider === "off" || provider === "disabled") {
+    return { ok: false, skipped: true, reason: "email_provider_disabled" };
+  }
+  if (provider !== "resend") {
+    return { ok: false, skipped: true, reason: `unsupported_email_provider:${provider}` };
+  }
+  if (!env.RESEND_API_KEY) return { ok: false, skipped: true, reason: "missing_resend_api_key" };
+
+  const email = buildClientConfirmationEmail(payload, context);
+  const response = await fetch(RESEND_EMAILS_API_URL, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${env.RESEND_API_KEY}`,
+      "Content-Type": "application/json",
+      "User-Agent": "jakubolsa-booking-worker/1.0",
+    },
+    body: JSON.stringify({
+      from: clean(env.EMAIL_FROM) || "Jakub Olša <rezervacie@jakubolsa.sk>",
+      to: [recipient],
+      reply_to: clean(env.EMAIL_REPLY_TO) || clean(env.JAKUB_CONTACT_EMAIL) || undefined,
+      bcc: readList(env.EMAIL_INTERNAL_BCC, []),
+      subject: email.subject,
+      text: email.text,
+      html: email.html,
+      tags: [
+        { name: "source", value: "web_booking" },
+        { name: "message_type", value: "booking_confirmation" },
+      ],
+    }),
+  });
+
+  const data = await safeReadJson(response);
+
+  if (!response.ok) {
+    throw new Error(`Resend email failed: ${response.status} ${clean(data?.message || data?.error || "").slice(0, 180)}`);
+  }
+
+  return {
+    ok: true,
+    provider,
+    providerMessageId: clean(data?.id),
+    recipientEmail: recipient,
+    subject: email.subject,
+  };
+}
+
+function buildClientConfirmationEmail(payload, context) {
+  const contactName = clean(payload.meno).split(/\s+/)[0] || "dobrý deň";
+  const dateTime = `${clean(payload.datum)} o ${clean(payload.cas)}`;
+  const phone = clean(context.env.JAKUB_CONTACT_PHONE) || "+421 911 455 555";
+  const email = clean(context.env.JAKUB_CONTACT_EMAIL) || "jakub.olsa@bosen.sk";
+  const statusLine =
+    context.bookingStatus === "calendar_created"
+      ? "Termín sme zapísali do kalendára."
+      : "Termín sme prijali a Jakub ho ešte manuálne potvrdí.";
+  const propertySummary = [
+    clean(payload.zamer),
+    clean(payload.typ),
+    clean(payload.lokalita),
+    clean(payload.horizont) ? `horizont: ${clean(payload.horizont)}` : "",
+  ].filter(Boolean);
+  const message = clean(payload.sprava);
+  const subject = `Potvrdenie konzultácie s Jakubom Olšom - ${dateTime}`;
+  const textLines = [
+    `Dobrý deň, ${contactName},`,
+    "",
+    "ďakujem za rezerváciu konzultácie k nehnuteľnosti.",
+    statusLine,
+    "",
+    `Termín: ${dateTime}`,
+    propertySummary.length ? `Zhrnutie: ${propertySummary.join(" / ")}` : "",
+    message ? `Vaša poznámka: ${message}` : "",
+    "",
+    "Čo bude nasledovať:",
+    "- Jakub si pred konzultáciou pozrie zadaný kontext.",
+    "- Ak bude potrebovať doplniť informácie, ozve sa telefonicky alebo emailom.",
+    "- Na konzultácii prejdete možnosti, hodnotu a najbližší rozumný krok.",
+    "",
+    "Ak potrebujete termín zmeniť alebo zrušiť, odpovedzte na tento email alebo zavolajte Jakubovi.",
+    "",
+    `Jakub Olša`,
+    `Telefón: ${phone}`,
+    `Email: ${email}`,
+    "",
+    "Tento email bol odoslaný na základe vašej rezervácie na jakubolsa.sk.",
+  ];
+
+  const html = `
+    <div style="font-family: Arial, sans-serif; color: #172033; line-height: 1.55; max-width: 640px;">
+      <p>Dobrý deň, ${escapeHtml(contactName)},</p>
+      <p>ďakujem za rezerváciu konzultácie k nehnuteľnosti. ${escapeHtml(statusLine)}</p>
+      <p><strong>Termín:</strong> ${escapeHtml(dateTime)}</p>
+      ${
+        propertySummary.length
+          ? `<p><strong>Zhrnutie:</strong> ${escapeHtml(propertySummary.join(" / "))}</p>`
+          : ""
+      }
+      ${message ? `<p><strong>Vaša poznámka:</strong> ${escapeHtml(message)}</p>` : ""}
+      <p><strong>Čo bude nasledovať:</strong></p>
+      <ul>
+        <li>Jakub si pred konzultáciou pozrie zadaný kontext.</li>
+        <li>Ak bude potrebovať doplniť informácie, ozve sa telefonicky alebo emailom.</li>
+        <li>Na konzultácii prejdete možnosti, hodnotu a najbližší rozumný krok.</li>
+      </ul>
+      <p>Ak potrebujete termín zmeniť alebo zrušiť, odpovedzte na tento email alebo zavolajte Jakubovi.</p>
+      <p>
+        <strong>Jakub Olša</strong><br />
+        Telefón: ${escapeHtml(phone)}<br />
+        Email: ${escapeHtml(email)}
+      </p>
+      <p style="color: #687382; font-size: 13px;">Tento email bol odoslaný na základe vašej rezervácie na jakubolsa.sk.</p>
+    </div>
+  `;
+
+  return {
+    subject,
+    text: textLines.join("\n"),
+    html,
+  };
+}
+
+async function safeReadJson(response) {
+  try {
+    return await response.json();
+  } catch {
+    return null;
+  }
+}
+
+function escapeHtml(value) {
+  return clean(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
 async function createSupabaseBookingRecords(payload, context) {
   const { env, calendarEvent, interval, timeZone } = context;
 
@@ -952,6 +1150,53 @@ async function createSupabaseAdminCase(env, data) {
   return { ok: true, case: firstRow(rows) };
 }
 
+async function recordClientConfirmationEmail(env, payload, context) {
+  const { result, crmRecords } = context;
+
+  if (result?.skipped || !hasSupabase(env)) {
+    return { ok: false, skipped: true };
+  }
+
+  const tenantId = crmRecords?.tenantId || (await ensureSupabaseTenant(env)).id;
+  const status = result?.ok ? "sent" : "failed";
+  const subject = clean(result?.subject) || "Potvrdenie konzultácie s Jakubom Olšom";
+  const rows = await supabaseRequest(env, `/email_messages?select=id,status`, {
+    method: "POST",
+    body: {
+      tenant_id: tenantId,
+      contact_id: crmRecords?.contactId || null,
+      lead_id: crmRecords?.leadId || null,
+      appointment_id: crmRecords?.appointmentId || null,
+      direction: "outbound",
+      message_type: "booking_confirmation",
+      provider: clean(result?.provider),
+      provider_message_id: clean(result?.providerMessageId),
+      recipient_email: clean(result?.recipientEmail) || clean(payload.email),
+      subject,
+      status,
+      error_summary: clean(result?.errorSummary),
+      raw_payload: {
+        booking_status: context.bookingStatus,
+        booking_mode: context.mode,
+        crm_status: context.crmStatus,
+        calendar_event_id: context.calendarEvent?.id || "",
+      },
+      sent_at: result?.ok ? new Date().toISOString() : null,
+    },
+  });
+  const emailMessage = firstRow(rows);
+
+  if (crmRecords?.leadId) {
+    const note =
+      status === "sent"
+        ? `Klientsky potvrdzovací email odoslaný: ${subject}`
+        : `Klientsky potvrdzovací email zlyhal: ${clean(result?.errorSummary) || "neznáma chyba"}`;
+    await createSupabaseNote(env, tenantId, "lead", crmRecords.leadId, note, "client_email").catch(() => null);
+  }
+
+  return { ok: true, emailMessage };
+}
+
 async function supabaseRequest(env, path, options = {}) {
   const baseUrl = getSupabaseUrl(env);
   const key = getSupabaseServiceKey(env);
@@ -986,6 +1231,8 @@ function formatDashboardLead(row) {
   const raw = row.raw_payload || {};
   const name = clean(contact.name) || clean(raw.meno) || "Bez mena";
   const score = Number(row.qualification_score || 0);
+  const attribution = buildAttributionPayload(raw);
+  const attributionSummary = buildAttributionSummary(raw);
 
   return {
     id: row.id,
@@ -997,13 +1244,45 @@ function formatDashboardLead(row) {
     location: clean(row.location) || clean(raw.lokalita) || "-",
     budget: clean(row.budget) || "neuvedené",
     timing: clean(row.time_horizon) || clean(raw.horizont) || "-",
-    source: clean(row.source) || clean(contact.source) || "CRM",
+    source: buildDashboardSourceLabel(row, contact, attribution),
     motivation: clean(raw.sprava) || "Bez poznámky.",
     nextAction: buildDashboardNextAction(row),
     nextTime: row.next_follow_up_at ? formatSkDateTime(row.next_follow_up_at) : "bez termínu",
     phone: clean(contact.phone) || clean(raw.telefon),
     email: clean(contact.email) || clean(raw.email),
+    attribution: attributionSummary || buildDashboardAttributionFallback(row, contact, attribution),
+    attributionDetails: attribution,
+    bookingStatus: clean(raw.booking_status),
+    calendarEventId: clean(raw.calendar_event_id),
   };
+}
+
+function buildDashboardSourceLabel(row, contact, attribution) {
+  const campaignParts = [attribution.utm_source, attribution.utm_medium, attribution.utm_campaign].filter(Boolean);
+
+  if (campaignParts.length) return campaignParts.join(" / ");
+  if (attribution.gclid) return "Google Ads click";
+  if (attribution.gbraid || attribution.wbraid) return "Google Ads iOS click";
+  if (attribution.fbclid) return "Meta click";
+  if (attribution.msclkid) return "Microsoft Ads click";
+  if (attribution.referrer) return hostFromUrl(attribution.referrer) || "Referrer";
+
+  return clean(row.source) || clean(contact.source) || "CRM";
+}
+
+function buildDashboardAttributionFallback(row, contact, attribution) {
+  const source = clean(row.source) || clean(contact.source) || "CRM";
+  const path = attribution.landing_path || attribution.booking_path;
+
+  return path ? `${source}; path=${path}` : `${source} / UTM a referrer zatiaľ nie sú uložené`;
+}
+
+function hostFromUrl(value) {
+  try {
+    return new URL(value).hostname.replace(/^www\./, "");
+  } catch {
+    return "";
+  }
 }
 
 function hasSupabase(env) {

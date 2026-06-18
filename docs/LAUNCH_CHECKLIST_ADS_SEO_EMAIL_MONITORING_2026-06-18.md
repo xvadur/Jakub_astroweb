@@ -31,30 +31,30 @@ Purpose: prepare Jakub's web/backend for paid acquisition and operational handof
 
 ### Tracking implementation
 
-- [ ] Capture attribution on first page view:
-  - [ ] `utm_source`
-  - [ ] `utm_medium`
-  - [ ] `utm_campaign`
-  - [ ] `utm_content`
-  - [ ] `utm_term`
-  - [ ] `gclid`
-  - [ ] `gbraid`
-  - [ ] `wbraid`
-  - [ ] referrer
-  - [ ] first landing path
-  - [ ] first seen timestamp
-- [ ] Persist attribution in a first-party cookie/localStorage object with expiry.
-- [ ] Pass attribution into the reservation wizard hidden payload.
-- [ ] Store attribution in Supabase lead `raw_payload`.
-- [ ] Include attribution in Telegram notification.
-- [ ] Include attribution in OpenClaw handoff payload.
+- [x] Capture attribution on first page view:
+  - [x] `utm_source`
+  - [x] `utm_medium`
+  - [x] `utm_campaign`
+  - [x] `utm_content`
+  - [x] `utm_term`
+  - [x] `gclid`
+  - [x] `gbraid`
+  - [x] `wbraid`
+  - [x] referrer
+  - [x] first landing path
+  - [x] first seen timestamp
+- [x] Persist attribution in a first-party cookie/localStorage object with expiry.
+- [x] Pass attribution into the reservation wizard hidden payload.
+- [x] Store attribution in Supabase lead `raw_payload`.
+- [x] Include attribution in Telegram notification.
+- [x] Include attribution in OpenClaw handoff payload.
 - [ ] Store conversion identifiers:
   - [ ] internal booking id,
   - [ ] Supabase lead id,
   - [ ] appointment id,
   - [ ] calendar event id,
   - [ ] OpenClaw run id when available.
-- [ ] Emit GA4 `generate_lead` after successful booking.
+- [x] Emit GA4 `generate_lead` after successful booking.
 - [ ] Configure Google Ads conversion for successful booking.
 - [ ] Decide if enhanced conversions are allowed legally/operationally before sending hashed customer data to Google.
 - [ ] Do not send raw PII into analytics events.
@@ -114,7 +114,7 @@ Purpose: prepare Jakub's web/backend for paid acquisition and operational handof
 ### Email provider and secrets
 
 - [ ] Choose provider for V1:
-  - [ ] Resend,
+  - [x] Resend,
   - [ ] Postmark,
   - [ ] Mailgun,
   - [ ] Cloudflare Email Workers/Email Routing if enough for the use case.
@@ -122,29 +122,29 @@ Purpose: prepare Jakub's web/backend for paid acquisition and operational handof
   - [ ] SPF,
   - [ ] DKIM,
   - [ ] DMARC.
-- [ ] Store provider API key only as Cloudflare secret.
-- [ ] Add email failure logging; booking must not fail only because email failed.
+- [x] Store provider API key only as Cloudflare secret.
+- [x] Add email failure logging; booking must not fail only because email failed.
 
 ### Immediate client confirmation email
 
 Trigger: successful booking after calendar event is created.
 
-- [ ] Send to client email from booking form.
+- [x] Send to client email from booking form.
 - [ ] BCC or internal copy only if privacy/legal review allows it.
-- [ ] Include:
-  - [ ] confirmation that request was received,
-  - [ ] selected date/time,
-  - [ ] Jakub's name and contact,
-  - [ ] property/context summary,
-  - [ ] what happens next,
-  - [ ] how to reschedule/cancel,
-  - [ ] privacy/footer text.
-- [ ] Store email send status in Supabase:
-  - [ ] `sent`,
-  - [ ] `failed`,
-  - [ ] provider message id,
-  - [ ] error summary if failed.
-- [ ] Add CRM note after send attempt.
+- [x] Include:
+  - [x] confirmation that request was received,
+  - [x] selected date/time,
+  - [x] Jakub's name and contact,
+  - [x] property/context summary,
+  - [x] what happens next,
+  - [x] how to reschedule/cancel,
+  - [x] privacy/footer text.
+- [x] Store email send status in Supabase:
+  - [x] `sent`,
+  - [x] `failed`,
+  - [x] provider message id,
+  - [x] error summary if failed.
+- [x] Add CRM note after send attempt.
 
 ### Pre-interaction reminder email
 
@@ -251,10 +251,10 @@ Trigger: after consultation / meeting / viewing.
 
 ### Add failure visibility
 
-- [ ] Worker creates admin case when Telegram notification fails.
-- [ ] Worker creates admin case when OpenClaw handoff fails.
-- [ ] Worker creates admin case when Supabase write fails.
-- [ ] Worker creates admin case when client confirmation email fails.
+- [x] Worker creates admin case when Telegram notification fails.
+- [x] Worker creates admin case when OpenClaw handoff fails.
+- [x] Worker creates admin case when Supabase write fails.
+- [x] Worker creates admin case when client confirmation email fails.
 - [ ] Worker creates admin case when reminder email fails.
 - [ ] Admin case stores:
   - [ ] service,
@@ -294,12 +294,12 @@ Trigger: after consultation / meeting / viewing.
 
 ## 7. This week's build order
 
-1. [ ] UTM/referrer/landing capture in reservation wizard.
-2. [ ] Pass attribution through `/api/book`.
-3. [ ] Store attribution in Supabase lead payload.
-4. [ ] Include attribution in Telegram/OpenClaw.
-5. [ ] Add client confirmation email provider abstraction.
-6. [ ] Add confirmation email after successful booking.
+1. [x] UTM/referrer/landing capture in reservation wizard.
+2. [x] Pass attribution through `/api/book`.
+3. [x] Store attribution in Supabase lead payload.
+4. [x] Include attribution in Telegram/OpenClaw.
+5. [x] Add client confirmation email provider abstraction.
+6. [x] Add confirmation email after successful booking.
 7. [ ] Add pre-interaction reminder task model.
 8. [ ] Add admin cases for failed side effects.
 9. [ ] Extend monitoring script/output.

@@ -180,6 +180,28 @@ create table if not exists public.tasks (
   constraint tasks_status_check check (status in ('open', 'done', 'cancelled'))
 );
 
+create table if not exists public.email_messages (
+  id uuid primary key default gen_random_uuid(),
+  tenant_id uuid not null references public.tenants(id) on delete cascade,
+  contact_id uuid references public.contacts(id) on delete set null,
+  lead_id uuid references public.leads(id) on delete set null,
+  appointment_id uuid references public.appointments(id) on delete set null,
+  direction text not null default 'outbound',
+  message_type text not null default 'booking_confirmation',
+  provider text,
+  provider_message_id text,
+  recipient_email text,
+  subject text,
+  status text not null default 'queued',
+  error_summary text,
+  raw_payload jsonb not null default '{}'::jsonb,
+  sent_at timestamptz,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  constraint email_messages_direction_check check (direction in ('outbound', 'inbound')),
+  constraint email_messages_status_check check (status in ('queued', 'sent', 'failed', 'skipped'))
+);
+
 create table if not exists public.media (
   id uuid primary key default gen_random_uuid(),
   tenant_id uuid not null references public.tenants(id) on delete cascade,
@@ -300,6 +322,9 @@ create index if not exists appointments_tenant_starts_at_idx on public.appointme
 create index if not exists appointments_google_event_id_idx on public.appointments (google_event_id) where google_event_id is not null;
 create index if not exists tasks_tenant_due_at_idx on public.tasks (tenant_id, due_at) where status = 'open';
 create index if not exists tasks_property_id_idx on public.tasks (property_id) where property_id is not null;
+create index if not exists email_messages_tenant_created_at_idx on public.email_messages (tenant_id, created_at desc);
+create index if not exists email_messages_lead_idx on public.email_messages (lead_id) where lead_id is not null;
+create index if not exists email_messages_status_idx on public.email_messages (tenant_id, status, created_at desc);
 create index if not exists media_tenant_property_idx on public.media (tenant_id, property_id, created_at desc);
 create index if not exists media_tenant_lead_idx on public.media (tenant_id, lead_id, created_at desc);
 create index if not exists media_tenant_status_idx on public.media (tenant_id, status, created_at desc);
@@ -322,6 +347,7 @@ drop trigger if exists properties_set_updated_at on public.properties;
 drop trigger if exists deals_set_updated_at on public.deals;
 drop trigger if exists appointments_set_updated_at on public.appointments;
 drop trigger if exists tasks_set_updated_at on public.tasks;
+drop trigger if exists email_messages_set_updated_at on public.email_messages;
 drop trigger if exists review_requests_set_updated_at on public.review_requests;
 
 create trigger users_set_updated_at before update on public.users
@@ -338,6 +364,8 @@ create trigger appointments_set_updated_at before update on public.appointments
   for each row execute function public.set_updated_at();
 create trigger tasks_set_updated_at before update on public.tasks
   for each row execute function public.set_updated_at();
+create trigger email_messages_set_updated_at before update on public.email_messages
+  for each row execute function public.set_updated_at();
 create trigger review_requests_set_updated_at before update on public.review_requests
   for each row execute function public.set_updated_at();
 
@@ -351,6 +379,7 @@ alter table public.deals enable row level security;
 alter table public.appointments enable row level security;
 alter table public.notes enable row level security;
 alter table public.tasks enable row level security;
+alter table public.email_messages enable row level security;
 alter table public.media enable row level security;
 alter table public.agent_logs enable row level security;
 alter table public.audit_logs enable row level security;

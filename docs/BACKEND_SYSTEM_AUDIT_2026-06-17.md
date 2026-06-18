@@ -184,18 +184,18 @@ V1 minimum:
 - [ ] Prepojit Jakubov Google Calendar a mail.
 - [ ] Spravit kontrolovany staging E2E test: booking -> Calendar -> Supabase -> Telegram -> OpenClaw.
 - [ ] Potvrdit, ze Telegram notifikacia po web bookingu chodi na spravny chat.
-- [ ] Pridat log/admin case pri zlyhani Telegram/OpenClaw side effectu.
+- [x] Pridat log/admin case pri zlyhani Telegram/OpenClaw side effectu.
 - [ ] Zamknut dashboard a dashboard API cez Cloudflare Access.
 - [ ] Az potom zapnut `DASHBOARD_DATA_MODE=crm`.
 - [ ] Zosuladit staging/production secrets stav v dokumentacii.
 
 ## P1 - lead engine a reklama
 
-- [ ] UTM/referrer/landing capture vo wizard-e.
-- [ ] Ulozit attribution do Supabase lead `raw_payload`.
-- [ ] Poslat attribution do Telegram a OpenClaw payloadu.
-- [ ] Pridat booking conversion event.
-- [ ] Vybrat analytics stack a cookie/legal rezim.
+- [x] UTM/referrer/landing capture vo wizard-e.
+- [x] Ulozit attribution do Supabase lead `raw_payload`.
+- [x] Poslat attribution do Telegram a OpenClaw payloadu.
+- [x] Pridat booking conversion event.
+- [x] Vybrat analytics stack a cookie/legal rezim.
 - [ ] Pripravit prvu seller-intent landing page.
 - [ ] Dodat FAQ schema a seller FAQ sekciu.
 

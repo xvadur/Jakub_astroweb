@@ -15,7 +15,7 @@ const leads = [
     budget: "EUR 250,000",
     timing: "3 mesiace",
     source: "Web rezervácia",
-    attribution: "Landing page /rezervacia, UTM zatiaľ neuložené",
+    attribution: "web / organic; path=/rezervacia/",
     motivation: "Prvé bývanie, chce sa odsťahovať z nájmu.",
     nextAction: "Zavolať a kvalifikovať lead.",
     nextTime: "Zajtra, 10:00",
@@ -103,7 +103,7 @@ const leads = [
     budget: "EUR 360,000",
     timing: "1-2 mesiace",
     source: "Reklama",
-    attribution: "Meta/Google kampaň placeholder, UTM pipeline chýba",
+    attribution: "google / cpc / predaj-bytu-bratislava; click=gclid=test",
     motivation: "Hľadá investičný byt s dobrým prenájmom.",
     nextAction: "Dohodnúť druhú obhliadku.",
     nextTime: "4. jún, 11:00",
@@ -534,7 +534,7 @@ const followUpTasks = leads
       .lead-row {
         display: grid;
         width: 100%;
-        grid-template-columns: 44px minmax(0, 1fr) auto;
+        grid-template-columns: 44px minmax(0, 1fr) minmax(130px, auto) auto;
         gap: 14px;
         align-items: center;
         border: 1px solid var(--line);
@@ -603,6 +603,20 @@ const followUpTasks = leads
         gap: 8px 14px;
         color: var(--muted);
         font-size: 13px;
+      }
+
+      .source-chip {
+        overflow: hidden;
+        max-width: 220px;
+        border: 1px solid #d9edf2;
+        border-radius: 999px;
+        padding: 6px 10px;
+        background: var(--cyan-soft);
+        color: #087486;
+        font-size: 12px;
+        font-weight: 800;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
 
       .pill {
@@ -1022,6 +1036,7 @@ const followUpTasks = leads
                       <span>{lead.budget}</span>
                     </span>
                   </span>
+                  <span class="source-chip">{lead.source}</span>
                   <span class={lead.status === "Uzavretie" ? "pill green" : lead.grade === "A" ? "pill gold" : "pill cyan"}>
                     {lead.status}
                   </span>
@@ -1253,6 +1268,7 @@ const followUpTasks = leads
               </span>
               <span class="lead-meta">${meta}</span>
             </span>
+            <span class="source-chip">${escapeHtml(normalized.source)}</span>
             <span class="${getStatusClass(normalized)}">${escapeHtml(normalized.status)}</span>
           </button>
         `;

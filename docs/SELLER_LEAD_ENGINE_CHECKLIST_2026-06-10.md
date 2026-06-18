@@ -31,9 +31,9 @@ Detailed launch-readiness checklist for ads, SEO, email follow-up, Google review
 - [ ] Confirm OpenClaw receives real booking handoff from deployed staging Worker.
 - [ ] Confirm busy Google Calendar slots are disabled in the wizard.
 - [ ] Confirm second free/busy check blocks race-condition double booking at submit time.
-- [ ] Add UTM/campaign capture to booking payload.
-- [ ] Store attribution fields in Supabase lead `raw_payload`.
-- [ ] Add attribution fields to OpenClaw handoff payload.
+- [x] Add UTM/campaign capture to booking payload.
+- [x] Store attribution fields in Supabase lead `raw_payload`.
+- [x] Add attribution fields to OpenClaw handoff payload.
 - [ ] Confirm production secrets are present except Jakub calendar/mail and document the exact remaining gap.
 - [ ] Confirm Telegram notification is delivered to the intended Jakub/Adam chat after web booking.
 
@@ -218,11 +218,11 @@ This makes the upside larger than a one-time website fee if attribution and reve
 
 ## Next build items
 
-- [ ] Implement UTM capture in `src/pages/rezervacia.astro`.
-- [ ] Pass attribution through `/api/book`.
-- [ ] Store attribution in Supabase lead payload.
-- [ ] Include attribution in Telegram and OpenClaw booking handoff.
-- [ ] Add failure visibility for Telegram/OpenClaw side effects.
+- [x] Implement UTM capture in `src/pages/rezervacia.astro`.
+- [x] Pass attribution through `/api/book`.
+- [x] Store attribution in Supabase lead payload.
+- [x] Include attribution in Telegram and OpenClaw booking handoff.
+- [x] Add failure visibility for Telegram/OpenClaw side effects.
 - [ ] Start dashboard module backlog with leads + follow-ups + approvals.
 - [ ] Add first seller landing page: `predaj-bytu-bratislava`.
 - [ ] Add seller FAQ content.
