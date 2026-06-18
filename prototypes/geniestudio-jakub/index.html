@@ -1,0 +1,1404 @@
+<!doctype html>
+<html lang="sk">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow,noarchive" />
+    <meta
+      name="description"
+      content="Samostatný testovací prototyp webu Jakuba Olšu v pastelovom Geniestudio štýle."
+    />
+    <title>Jakub Olša | Geniestudio style prototype</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@500;600&family=Inter+Tight:wght@500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --color-sky-wash: #ebf5ff;
+        --color-paper-white: #fafdff;
+        --color-cloud-veil: #f6f7f8;
+        --color-pure-white: #ffffff;
+        --color-midnight-ink: #0a0d12;
+        --color-pressed-charcoal: #181d27;
+        --color-stone: #535862;
+        --color-fog: #93979f;
+        --color-cornflower: #4fbeff;
+        --color-tangerine: #f26110;
+        --color-amethyst: #9552e0;
+        --color-mustard: #bb9915;
+        --color-morning-tint: #cce7ff;
+        --color-lilac-mist: #f1e6ff;
+        --color-sprout: #d3f6e3;
+        --gradient-buttery: linear-gradient(rgb(255, 249, 224) 0%, rgb(255, 236, 163) 100%);
+        --gradient-lilac: linear-gradient(rgb(244, 235, 255) 0%, rgb(228, 204, 255) 100%);
+        --gradient-sky: linear-gradient(rgb(229, 246, 255) 0%, rgb(194, 233, 255) 100%);
+        --gradient-sunset: linear-gradient(rgb(255, 242, 235) 0%, rgb(255, 209, 184) 100%);
+        --gradient-brand-blue: linear-gradient(135deg, rgb(71, 157, 255) 11.43%, rgb(0, 105, 224) 78.2%);
+        --font-display: "Inter Tight", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        --font-ui: "Geist", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        --shadow-lg: rgba(4, 69, 144, 0.08) 0px 14px 20px 4px;
+        --shadow-subtle: rgba(10, 13, 18, 0.8) 0px 1px 2px 0px, rgb(10, 13, 18) 0px 0px 0px 1px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+        scroll-padding-top: 96px;
+      }
+
+      body {
+        margin: 0;
+        overflow-x: clip;
+        background:
+          radial-gradient(circle at 12% 8%, rgba(79, 190, 255, 0.22), transparent 28rem),
+          radial-gradient(circle at 84% 16%, rgba(149, 82, 224, 0.13), transparent 24rem),
+          var(--color-sky-wash);
+        color: var(--color-midnight-ink);
+        font-family: var(--font-ui);
+        font-size: 16px;
+        font-weight: 500;
+        letter-spacing: 0;
+      }
+
+      body::after {
+        position: fixed;
+        inset: 0;
+        z-index: 1000;
+        pointer-events: none;
+        content: "";
+        opacity: 0.025;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.4'/%3E%3C/svg%3E");
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      button,
+      input,
+      select,
+      textarea {
+        font: inherit;
+      }
+
+      .skip-link {
+        position: fixed;
+        top: 12px;
+        left: 12px;
+        z-index: 1200;
+        transform: translateY(-140%);
+        border-radius: 9999px;
+        padding: 10px 16px;
+        background: var(--color-pressed-charcoal);
+        color: var(--color-pure-white);
+      }
+
+      .skip-link:focus {
+        transform: translateY(0);
+        outline: 3px solid var(--color-cornflower);
+        outline-offset: 3px;
+      }
+
+      .topbar {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: center;
+        width: min(1200px, calc(100% - 40px));
+        margin: 24px auto 0;
+        gap: 24px;
+      }
+
+      .brand,
+      .topbar nav,
+      .footer nav {
+        display: flex;
+        align-items: center;
+      }
+
+      .brand {
+        gap: 10px;
+        width: fit-content;
+        color: var(--color-midnight-ink);
+        font-size: 16px;
+        font-weight: 600;
+      }
+
+      .brand-mark {
+        display: grid;
+        width: 32px;
+        height: 32px;
+        place-items: center;
+        transform: rotate(45deg);
+        border-radius: 9px;
+        background: var(--color-midnight-ink);
+        color: var(--color-pure-white);
+        font-family: var(--font-display);
+        font-size: 16px;
+        font-weight: 600;
+        line-height: 1;
+      }
+
+      .brand-mark span {
+        transform: rotate(-45deg);
+      }
+
+      .topbar nav {
+        justify-content: center;
+        gap: 28px;
+        color: var(--color-stone);
+        font-size: 14px;
+      }
+
+      .topbar nav a,
+      .footer nav a {
+        transition: color 180ms ease, transform 180ms ease;
+      }
+
+      .topbar nav a:hover,
+      .footer nav a:hover {
+        color: var(--color-midnight-ink);
+        transform: translateY(-1px);
+      }
+
+      .nav-cta,
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 0;
+        border-radius: 9999px;
+        background: var(--color-pressed-charcoal);
+        color: var(--color-pure-white);
+        box-shadow: var(--shadow-subtle);
+        cursor: pointer;
+        transition: transform 180ms ease, opacity 180ms ease;
+      }
+
+      .nav-cta {
+        justify-self: end;
+        padding: 9px 18px;
+        font-size: 14px;
+      }
+
+      .button {
+        min-height: 48px;
+        padding: 12px 28px;
+        font-size: 16px;
+        line-height: 1.2;
+      }
+
+      .button:hover,
+      .nav-cta:hover {
+        transform: translateY(-2px);
+      }
+
+      .button:active,
+      .nav-cta:active {
+        transform: translateY(1px) scale(0.99);
+      }
+
+      .button:focus-visible,
+      .nav-cta:focus-visible,
+      .topbar a:focus-visible,
+      .footer a:focus-visible,
+      input:focus-visible,
+      select:focus-visible,
+      textarea:focus-visible {
+        outline: 3px solid var(--color-cornflower);
+        outline-offset: 4px;
+      }
+
+      main,
+      .footer {
+        width: min(1200px, calc(100% - 40px));
+        margin: 0 auto;
+      }
+
+      .hero {
+        position: relative;
+        display: grid;
+        min-height: 690px;
+        place-items: center;
+        padding: 120px 0 86px;
+        text-align: center;
+      }
+
+      .eyebrow {
+        margin: 0 0 18px;
+        color: var(--color-stone);
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 1.35;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin-top: 0;
+      }
+
+      h1,
+      h2,
+      h3 {
+        font-family: var(--font-display);
+        font-weight: 500;
+        letter-spacing: 0;
+        text-wrap: balance;
+      }
+
+      h1 {
+        position: relative;
+        z-index: 2;
+        max-width: 980px;
+        margin-bottom: 24px;
+        font-size: 112px;
+        line-height: 0.96;
+      }
+
+      h2 {
+        margin-bottom: 18px;
+        font-size: 64px;
+        line-height: 1.02;
+      }
+
+      h3 {
+        margin-bottom: 12px;
+        font-size: 24px;
+        line-height: 1.15;
+      }
+
+      .hero .eyebrow,
+      .hero-text,
+      .hero .button,
+      .avatar-row {
+        position: relative;
+        z-index: 2;
+      }
+
+      .hero-text {
+        max-width: 650px;
+        margin: 0 auto 30px;
+        color: var(--color-stone);
+        font-size: 18px;
+        line-height: 1.45;
+        text-wrap: pretty;
+      }
+
+      .hero-doodles {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        pointer-events: none;
+      }
+
+      .blob,
+      .mini-avatar {
+        position: absolute;
+        border-radius: 48% 52% 45% 55% / 55% 46% 54% 45%;
+      }
+
+      .blob {
+        width: 74px;
+        height: 74px;
+        box-shadow: inset 0 -5px rgba(10, 13, 18, 0.08);
+      }
+
+      .blob::before,
+      .blob::after,
+      .mini-avatar::before,
+      .mini-avatar::after {
+        position: absolute;
+        content: "";
+        border-radius: 9999px;
+        background: var(--color-midnight-ink);
+      }
+
+      .blob::before {
+        width: 7px;
+        height: 7px;
+        left: 24px;
+        top: 25px;
+      }
+
+      .blob::after {
+        width: 7px;
+        height: 7px;
+        right: 24px;
+        top: 25px;
+      }
+
+      .blob-blue {
+        left: 4%;
+        top: 25%;
+        background: var(--color-cornflower);
+        animation: float-soft 8s ease-in-out infinite;
+      }
+
+      .blob-orange {
+        right: 7%;
+        top: 16%;
+        background: var(--color-tangerine);
+        animation: float-soft 10s ease-in-out infinite reverse;
+      }
+
+      .blob-purple {
+        left: 18%;
+        bottom: 13%;
+        width: 58px;
+        height: 58px;
+        background: var(--color-amethyst);
+        animation: float-soft 9s ease-in-out infinite;
+      }
+
+      .blob-yellow {
+        right: 7%;
+        bottom: 16%;
+        background: var(--color-mustard);
+        animation: float-soft 9s ease-in-out infinite reverse;
+      }
+
+      .paper-plane {
+        position: absolute;
+        right: 22%;
+        bottom: 24%;
+        width: 78px;
+        height: 48px;
+        transform: rotate(-14deg);
+        clip-path: polygon(0 50%, 100% 0, 70% 55%, 100% 100%);
+        background: var(--color-pure-white);
+        border: 1px solid rgba(83, 88, 98, 0.18);
+        box-shadow: var(--shadow-lg);
+        animation: float-soft 11s ease-in-out infinite;
+      }
+
+      .flower {
+        position: absolute;
+        left: 72%;
+        top: 50%;
+        width: 62px;
+        height: 62px;
+        border-radius: 50%;
+        background:
+          radial-gradient(circle at center, var(--color-mustard) 0 16%, transparent 17%),
+          radial-gradient(circle at 50% 0%, var(--color-pure-white) 0 20%, transparent 21%),
+          radial-gradient(circle at 100% 50%, var(--color-pure-white) 0 20%, transparent 21%),
+          radial-gradient(circle at 50% 100%, var(--color-pure-white) 0 20%, transparent 21%),
+          radial-gradient(circle at 0% 50%, var(--color-pure-white) 0 20%, transparent 21%);
+        animation: float-soft 12s ease-in-out infinite;
+      }
+
+      .spark {
+        position: absolute;
+        width: 34px;
+        height: 34px;
+        background: var(--color-mustard);
+        clip-path: polygon(50% 0, 61% 36%, 100% 50%, 61% 64%, 50% 100%, 39% 64%, 0 50%, 39% 36%);
+      }
+
+      .spark-one {
+        top: 22%;
+        left: 28%;
+      }
+
+      .spark-two {
+        right: 24%;
+        top: 34%;
+        width: 24px;
+        height: 24px;
+        background: var(--color-cornflower);
+      }
+
+      .avatar-row {
+        display: inline-flex;
+        align-items: center;
+        gap: 0;
+        margin-top: 24px;
+        color: var(--color-stone);
+        font-size: 14px;
+      }
+
+      .mini-avatar {
+        position: relative;
+        display: inline-block;
+        width: 44px;
+        height: 44px;
+        margin-right: -8px;
+      }
+
+      .mini-avatar::before {
+        width: 5px;
+        height: 5px;
+        left: 14px;
+        top: 16px;
+      }
+
+      .mini-avatar::after {
+        width: 5px;
+        height: 5px;
+        right: 14px;
+        top: 16px;
+      }
+
+      .avatar-blue {
+        background: var(--color-cornflower);
+      }
+
+      .avatar-orange {
+        background: var(--color-tangerine);
+      }
+
+      .avatar-purple {
+        background: var(--color-amethyst);
+      }
+
+      .avatar-note {
+        margin-left: 18px;
+      }
+
+      .wide-illustration {
+        position: relative;
+        display: grid;
+        min-height: 360px;
+        place-items: center;
+        margin-bottom: 90px;
+      }
+
+      .wide-illustration p {
+        position: relative;
+        z-index: 2;
+        max-width: 520px;
+        margin: 0;
+        color: var(--color-stone);
+        font-size: 20px;
+        line-height: 1.45;
+        text-align: center;
+        text-wrap: pretty;
+      }
+
+      .cloud {
+        position: absolute;
+        width: 180px;
+        height: 70px;
+        border-radius: 9999px;
+        background: var(--color-paper-white);
+        box-shadow: var(--shadow-lg);
+      }
+
+      .cloud::before,
+      .cloud::after {
+        position: absolute;
+        content: "";
+        border-radius: 50%;
+        background: inherit;
+      }
+
+      .cloud::before {
+        width: 78px;
+        height: 78px;
+        left: 24px;
+        top: -34px;
+      }
+
+      .cloud::after {
+        width: 94px;
+        height: 94px;
+        right: 22px;
+        top: -48px;
+      }
+
+      .cloud-left {
+        left: 4%;
+        top: 36%;
+        transform: rotate(-4deg);
+      }
+
+      .cloud-right {
+        right: 4%;
+        top: 24%;
+        transform: rotate(5deg) scale(0.9);
+      }
+
+      .house-card {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        display: grid;
+        width: 180px;
+        height: 150px;
+        place-items: center;
+        transform: translateX(-50%) rotate(-2deg);
+        border-radius: 32px;
+        background: var(--gradient-sky);
+        box-shadow: var(--shadow-lg);
+      }
+
+      .house-roof {
+        position: absolute;
+        top: 38px;
+        width: 92px;
+        height: 92px;
+        transform: rotate(45deg);
+        border-radius: 12px;
+        background: var(--color-tangerine);
+      }
+
+      .house-body {
+        position: absolute;
+        bottom: 36px;
+        width: 108px;
+        height: 72px;
+        border-radius: 16px;
+        background: var(--color-paper-white);
+      }
+
+      .house-door {
+        position: absolute;
+        bottom: 36px;
+        width: 24px;
+        height: 38px;
+        border-radius: 12px 12px 0 0;
+        background: var(--color-amethyst);
+      }
+
+      .section {
+        margin-bottom: 96px;
+      }
+
+      .section-heading {
+        max-width: 690px;
+        margin-bottom: 32px;
+      }
+
+      .section-heading.centered {
+        margin-right: auto;
+        margin-left: auto;
+        text-align: center;
+      }
+
+      .section-heading p:not(.eyebrow),
+      .service-copy p:not(.eyebrow),
+      .proof-panel p,
+      .final-cta p {
+        max-width: 64ch;
+        color: var(--color-stone);
+        line-height: 1.5;
+      }
+
+      .audit-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 20px;
+      }
+
+      .audit-card,
+      .service-card,
+      .stat-card,
+      .process-card,
+      .testimonial-card,
+      .proof-panel,
+      .form-panel {
+        border-radius: 32px;
+      }
+
+      .audit-card {
+        min-height: 276px;
+        padding: 32px;
+      }
+
+      .audit-card p,
+      .service-card p,
+      .process-card p,
+      .testimonial-card p,
+      .stat-card span {
+        margin-bottom: 0;
+        color: var(--color-stone);
+        font-size: 14px;
+        line-height: 1.45;
+      }
+
+      .tint-sky {
+        background: var(--gradient-sky);
+      }
+
+      .tint-lilac {
+        background: var(--gradient-lilac);
+      }
+
+      .tint-sunset {
+        background: var(--gradient-sunset);
+      }
+
+      .tint-buttery {
+        background: var(--gradient-buttery);
+      }
+
+      .icon-tile {
+        display: grid;
+        width: 48px;
+        height: 48px;
+        place-items: center;
+        margin-bottom: 26px;
+        border-radius: 16px;
+        color: var(--color-pure-white);
+      }
+
+      .icon-tile svg {
+        width: 28px;
+        height: 28px;
+      }
+
+      .accent-cornflower {
+        background: var(--color-cornflower);
+      }
+
+      .accent-tangerine {
+        background: var(--color-tangerine);
+      }
+
+      .accent-amethyst {
+        background: var(--color-amethyst);
+      }
+
+      .accent-mustard {
+        background: var(--color-mustard);
+      }
+
+      .service-section {
+        display: grid;
+        grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+        gap: 44px;
+        align-items: start;
+      }
+
+      .service-copy {
+        position: sticky;
+        top: 32px;
+        padding: 44px 0;
+      }
+
+      .service-copy .button {
+        margin-top: 12px;
+      }
+
+      .service-stack {
+        display: grid;
+        gap: 18px;
+      }
+
+      .service-card,
+      .stat-card,
+      .process-card,
+      .testimonial-card,
+      .form-panel {
+        border: 1px solid rgba(83, 88, 98, 0.72);
+        background: var(--color-paper-white);
+      }
+
+      .service-card {
+        padding: 30px;
+        box-shadow: var(--shadow-lg);
+      }
+
+      .service-card span,
+      .process-card span {
+        display: inline-block;
+        margin-bottom: 16px;
+        color: var(--color-fog);
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .proof-panel {
+        display: grid;
+        grid-template-columns: minmax(0, 0.95fr) minmax(0, 1fr);
+        gap: 36px;
+        align-items: end;
+        margin-bottom: 22px;
+        padding: 40px;
+        background: var(--gradient-brand-blue);
+        color: var(--color-pure-white);
+      }
+
+      .proof-panel .eyebrow,
+      .proof-panel p {
+        color: rgba(255, 255, 255, 0.82);
+      }
+
+      .proof-panel h2 {
+        margin-bottom: 0;
+      }
+
+      .stat-row {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 20px;
+      }
+
+      .stat-card {
+        padding: 32px;
+      }
+
+      .stat-card strong {
+        display: block;
+        margin-bottom: 10px;
+        font-family: var(--font-display);
+        font-size: 48px;
+        font-weight: 500;
+        line-height: 1;
+      }
+
+      .process-grid {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .process-card {
+        min-height: 260px;
+        padding: 24px;
+      }
+
+      .process-card:nth-child(even) {
+        background: var(--color-cloud-veil);
+      }
+
+      .testimonial-section {
+        margin-bottom: 96px;
+      }
+
+      .testimonial-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 24px;
+      }
+
+      .testimonial-card {
+        display: flex;
+        min-height: 280px;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 34px;
+      }
+
+      .testimonial-card p {
+        color: var(--color-midnight-ink);
+        font-size: 16px;
+      }
+
+      .testimonial-card footer {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .testimonial-card footer div {
+        display: grid;
+        gap: 2px;
+        margin-right: auto;
+      }
+
+      .testimonial-card strong {
+        font-size: 14px;
+      }
+
+      .testimonial-card footer span:not(.mini-avatar):not(.micro-logo) {
+        color: var(--color-stone);
+        font-size: 12px;
+      }
+
+      .micro-logo {
+        display: grid;
+        width: 36px;
+        height: 36px;
+        place-items: center;
+        border-radius: 12px;
+        background: var(--color-cloud-veil);
+        color: var(--color-stone);
+        font-size: 11px;
+        font-weight: 600;
+      }
+
+      .lead-section {
+        display: grid;
+        grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+        gap: 32px;
+        align-items: start;
+      }
+
+      .final-cta {
+        position: relative;
+        overflow: hidden;
+        border-radius: 32px;
+        padding: 48px;
+        background: var(--color-paper-white);
+        box-shadow: var(--shadow-lg);
+      }
+
+      .final-cta .blob {
+        opacity: 0.9;
+      }
+
+      .form-panel {
+        padding: 32px;
+      }
+
+      .field-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+
+      .field {
+        display: grid;
+        gap: 8px;
+        margin-bottom: 16px;
+      }
+
+      .field.full {
+        grid-column: 1 / -1;
+      }
+
+      label {
+        color: var(--color-stone);
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      input,
+      select,
+      textarea {
+        width: 100%;
+        border: 1px solid rgba(83, 88, 98, 0.38);
+        border-radius: 16px;
+        padding: 13px 14px;
+        background: var(--color-pure-white);
+        color: var(--color-midnight-ink);
+      }
+
+      textarea {
+        min-height: 116px;
+        resize: vertical;
+      }
+
+      .form-note {
+        margin: 14px 0 0;
+        color: var(--color-stone);
+        font-size: 12px;
+        line-height: 1.45;
+      }
+
+      .footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 34px 0 48px;
+        color: var(--color-stone);
+        font-size: 14px;
+      }
+
+      .footer nav {
+        gap: 24px;
+      }
+
+      @keyframes float-soft {
+        0%,
+        100% {
+          transform: translate3d(0, 0, 0) rotate(-2deg);
+        }
+
+        50% {
+          transform: translate3d(0, -18px, 0) rotate(4deg);
+        }
+      }
+
+      @media (max-width: 980px) {
+        .topbar {
+          grid-template-columns: 1fr auto;
+        }
+
+        .topbar nav {
+          display: none;
+        }
+
+        h1 {
+          font-size: 82px;
+        }
+
+        h2 {
+          font-size: 52px;
+        }
+
+        .audit-grid,
+        .stat-row,
+        .testimonial-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .service-section,
+        .proof-panel,
+        .lead-section {
+          grid-template-columns: 1fr;
+        }
+
+        .service-copy {
+          position: static;
+          padding: 0;
+        }
+
+        .process-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      @media (max-width: 680px) {
+        .topbar,
+        main,
+        .footer {
+          width: min(100% - 28px, 1200px);
+        }
+
+        .topbar {
+          margin-top: 14px;
+          gap: 12px;
+        }
+
+        .brand {
+          font-size: 14px;
+        }
+
+        .nav-cta {
+          padding: 8px 13px;
+          font-size: 13px;
+        }
+
+        .hero {
+          min-height: 600px;
+          padding: 84px 0 56px;
+        }
+
+        h1 {
+          font-size: 54px;
+          line-height: 1;
+        }
+
+        h2 {
+          font-size: 38px;
+        }
+
+        .hero-text {
+          font-size: 16px;
+        }
+
+        .blob-blue {
+          left: 0;
+          top: 18%;
+        }
+
+        .blob-orange {
+          right: 0;
+          top: 9%;
+        }
+
+        .blob-purple,
+        .flower,
+        .spark {
+          display: none;
+        }
+
+        .paper-plane {
+          right: 8%;
+          bottom: 13%;
+        }
+
+        .wide-illustration {
+          min-height: 300px;
+          margin-bottom: 68px;
+        }
+
+        .wide-illustration p {
+          max-width: 330px;
+          font-size: 18px;
+        }
+
+        .cloud {
+          width: 130px;
+          height: 54px;
+        }
+
+        .cloud::before {
+          width: 56px;
+          height: 56px;
+          top: -24px;
+        }
+
+        .cloud::after {
+          width: 68px;
+          height: 68px;
+          top: -35px;
+        }
+
+        .house-card {
+          width: 138px;
+          height: 118px;
+          opacity: 0.82;
+        }
+
+        .audit-grid,
+        .stat-row,
+        .process-grid,
+        .testimonial-grid,
+        .field-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .audit-card,
+        .service-card,
+        .stat-card,
+        .process-card,
+        .testimonial-card,
+        .form-panel {
+          padding: 26px;
+        }
+
+        .section,
+        .testimonial-section {
+          margin-bottom: 72px;
+        }
+
+        .final-cta {
+          padding: 32px;
+        }
+
+        .footer {
+          display: grid;
+          gap: 24px;
+        }
+
+        .footer nav {
+          display: grid;
+          gap: 12px;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          scroll-behavior: auto !important;
+          animation-duration: 0.001ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.001ms !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Prejsť na obsah</a>
+
+    <header class="topbar" aria-label="Hlavná navigácia">
+      <a class="brand" href="#content" aria-label="Jakub Olša, začiatok prototypu">
+        <span class="brand-mark"><span>J</span></span>
+        <span>Jakub Olša</span>
+      </a>
+      <nav>
+        <a href="#audit">Audit</a>
+        <a href="#servis">Servis</a>
+        <a href="#proces">Proces</a>
+      </nav>
+      <a class="nav-cta" href="#kontakt">Konzultácia</a>
+    </header>
+
+    <main id="content">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-doodles" aria-hidden="true">
+          <span class="blob blob-blue"></span>
+          <span class="blob blob-orange"></span>
+          <span class="blob blob-purple"></span>
+          <span class="paper-plane"></span>
+          <span class="flower"></span>
+          <span class="spark spark-one"></span>
+          <span class="spark spark-two"></span>
+        </div>
+
+        <div>
+          <p class="eyebrow">Predajný audit pre hodnotnú nehnuteľnosť</p>
+          <h1 id="hero-title">Predaj bez stresu, s jasnou stratégiou.</h1>
+          <p class="hero-text">
+            Jakub Olša osobne drží predaj od prvého rozhodnutia po podpis. Za ním stojí servis, obchodná sieť a proces BOSEN Group.
+          </p>
+          <a class="button" href="#kontakt">Rezervovať predajný audit</a>
+
+          <div class="avatar-row" aria-label="Kľúčové oblasti auditu">
+            <span class="mini-avatar avatar-blue"></span>
+            <span class="mini-avatar avatar-orange"></span>
+            <span class="mini-avatar avatar-purple"></span>
+            <span class="avatar-note">cena, dopyt, prezentácia, riziká</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="wide-illustration" aria-label="Základná myšlienka">
+        <span class="cloud cloud-left" aria-hidden="true"></span>
+        <span class="cloud cloud-right" aria-hidden="true"></span>
+        <span class="house-card" aria-hidden="true">
+          <span class="house-roof"></span>
+          <span class="house-body"></span>
+          <span class="house-door"></span>
+        </span>
+        <p>Najprv sa pozrieme na realitu okolo nehnuteľnosti. Potom vyberieme cestu, ktorá chráni cenu, čas a pokoj majiteľa.</p>
+      </section>
+
+      <section class="section" id="audit" aria-labelledby="audit-title">
+        <div class="section-heading">
+          <p class="eyebrow">Čo audit pomenúva</p>
+          <h2 id="audit-title">Štyri rozhodnutia pred prvým inzerátom.</h2>
+          <p>
+            Predaj nie je len inzerát. Najprv treba pomenovať cenový potenciál, stav dopytu, kvalitu prezentácie a slabé miesta v právnom alebo finančnom procese.
+          </p>
+        </div>
+
+        <div class="audit-grid">
+          <article class="audit-card tint-sky">
+            <span class="icon-tile accent-cornflower" aria-hidden="true">
+              <svg viewBox="0 0 32 32">
+                <path d="M8 18.5 14 24 25 9" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
+            <h3>Cena bez hádania</h3>
+            <p>Porovnateľné predaje, stav, lokalita, dopyt a cieľ majiteľa. Až potom cenové pásmo.</p>
+          </article>
+          <article class="audit-card tint-lilac">
+            <span class="icon-tile accent-amethyst" aria-hidden="true">
+              <svg viewBox="0 0 32 32">
+                <path d="M8 18.5 14 24 25 9" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
+            <h3>Tichý test dopytu</h3>
+            <p>Ak má nehnuteľnosť dobré parametre, najprv ju ukážeme relevantnej sieti kupujúcich.</p>
+          </article>
+          <article class="audit-card tint-sunset">
+            <span class="icon-tile accent-tangerine" aria-hidden="true">
+              <svg viewBox="0 0 32 32">
+                <path d="M8 18.5 14 24 25 9" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
+            <h3>Prezentácia hodnoty</h3>
+            <p>Text, vizuál a marketing majú vysvetliť, prečo je nehnuteľnosť zaujímavá, nie len vyplniť portál.</p>
+          </article>
+          <article class="audit-card tint-buttery">
+            <span class="icon-tile accent-mustard" aria-hidden="true">
+              <svg viewBox="0 0 32 32">
+                <path d="M8 18.5 14 24 25 9" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
+            <h3>Podpis bez chaosu</h3>
+            <p>Právo, financovanie, kataster a odovzdanie bežia koordinovane cez jeden kontakt.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section service-section" id="servis" aria-labelledby="servis-title">
+        <div class="service-copy">
+          <p class="eyebrow">Servis BOSEN Group</p>
+          <h2 id="servis-title">Jeden človek na vašej strane, aparát v pozadí.</h2>
+          <p>
+            Jakub je človek, s ktorým riešite predaj priamo. BOSEN Group mu dáva kompletné zázemie: ocenenie, stratégiu, marketing, právny servis, financovanie a obchodnú sieť.
+          </p>
+          <a class="button" href="#kontakt">Prejsť moju situáciu</a>
+        </div>
+        <div class="service-stack">
+          <article class="service-card">
+            <span>01</span>
+            <h3>Stratégia ceny a predaja</h3>
+            <p>Najprv treba vedieť, či je cieľom maximálna cena, rýchlosť, diskrétnosť, prenájom alebo nadväzujúca kúpa.</p>
+          </article>
+          <article class="service-card">
+            <span>02</span>
+            <h3>Prezentácia na úrovni</h3>
+            <p>Fotky, video, 3D prehliadka, dron, vlastná stránka nehnuteľnosti a marketing majú ukázať hodnotu.</p>
+          </article>
+          <article class="service-card">
+            <span>03</span>
+            <h3>Právo, financovanie, kataster</h3>
+            <p>Zmluvy, úschova, hypotéka, znalec, poistenie a kataster sa riešia koordinovane, aby obchod nestál na slabom článku.</p>
+          </article>
+          <article class="service-card">
+            <span>04</span>
+            <h3>Špeciálne scenáre</h3>
+            <p>Výkup, prenájom bez starostí, kúpa nového bývania alebo investičná nehnuteľnosť sú stratégie, ktoré treba pomenovať včas.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section proof-section" aria-labelledby="proof-title">
+        <div class="proof-panel">
+          <div>
+            <p class="eyebrow">Skúsenosť bez pózy</p>
+            <h2 id="proof-title">Z hokeja cez banku do realít.</h2>
+          </div>
+          <p>
+            V hokeji sa Jakub naučil fungovať pod tlakom, vo VÚB Magnifica pracovať s klientmi a číslami. Pri nehnuteľnostiach to skladá prakticky: príprava, realistická cena, komunikácia a podpis.
+          </p>
+        </div>
+        <div class="stat-row">
+          <article class="stat-card">
+            <strong>19</strong>
+            <span>uzavretých predajov za posledných 12 mesiacov</span>
+          </article>
+          <article class="stat-card">
+            <strong>2</strong>
+            <span>miliónové obchody s náročným klientom</span>
+          </article>
+          <article class="stat-card">
+            <strong>5 rokov</strong>
+            <span>skúseností v obchode, bankovníctve a realitách</span>
+          </article>
+        </div>
+      </section>
+
+      <section class="section process-section" id="proces" aria-labelledby="proces-title">
+        <div class="section-heading centered">
+          <p class="eyebrow">Priebeh spolupráce</p>
+          <h2 id="proces-title">Rezervácia je začiatok riadeného procesu.</h2>
+          <p>Krátky postup pre majiteľa, ktorý chce vedieť, čo sa stane po prvom kontakte.</p>
+        </div>
+        <div class="process-grid">
+          <article class="process-card">
+            <span>01</span>
+            <h3>Rezervácia konzultácie</h3>
+            <p>Pošlete zámer, lokalitu, základné parametre a časový horizont.</p>
+          </article>
+          <article class="process-card">
+            <span>02</span>
+            <h3>Príprava pred hovorom</h3>
+            <p>Jakub si pozrie lokalitu, typ nehnuteľnosti a to, čo chcete dosiahnuť.</p>
+          </article>
+          <article class="process-card">
+            <span>03</span>
+            <h3>Prvý hovor</h3>
+            <p>Prejdete cieľ, časový tlak, očakávania, riziká a hranice predaja.</p>
+          </article>
+          <article class="process-card">
+            <span>04</span>
+            <h3>Nacenenie a stratégia</h3>
+            <p>Vznikne cenové pásmo, spôsob uvedenia na trh a odporúčaný ďalší krok.</p>
+          </article>
+          <article class="process-card">
+            <span>05</span>
+            <h3>Predaj a podpis</h3>
+            <p>Obhliadky, spätná väzba, vyjednávanie, zmluvy, kataster a odovzdanie.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="testimonial-section" aria-labelledby="testimonials-title">
+        <div class="section-heading centered">
+          <p class="eyebrow">Sociálny dôkaz</p>
+          <h2 id="testimonials-title">Pokoj vzniká z toho, že viete, čo sa deje.</h2>
+        </div>
+        <div class="testimonial-grid">
+          <article class="testimonial-card">
+            <p>„Jakub najprv vysvetlil možnosti a až potom riešil cenu. Pri predaji sme mali jasný postup, nie len ďalší inzerát.“</p>
+            <footer>
+              <span class="mini-avatar avatar-blue"></span>
+              <div>
+                <strong>Majiteľ bytu</strong>
+                <span>Ružinov</span>
+              </div>
+              <span class="micro-logo">JO</span>
+            </footer>
+          </article>
+          <article class="testimonial-card">
+            <p>„Najviac pomohlo, že riešil komunikáciu so záujemcami a spätnú väzbu. Vedeli sme, kto má reálny záujem.“</p>
+            <footer>
+              <span class="mini-avatar avatar-orange"></span>
+              <div>
+                <strong>Predávajúci klient</strong>
+                <span>Bratislava</span>
+              </div>
+              <span class="micro-logo">BG</span>
+            </footer>
+          </article>
+          <article class="testimonial-card">
+            <p>„Pred podpisom sa nestratili právne ani finančné veci. Mali sme jedného človeka, ktorý držal celý proces.“</p>
+            <footer>
+              <span class="mini-avatar avatar-purple"></span>
+              <div>
+                <strong>Rodina po predaji</strong>
+                <span>Karlova Ves</span>
+              </div>
+              <span class="micro-logo">JO</span>
+            </footer>
+          </article>
+        </div>
+      </section>
+
+      <section class="section lead-section" id="kontakt" aria-labelledby="kontakt-title">
+        <div class="final-cta">
+          <span class="blob blob-blue" aria-hidden="true"></span>
+          <span class="blob blob-yellow" aria-hidden="true"></span>
+          <div>
+            <p class="eyebrow">Predajný audit</p>
+            <h2 id="kontakt-title">Zistite, čo by Jakub spravil s vašou nehnuteľnosťou ako prvé.</h2>
+            <p>
+              Pošlite základné informácie a získate prvý pohľad na cenu, riziká a najvhodnejší postup. Cieľom nie je lacný automatický odhad, ale praktická stratégia predaja.
+            </p>
+          </div>
+        </div>
+
+        <form class="form-panel" action="mailto:olsa@bosen.sk" method="post" enctype="text/plain">
+          <div class="field-grid">
+            <div class="field">
+              <label for="name">Meno</label>
+              <input id="name" name="meno" autocomplete="name" required />
+            </div>
+            <div class="field">
+              <label for="contact">Telefón alebo email</label>
+              <input id="contact" name="kontakt" autocomplete="email" required />
+            </div>
+            <div class="field">
+              <label for="type">Typ nehnuteľnosti</label>
+              <select id="type" name="typ-nehnutelnosti" required>
+                <option value="">Vyberte typ</option>
+                <option>Byt</option>
+                <option>Dom</option>
+                <option>Pozemok</option>
+                <option>Investičná nehnuteľnosť</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="location">Lokalita</label>
+              <input id="location" name="lokalita" autocomplete="address-level2" required />
+            </div>
+            <div class="field full">
+              <label for="context">Čo chcete zistiť</label>
+              <textarea id="context" name="kontext" placeholder="Cena, rýchlosť predaja, diskrétny predpredaj, príprava bytu, právne riziká..."></textarea>
+            </div>
+          </div>
+          <button class="button" type="submit">Odoslať podklady</button>
+          <p class="form-note">Tento prototyp používa mailto odoslanie, aby zostal úplne oddelený od aktuálneho webu a backendu.</p>
+        </form>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <a class="brand" href="#content" aria-label="Jakub Olša, späť hore">
+        <span class="brand-mark"><span>J</span></span>
+        <span>Jakub Olša</span>
+      </a>
+      <nav aria-label="Päta">
+        <a href="#audit">Audit</a>
+        <a href="#servis">Servis</a>
+        <a href="#kontakt">Kontakt</a>
+      </nav>
+    </footer>
+  </body>
+</html>

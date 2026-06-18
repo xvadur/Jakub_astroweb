@@ -1,5 +1,7 @@
 # Broker system roadmap - 2026-06-07
 
+Aktualizovane: 2026-06-17. Novy stavovy audit je v `docs/BACKEND_SYSTEM_AUDIT_2026-06-17.md`.
+
 Tento dokument zachytáva aktuálne rozhodnutia pre posun z webu + booking wizardu na použiteľný maklérsky operačný systém pre Jakuba.
 
 ## Cieľový stav
@@ -46,9 +48,9 @@ Cloudflare drží verejný booking a bezpečné API. Supabase drží obchodné d
 
 ### OpenClaw
 
-- OpenClaw ešte nie je nakonfigurovaný ako plnohodnotný maklérsky agent, ale má prvý deterministický Supabase CRM tool a workflow dokumentáciu.
-- Chýba verejný bezpečný hook zo staging webu do lokálneho Docker OpenClaw.
-- Chýba runtime Supabase service key konfigurácia pre OpenClaw tool.
+- OpenClaw ešte nie je plnohodnotný maklérsky agent, ale Docker runtime je živý, tunnel existuje a deterministické Supabase/listing/media tooly sú pripravené.
+- Verejný HTTPS hook cez Cloudflare Tunnel existuje na `openclaw.jakubolsa.sk`.
+- Runtime Supabase service key pre OpenClaw tool je nakonfigurovaný mimo repozitára.
 - OpenClaw nemá byť booking autorita; booking drží Cloudflare Worker.
 - OpenClaw má robiť:
   - notifikácie,
@@ -79,9 +81,17 @@ Cloudflare drží verejný booking a bezpečné API. Supabase drží obchodné d
 ### Follow-up komunikácia
 
 - Follow-upy bude riadiť OpenClaw.
-- Prvý realistický kanál: email.
+- Prvý okamžitý signál po web bookingu je Telegram notifikácia Jakubovi.
+- Prvý realistický klientsky follow-up kanál: email.
 - SMS/WhatsApp môže byť lepšie pre realitu makléra, ale treba zistiť náklady, API, GDPR a doručiteľnosť.
 - Email provider sa bude riešiť cez API, nie cez `mailto`.
+
+### Analytics, attribution a reklama
+
+- Web treba pripraviť na platenú reklamu ešte pred väčším trafficom.
+- Každý lead má niesť UTM, referrer, landing page a booking page cez Worker, Supabase, Telegram a OpenClaw payload.
+- Conversion tracking sa má spúšťať až po úspešnom bookingu, nie iba po otvorení formulára.
+- Analytics stack a cookie/legal režim treba zvoliť pred produkčným remarketingom.
 
 ### GDPR/legal
 
@@ -111,6 +121,8 @@ Cloudflare drží verejný booking a bezpečné API. Supabase drží obchodné d
 ### SEO, AI a reviews
 
 - Web musí byť vyhľadateľný cez Google aj čitateľný pre AI.
+- Základ už existuje: `robots.txt`, `sitemap.xml`, `llms.txt`, schema.org pre Jakuba, službu a listingy.
+- Treba doplniť seller-intent landing pages, FAQ sekcie, FAQ schema, breadcrumbs a lokálne obsahové clustre.
 - Treba doplniť review/referencie sekciu.
 - OpenClaw má vedieť po uzavretí spolupráce pripraviť alebo poslať klientovi email so žiadosťou o Google review.
 - Review request flow musí byť súčasťou CRM/follow-up systému:
@@ -125,9 +137,11 @@ Cloudflare drží verejný booking a bezpečné API. Supabase drží obchodné d
 
 1. Cloudflare Access / Google login pre `/dashboard/*` a `/api/dashboard/*`.
 2. Zapnúť `DASHBOARD_DATA_MODE=crm` až za auth.
-3. Vyčistiť smoke test dáta v Supabase a Google Calendar.
-4. Rotovať Supabase service role key.
-5. Commitnúť a pushnúť aktuálny staging stav.
+3. Prepojiť Jakubov Google Calendar a mail po osobnom consent/onboarding kroku.
+4. Spustiť kontrolovaný staging E2E test: wizard -> Calendar -> Supabase -> Telegram -> OpenClaw.
+5. Overiť, že Telegram notifikácia po web bookingu chodí na správny chat.
+6. Vyčistiť alebo označiť smoke test dáta v Supabase a Google Calendar.
+7. Commitnúť a pushnúť aktuálny staging stav.
 
 ## P1 - aby OpenClaw bol maklérsky agent
 
@@ -139,19 +153,20 @@ Cloudflare drží verejný booking a bezpečné API. Supabase drží obchodné d
    - appointment read/link,
    - audit log write.
 2. Nastaviť OpenClaw runtime Supabase env alebo secret file mimo repozitára.
-3. Nastaviť Cloudflare Tunnel/Access pre OpenClaw hook.
-4. Nastaviť staging `OPENCLAW_HOOK_URL` a `OPENCLAW_HOOK_TOKEN`.
-5. Otestovať booking -> OpenClaw -> CRM/audit.
-6. Vytvoriť OpenClaw briefing workflow:
+3. Pridať Access/service-token ochranu pre OpenClaw hook hostname.
+4. Otestovať booking -> OpenClaw -> CRM/audit.
+5. Vytvoriť OpenClaw briefing workflow:
    - dnešné hovory,
    - nové leady,
    - urgentné follow-upy,
    - návrhy akcií.
+6. Zapisovať failed runs, approvaly a admin cases do Supabase pre Adamov globálny monitoring.
 
 ## P2 - dashboard a obchodný polish
 
 1. Dorobiť dashboard moduly.
-2. Pridať review sekciu na web.
-3. Pripraviť Google review email workflow.
-4. Rozšíriť SEO/AI obsah: FAQ, lokálne služby, recenzie, referenčné predaje.
-5. Pripraviť právny/GDPR research pre právnika.
+2. Pridať UTM/referrer/landing attribution do wizardu, Supabase, Telegram a OpenClaw payloadu.
+3. Pridať review sekciu na web.
+4. Pripraviť Google review email workflow.
+5. Rozšíriť SEO/AI obsah: FAQ, lokálne služby, recenzie, referenčné predaje.
+6. Pripraviť právny/GDPR research pre právnika.

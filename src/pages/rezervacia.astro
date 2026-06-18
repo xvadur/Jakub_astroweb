@@ -8,7 +8,7 @@ const isStaging = siteEnv !== "production";
 const hasInstagram = site.contact.instagram.startsWith("http");
 const pageMeta = createPageMeta({
   title: `Rezervácia konzultácie | ${site.brand}`,
-  description: `Rezervácia konzultácie s realitným maklérom Jakubom Olšom. ${site.shortPromise}`,
+  description: `Rezervácia konzultácie k predajnej stratégii s realitným maklérom Jakubom Olšom. ${site.shortPromise}`,
   path: "/rezervacia/",
   image: site.heroImage,
 });
@@ -97,8 +97,8 @@ const googleMapsScriptUrl = googleMapsApiKey
 
         <section class="wizard-step" data-funnel-step>
           <p class="step-kicker">Krok 1</p>
-          <h2>Čo chcete riešiť?</h2>
-          <p>Vyberte najbližší dôvod hovoru. Podľa toho sa zobrazia len otázky, ktoré dávajú zmysel pre vašu situáciu.</p>
+          <h2>Akú situáciu mám pripraviť?</h2>
+          <p>Vyberte najbližší zámer. Podľa toho sa zobrazia otázky, ktoré pomôžu pripraviť cenu, riziká a ďalší krok pred prvým hovorom.</p>
           <input type="hidden" name="zamer" data-required data-label="zámer" />
           <div class="choice-grid">
             {
@@ -113,8 +113,8 @@ const googleMapsScriptUrl = googleMapsApiKey
 
         <section class="wizard-step" data-funnel-step hidden>
           <p class="step-kicker">Krok 2</p>
-          <h2 data-route-title="property">Základné parametre</h2>
-          <p data-route-text="property">Vyplňte len to, čo viete. Detaily prejdeme spolu v hovore.</p>
+          <h2 data-route-title="property">Podklady k stratégii</h2>
+          <p data-route-text="property">Vyplňte len to, čo viete. Detaily a presné podklady prejdeme spolu v hovore.</p>
           <input type="hidden" name="typ" data-route-type />
           <div class="wizard-fields two">
             <label class="location-field" data-location-field>
@@ -239,8 +239,8 @@ const googleMapsScriptUrl = googleMapsApiKey
 
         <section class="wizard-step" data-funnel-step hidden>
           <p class="step-kicker">Krok 3</p>
-          <h2 data-route-title="date">Kedy sa vám hodí hovor?</h2>
-          <p data-route-text="date">Vyberte dostupný termín hovoru. Pred odoslaním ho ešte raz overím v kalendári.</p>
+          <h2 data-route-title="date">Kedy chcete prejsť ďalší postup?</h2>
+          <p data-route-text="date">Vyberte dostupný termín. Pred odoslaním ho ešte raz overím v kalendári.</p>
           <div class="wizard-fields">
             <label>
               <span>Preferovaný dátum</span>
@@ -263,7 +263,7 @@ const googleMapsScriptUrl = googleMapsApiKey
         <section class="wizard-step" data-funnel-step hidden>
           <p class="step-kicker">Krok 4</p>
           <h2 data-route-title="contact">Na koho sa mám ozvať?</h2>
-          <p data-route-text="contact">Po odoslaní budem mať podklady k hovoru a termín uložený v kalendári.</p>
+          <p data-route-text="contact">Po odoslaní budem mať základ pre prípravu otázok a termín uložený v kalendári.</p>
           <div class="wizard-fields two">
             <label>
               <span>Meno</span>
@@ -314,9 +314,9 @@ const googleMapsScriptUrl = googleMapsApiKey
 
         <section class="booking-confirmation" data-booking-confirmation hidden>
           <p class="step-kicker">Odoslané</p>
-          <h2>Rezervácia je odoslaná.</h2>
+          <h2>Podklady a rezervácia sú odoslané.</h2>
           <p data-booking-confirmation-text>
-            Ďakujem, mám podklady k hovoru a ozvem sa v zvolenom termíne.
+            Ďakujem, mám základ k príprave stratégie a ozvem sa v zvolenom termíne.
           </p>
           <a class="button secondary" href="/">Späť na úvod</a>
         </section>
@@ -450,6 +450,112 @@ const googleMapsScriptUrl = googleMapsApiKey
           }
         };
 
+        const attributionStorageKey = "jakub_booking_attribution_v1";
+        const attributionTtlMs = 90 * 24 * 60 * 60 * 1000;
+        const attributionQueryKeys = [
+          "utm_source",
+          "utm_medium",
+          "utm_campaign",
+          "utm_content",
+          "utm_term",
+          "gclid",
+          "gbraid",
+          "wbraid",
+          "fbclid",
+          "msclkid",
+        ];
+        let memoryAttribution = {};
+
+        const safeText = (value) => String(value || "").trim().slice(0, 500);
+
+        const readStoredAttribution = () => {
+          try {
+            const stored = window.localStorage?.getItem(attributionStorageKey) || window.sessionStorage?.getItem(attributionStorageKey);
+            const parsed = stored ? JSON.parse(stored) : memoryAttribution;
+
+            if (parsed.expires_at && Date.parse(parsed.expires_at) < Date.now()) {
+              window.localStorage?.removeItem(attributionStorageKey);
+              window.sessionStorage?.removeItem(attributionStorageKey);
+              return memoryAttribution;
+            }
+
+            return parsed;
+          } catch {
+            return memoryAttribution;
+          }
+        };
+
+        const writeStoredAttribution = (value) => {
+          const expiresAt = new Date(Date.now() + attributionTtlMs).toISOString();
+          const storedValue = { ...value, expires_at: value.expires_at || expiresAt };
+          memoryAttribution = storedValue;
+
+          try {
+            window.localStorage?.setItem(attributionStorageKey, JSON.stringify(storedValue));
+            window.sessionStorage?.setItem(attributionStorageKey, JSON.stringify(storedValue));
+          } catch {
+            // Attribution is useful, but it must never block booking.
+          }
+        };
+
+        const readCurrentAttribution = () => {
+          const params = new URLSearchParams(window.location.search);
+          const values = {};
+
+          attributionQueryKeys.forEach((key) => {
+            values[key] = safeText(params.get(key));
+          });
+
+          return values;
+        };
+
+        const hasAttributionSignal = (value) =>
+          attributionQueryKeys.some((key) => Boolean(value[key])) || Boolean(value.referrer);
+
+        const getAttribution = () => {
+          const stored = readStoredAttribution();
+          const current = readCurrentAttribution();
+          const now = new Date().toISOString();
+          const referrer = safeText(document.referrer);
+          const base = {
+            ...current,
+            referrer,
+            landing_page: window.location.href,
+            landing_path: `${window.location.pathname}${window.location.search}`,
+            first_seen_at: now,
+          };
+
+          if (!stored.first_seen_at && hasAttributionSignal(base)) {
+            writeStoredAttribution(base);
+            return {
+              ...base,
+              booking_page: window.location.href,
+              booking_path: `${window.location.pathname}${window.location.search}`,
+              last_seen_at: now,
+            };
+          }
+
+          const merged = {
+            ...stored,
+            ...Object.fromEntries(Object.entries(current).filter(([, value]) => Boolean(value))),
+            referrer: stored.referrer || referrer,
+            landing_page: stored.landing_page || window.location.href,
+            landing_path: stored.landing_path || `${window.location.pathname}${window.location.search}`,
+            first_seen_at: stored.first_seen_at || now,
+            booking_page: window.location.href,
+            booking_path: `${window.location.pathname}${window.location.search}`,
+            last_seen_at: now,
+          };
+
+          if (hasAttributionSignal(merged)) {
+            writeStoredAttribution(merged);
+          }
+
+          return merged;
+        };
+
+        getAttribution();
+
         const parameterLabels = {
           typ_detail: "Typ nehnuteľnosti",
           izby: "Izby",
@@ -473,16 +579,16 @@ const googleMapsScriptUrl = googleMapsApiKey
         const defaultRoute = {
           propertyType: "",
           paramFields: ["property_kind", "rooms", "area", "condition"],
-          propertyTitle: "K akej nehnuteľnosti chcete zistiť možnosti?",
-          propertyText: "Vyberte typ a doplňte základné údaje. Podľa nich pripravím najrozumnejší prvý postup.",
-          dateTitle: "Kedy sa vám hodí hovor?",
-          dateText: "Vyberte čas na krátky orientačný hovor bez tlaku na okamžité rozhodnutie.",
+          propertyTitle: "K akej nehnuteľnosti chcete pripraviť prvý pohľad?",
+          propertyText: "Vyberte typ a doplňte základné údaje. Podľa nich pripravím najrozumnejší prvý postup a otázky k hovoru.",
+          dateTitle: "Kedy chcete prejsť možnosti?",
+          dateText: "Vyberte čas na krátky orientačný hovor k cene, rizikám a ďalšiemu kroku bez tlaku na okamžité rozhodnutie.",
           contactTitle: "Na koho sa mám ozvať?",
-          contactText: "Po odoslaní budem mať základný kontext a pripravím si otázky k možnostiam.",
-          messagePlaceholder: "Čo zvažujete, čo vás brzdí, čo by bol dobrý výsledok...",
-          leadTitle: "Konzultácia možností",
-          subjectPrefix: "Konzultácia možností",
-          submitLabel: "Požiadať o konzultáciu",
+          contactText: "Po odoslaní budem mať základný kontext a pripravím si otázky k možnostiam, cene a postupu.",
+          messagePlaceholder: "Čo zvažujete, čo vás brzdí, aký výsledok by bol dobrý...",
+          leadTitle: "Konzultácia predajnej stratégie",
+          subjectPrefix: "Predajná stratégia",
+          submitLabel: "Odoslať podklady",
         };
 
         const intentRoutes = {
@@ -498,14 +604,14 @@ const googleMapsScriptUrl = googleMapsApiKey
             },
             propertyTitle: "Aký byt chcete predať?",
             propertyText: "Pri byte sú dôležité lokalita, dispozícia, výmera, poschodie, stav a výhody ako balkón, pivnica alebo parkovanie.",
-            dateTitle: "Kedy chcete prejsť predaj bytu?",
-            dateText: "Vyberte termín hovoru k cene, príprave, prezentácii a predajnému postupu.",
+            dateTitle: "Kedy chcete prejsť predajnú stratégiu bytu?",
+            dateText: "Vyberte termín hovoru k cene, príprave, prezentácii, dopytu a predajnému postupu.",
             contactTitle: "Na koho sa mám ozvať k predaju bytu?",
-            contactText: "Po odoslaní budem mať základné parametre bytu a pripravím sa na konkrétny rozhovor.",
+            contactText: "Po odoslaní budem mať základné parametre bytu a pripravím sa na konkrétny rozhovor o stratégii.",
             messagePlaceholder: "Očakávaná cena, dôvod predaja, časový tlak, parkovanie, pivnica, právny stav...",
-            leadTitle: "Predaj bytu",
+            leadTitle: "Predajná stratégia bytu",
             subjectPrefix: "Predaj bytu",
-            submitLabel: "Odoslať predaj bytu",
+            submitLabel: "Odoslať podklady k bytu",
           },
           "Predať dom": {
             propertyType: "Dom",
@@ -518,28 +624,28 @@ const googleMapsScriptUrl = googleMapsApiKey
             },
             propertyTitle: "Aký dom chcete predať?",
             propertyText: "Pri dome potrebujem oddeliť úžitkovú plochu, pozemok, stav a veci ako garáž, terasa, bazén alebo technické zázemie.",
-            dateTitle: "Kedy chcete prejsť predaj domu?",
+            dateTitle: "Kedy chcete prejsť predajnú stratégiu domu?",
             dateText: "Vyberte termín hovoru k cene, prezentácii, marketingu a servisnému postupu.",
             contactTitle: "Na koho sa mám ozvať k domu?",
-            contactText: "Po odoslaní budem mať základ pre prvý odhad situácie a prípravu otázok.",
+            contactText: "Po odoslaní budem mať základ pre prvý odhad situácie a prípravu otázok k ďalšiemu kroku.",
             messagePlaceholder: "Rok výstavby, rekonštrukcia, technický stav, garáž, záhrada, dôvod predaja...",
-            leadTitle: "Predaj domu",
+            leadTitle: "Predajná stratégia domu",
             subjectPrefix: "Predaj domu",
-            submitLabel: "Odoslať predaj domu",
+            submitLabel: "Odoslať podklady k domu",
           },
           "Predať pozemok": {
             propertyType: "Pozemok",
             paramFields: ["land_area", "land_type", "land_use", "utilities", "access"],
             propertyTitle: "Aký pozemok chcete predať?",
             propertyText: "Pri pozemku rozhoduje výmera, typ pozemku, siete, prístup a regulácia. Detaily sa preveria následne.",
-            dateTitle: "Kedy chcete prejsť predaj pozemku?",
+            dateTitle: "Kedy chcete prejsť stratégiu predaja pozemku?",
             dateText: "Vyberte termín hovoru k potenciálu pozemku, prevereniu rizík a predajnému postupu.",
             contactTitle: "Na koho sa mám ozvať k pozemku?",
             contactText: "Po odoslaní budem mať kontext k pozemku a pripravím si ďalšie otázky.",
             messagePlaceholder: "Územný plán, list vlastníctva, prístup, siete, či už máte cenovú predstavu...",
-            leadTitle: "Predaj pozemku",
+            leadTitle: "Predajná stratégia pozemku",
             subjectPrefix: "Predaj pozemku",
-            submitLabel: "Odoslať predaj pozemku",
+            submitLabel: "Odoslať podklady k pozemku",
           },
           "Predať komerčný priestor": {
             propertyType: "Komerčný priestor",
@@ -552,14 +658,14 @@ const googleMapsScriptUrl = googleMapsApiKey
             },
             propertyTitle: "Aký komerčný priestor chcete predať?",
             propertyText: "Pri komerčnej nehnuteľnosti sú podstatné typ priestoru, výmera, stav, obsadenosť a investičný potenciál.",
-            dateTitle: "Kedy chcete prejsť predaj komerčného priestoru?",
+            dateTitle: "Kedy chcete prejsť stratégiu predaja komerčného priestoru?",
             dateText: "Vyberte termín hovoru k stratégii predaja, číslam, nájomcom a prezentácii.",
             contactTitle: "Na koho sa mám ozvať ku komerčnému priestoru?",
             contactText: "Po odoslaní budem mať základ pre obchodný a investičný pohľad na nehnuteľnosť.",
             messagePlaceholder: "Nájomca, výnos, prevádzka, stav zmlúv, parkovanie, technické špecifiká...",
-            leadTitle: "Predaj komerčného priestoru",
+            leadTitle: "Predajná stratégia komerčného priestoru",
             subjectPrefix: "Predaj komerčného priestoru",
-            submitLabel: "Odoslať komerčný predaj",
+            submitLabel: "Odoslať komerčné podklady",
           },
           "Prenájom alebo správa": {
             propertyType: "Prenájom / správa",
@@ -882,6 +988,26 @@ const googleMapsScriptUrl = googleMapsApiKey
           payload.page_url = window.location.href;
           payload.created_at = new Date().toISOString();
 
+          const attribution = getAttribution();
+          payload.attribution = attribution;
+          payload.utm_source = attribution.utm_source || "";
+          payload.utm_medium = attribution.utm_medium || "";
+          payload.utm_campaign = attribution.utm_campaign || "";
+          payload.utm_content = attribution.utm_content || "";
+          payload.utm_term = attribution.utm_term || "";
+          payload.gclid = attribution.gclid || "";
+          payload.gbraid = attribution.gbraid || "";
+          payload.wbraid = attribution.wbraid || "";
+          payload.fbclid = attribution.fbclid || "";
+          payload.msclkid = attribution.msclkid || "";
+          payload.referrer = attribution.referrer || "";
+          payload.landing_page = attribution.landing_page || "";
+          payload.landing_path = attribution.landing_path || "";
+          payload.booking_page = attribution.booking_page || "";
+          payload.booking_path = attribution.booking_path || "";
+          payload.first_seen_at = attribution.first_seen_at || "";
+          payload.last_seen_at = attribution.last_seen_at || "";
+
           return payload;
         };
 
@@ -931,8 +1057,8 @@ const googleMapsScriptUrl = googleMapsApiKey
           if (bookingConfirmationText) {
             bookingConfirmationText.textContent =
               result.bookingStatus === "calendar_created"
-                ? "Termín je zapísaný v kalendári a mám podklady k hovoru."
-                : "Ďakujem, mám podklady k hovoru a ozvem sa s potvrdením termínu.";
+                ? "Termín je zapísaný v kalendári a mám podklady k príprave hovoru."
+                : "Ďakujem, mám podklady k príprave a ozvem sa s potvrdením termínu.";
           }
 
           setFunnelError();

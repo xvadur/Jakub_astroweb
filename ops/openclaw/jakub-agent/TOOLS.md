@@ -142,14 +142,52 @@ Agent nesmie mazat alebo presuvat Google Calendar event bez approval.
 
 ## Media tools
 
-Minimalne V1 tooly:
+Aktualny smer:
 
-- `media.saveTelegramPhoto`
-- `media.attachToProperty`
-- `media.optimizeForWeb`
-- `media.createGallery`
+- Telegram fotky sa maju najprv ulozit do private Supabase Storage bucketu `jakub-media`.
+- Metadata patria do `public.media`.
+- Media ma byt naviazane cez foreign keys na `property_id` a/alebo `lead_id`, ked je to mozne.
+- Nejasnosti patria do `public.notes` na prislusnu property/lead/media entitu, nie do volneho textoveho bordelu.
+- Ak chyba dolezity udaj, vytvor aj `public.tasks` s `property_id` alebo `lead_id`, aby bol dalsi krok sledovatelny.
 
-Originalne fotky nemaju byt dlhodobo primarne ulozene v Docker/OpenClaw kontajneri. Primarny smer je Supabase Storage alebo ekvivalent.
+Deterministicky media tool:
+
+```bash
+node /home/node/Jakub_Astro/ops/openclaw/tools/supabase-media.mjs <tool> --json '<payload>'
+```
+
+Host command pre Adamov terminal:
+
+```bash
+node /Users/xvadur_mac/Jakub_Astro/ops/openclaw/tools/supabase-media.mjs <tool> --json '<payload>'
+```
+
+Implementovane tooly:
+
+- `media.saveTelegramPhoto` - stiahne Telegram file cez Bot API, ulozi ho do Supabase Storage a zapise `public.media`.
+- `media.saveLocalFile` - ulozi lokalny subor/media-inbox subor do Supabase Storage a zapise `public.media`.
+- `media.createPropertyDraft` - vytvori Supabase property draft, poznamku a task pre chybajuce udaje.
+- `media.ingestPropertyMedia` - vytvori alebo pouzije property draft, ulozi viac fotiek a vrati dalsiu otazku.
+
+Priklady:
+
+```bash
+node /home/node/Jakub_Astro/ops/openclaw/tools/supabase-media.mjs media.saveTelegramPhoto --json '{"telegram_file_id":"<file-id>","property_id":"<uuid>","caption":"Obyvacka"}'
+node /home/node/Jakub_Astro/ops/openclaw/tools/supabase-media.mjs media.saveLocalFile --json '{"local_path":"/home/node/.openclaw/agent-workspaces/jakub-olsa/media-inbox/photo.jpg","property_id":"<uuid>"}'
+node /home/node/Jakub_Astro/ops/openclaw/tools/supabase-media.mjs media.ingestPropertyMedia --json '{"title":"Byt Ruzinov","location":"Ruzinov","missing_fields":["price_text"],"telegram_files":[{"telegram_file_id":"<file-id>"}]}'
+```
+
+Tool cita Supabase service role key a Telegram bot token iba z env alebo secret file mimo repozitara.
+
+Originalne fotky nemaju byt dlhodobo primarne ulozene v Docker/OpenClaw kontajneri. Private Supabase Storage je primarny pracovny storage. Verejny web dostane iba schvalene a optimalizovane fotky cez `public/images/listings/<slug>/` po approval.
+
+Ak Jakub posle fotky bytu bez ceny:
+
+1. Uloz fotky do Supabase Storage cez `media.ingestPropertyMedia`.
+2. Vytvor alebo pouzi property draft.
+3. Do `notes` zapis, ze cena chyba alebo ze Jakub povedal "cena este nie je stanovena".
+4. Do `tasks` zapis dalsi krok s `property_id`.
+5. Jakubovi poloz jednu kratku otazku, napr. `Aká má byť cena, alebo mám zatiaľ zapísať, že cena ešte nie je stanovená?`
 
 ## Property/listing tools
 

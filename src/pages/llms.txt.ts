@@ -21,6 +21,7 @@ ${site.brand} pracuje pre majiteľov, kupujúcich a investorov, ktorí chcú rea
 ## Hlavné stránky
 
 - [Úvod](${absolute("/")}): osobné predstavenie Jakuba, servis BOSEN Group, služby, proces a ponuky.
+- [Predaj bytu Bratislava](${absolute("/predaj-bytu-bratislava/")}): seller-intent landing page pre majiteľov bytov v Bratislave. Vysvetľuje predajný audit, cenovú stratégiu, BOSEN servisné zázemie, proces predaja, referenčné predaje a CTA na rezerváciu konzultácie.
 - [Rezervácia konzultácie](${absolute("/rezervacia/")}): rezervačný wizard pre predaj, kúpu, prenájom, pozemky a komerčné priestory.
 - [Ochrana osobných údajov a cookies](${absolute("/ochrana-osobnych-udajov/")}): základná právna informačná stránka, ktorú treba finálne prejsť s právnikom alebo právnym zázemím BOSEN.
 

@@ -7,6 +7,11 @@ type PageMetaOptions = {
   image?: string;
 };
 
+type FaqItem = {
+  question: string;
+  answer: string;
+};
+
 type Listing = (typeof site.listings)[number];
 
 const agentId = `${site.siteUrl}/#jakub-olsa`;
@@ -169,6 +174,78 @@ export function createReservationJsonLd(meta: ReturnType<typeof createPageMeta>)
             actionPlatform: "https://schema.org/DesktopWebPlatform",
           },
         },
+      },
+    ],
+  };
+}
+
+export function createSellerIntentJsonLd(
+  meta: ReturnType<typeof createPageMeta>,
+  faqs: FaqItem[],
+) {
+  const faqId = `${meta.canonicalUrl}#faq`;
+
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      createPersonEntity(meta.imageUrl),
+      createAgentEntity(meta.imageUrl),
+      createWebsiteEntity(),
+      createServiceEntity(),
+      {
+        "@type": "BreadcrumbList",
+        "@id": `${meta.canonicalUrl}#breadcrumbs`,
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "Úvod",
+            item: site.siteUrl,
+          },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: "Predaj bytu Bratislava",
+            item: meta.canonicalUrl,
+          },
+        ],
+      },
+      {
+        "@type": "WebPage",
+        "@id": meta.canonicalUrl,
+        url: meta.canonicalUrl,
+        name: meta.title,
+        description: meta.description,
+        inLanguage: site.locale,
+        isPartOf: { "@id": websiteId },
+        about: [{ "@id": agentId }, { "@id": serviceId }],
+        primaryImageOfPage: {
+          "@type": "ImageObject",
+          url: meta.imageUrl,
+        },
+        breadcrumb: { "@id": `${meta.canonicalUrl}#breadcrumbs` },
+        mainEntity: { "@id": faqId },
+        potentialAction: {
+          "@type": "ContactAction",
+          name: "Rezervovať konzultáciu k predaju bytu v Bratislave",
+          target: {
+            "@type": "EntryPoint",
+            urlTemplate: absoluteUrl("/rezervacia/"),
+            actionPlatform: "https://schema.org/DesktopWebPlatform",
+          },
+        },
+      },
+      {
+        "@type": "FAQPage",
+        "@id": faqId,
+        mainEntity: faqs.map((faq) => ({
+          "@type": "Question",
+          name: faq.question,
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: faq.answer,
+          },
+        })),
       },
     ],
   };

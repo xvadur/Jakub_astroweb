@@ -1,0 +1,223 @@
+<svg width="3160" height="1980" viewBox="0 0 3160 1980" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <title>Jakub Olša homepage Penpot prototype</title>
+  <desc>Editable SVG prototype with desktop hero, menu-open state and mobile hero artboards.</desc>
+  <defs>
+    <pattern id="grid-dark" width="88" height="88" patternUnits="userSpaceOnUse">
+      <path d="M 88 0 L 0 0 0 88" fill="none" stroke="#fffaf2" stroke-opacity="0.11" stroke-width="1"/>
+    </pattern>
+    <linearGradient id="hero-bg" x1="0" y1="0" x2="1440" y2="900" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#090908"/>
+      <stop offset="0.52" stop-color="#171714"/>
+      <stop offset="1" stop-color="#0b0b0a"/>
+    </linearGradient>
+    <linearGradient id="photo-wash" x1="0" y1="0" x2="0" y2="640" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3a342b"/>
+      <stop offset="1" stop-color="#11100e"/>
+    </linearGradient>
+    <filter id="soft-shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="26" stdDeviation="34" flood-color="#000000" flood-opacity="0.32"/>
+    </filter>
+    <style>
+      .label { font-family: Inter, Arial, sans-serif; font-size: 14px; font-weight: 700; fill: #6f6a62; letter-spacing: 0; }
+      .ui { font-family: Inter, Arial, sans-serif; fill: #fffaf2; letter-spacing: 0; }
+      .ui-dark { font-family: Inter, Arial, sans-serif; fill: #0b0b0a; letter-spacing: 0; }
+      .display { font-family: Georgia, 'Times New Roman', serif; fill: #fffaf2; font-weight: 650; letter-spacing: -2px; }
+      .display-dark { font-family: Georgia, 'Times New Roman', serif; fill: #0b0b0a; font-weight: 650; letter-spacing: -1px; }
+      .muted { fill: #fffaf2; fill-opacity: 0.72; }
+      .brass { fill: #d8b878; }
+      .stroke-light { stroke: #fffaf2; stroke-opacity: 0.16; }
+      .stroke-brass { stroke: #d8b878; stroke-opacity: 0.32; }
+    </style>
+  </defs>
+
+  <rect width="3160" height="1980" fill="#f6f1e8"/>
+  <text x="80" y="42" class="label">Penpot import prototype / Jakub Olša / homepage direction</text>
+
+  <g id="Desktop / hero" transform="translate(80 80)">
+    <rect width="1440" height="900" rx="34" fill="url(#hero-bg)"/>
+    <rect width="1440" height="900" rx="34" fill="url(#grid-dark)" opacity="0.8"/>
+    <circle cx="1150" cy="166" r="270" fill="#d8b878" opacity="0.12"/>
+    <circle cx="210" cy="730" r="310" fill="#9a5c32" opacity="0.14"/>
+
+    <g id="Desktop top bar">
+      <rect x="80" y="34" width="1280" height="68" rx="34" fill="#0b0b0a" fill-opacity="0.78" stroke="#fffaf2" stroke-opacity="0.18"/>
+      <rect x="104" y="53" width="126" height="30" rx="8" fill="#fffaf2" fill-opacity="0.92"/>
+      <text x="116" y="74" class="ui-dark" font-size="16" font-weight="800">Jakub Olša</text>
+      <line x1="254" y1="51" x2="254" y2="85" stroke="#fffaf2" stroke-opacity="0.22"/>
+      <text x="278" y="75" class="ui" font-size="13" font-weight="800" opacity="0.72">BOSEN GROUP</text>
+      <text x="690" y="75" class="ui" font-size="15" font-weight="700" opacity="0.78">Servis</text>
+      <text x="770" y="75" class="ui" font-size="15" font-weight="700" opacity="0.78">Ponuky</text>
+      <text x="862" y="75" class="ui" font-size="15" font-weight="700" opacity="0.78">Proces</text>
+      <text x="954" y="75" class="ui" font-size="15" font-weight="700" opacity="0.78">Konzultácia</text>
+      <rect x="1126" y="44" width="120" height="48" rx="24" fill="#fffaf2" fill-opacity="0.08" stroke="#fffaf2" stroke-opacity="0.22"/>
+      <text x="1151" y="75" class="ui" font-size="15" font-weight="800">Rezervácia</text>
+      <rect x="1254" y="44" width="92" height="48" rx="24" fill="#d8b878"/>
+      <text x="1274" y="75" class="ui-dark" font-size="15" font-weight="900">Menu</text>
+      <line x1="1318" y1="62" x2="1338" y2="62" stroke="#0b0b0a" stroke-width="2"/>
+      <line x1="1324" y1="72" x2="1338" y2="72" stroke="#0b0b0a" stroke-width="2"/>
+    </g>
+
+    <g id="Desktop hero copy" transform="translate(690 190)">
+      <text x="0" y="0" class="ui brass" font-size="14" font-weight="900" letter-spacing="1.2">JAKUB OLŠA / BOSEN GROUP / AI-ASSISTED LEAD SYSTÉM</text>
+      <text x="0" y="86" class="display" font-size="78">
+        <tspan x="0" dy="0">Predaj nie je</tspan>
+        <tspan x="0" dy="76">inzerát.</tspan>
+        <tspan x="0" dy="76">Je to riadený</tspan>
+        <tspan x="0" dy="76">obchod.</tspan>
+      </text>
+      <text x="0" y="410" class="ui muted" font-size="21" font-weight="500">
+        <tspan x="0" dy="0">Jakub vedie predaj osobne. BOSEN pridáva servisné zázemie.</tspan>
+        <tspan x="0" dy="31">Web, rezervačný flow, CRM a follow-up držia dopyty pokope,</tspan>
+        <tspan x="0" dy="31">aby sa dobrý lead nestratil po prvom kliknutí.</tspan>
+      </text>
+      <g id="Desktop CTAs" transform="translate(0 532)">
+        <rect width="228" height="52" rx="26" fill="#d8b878"/>
+        <text x="25" y="33" class="ui-dark" font-size="15" font-weight="900">Rezervácia konzultácie</text>
+        <rect x="244" width="216" height="52" rx="26" stroke="#fffaf2" stroke-opacity="0.42"/>
+        <text x="270" y="33" class="ui" font-size="15" font-weight="800">Čo za vás prevezmem</text>
+      </g>
+    </g>
+
+    <g id="Desktop portrait and system card" transform="translate(80 170)" filter="url(#soft-shadow)">
+      <rect width="520" height="642" rx="30" fill="url(#photo-wash)" stroke="#fffaf2" stroke-opacity="0.14"/>
+      <path d="M96 520 C144 390 196 330 260 330 C324 330 380 392 426 520 Z" fill="#fffaf2" fill-opacity="0.08"/>
+      <circle cx="260" cy="242" r="82" fill="#fffaf2" fill-opacity="0.10"/>
+      <text x="106" y="126" class="ui" font-size="18" font-weight="800" opacity="0.72">PHOTO PLACEHOLDER</text>
+      <text x="106" y="154" class="ui" font-size="14" font-weight="600" opacity="0.54">Jakub official portrait</text>
+      <g id="System card" transform="translate(22 470)">
+        <rect width="476" height="148" rx="12" fill="#0b0b0a" fill-opacity="0.82" stroke="#fffaf2" stroke-opacity="0.2"/>
+        <text x="18" y="32" class="ui brass" font-size="12" font-weight="900" letter-spacing="1.1">AI-ASSISTED WORKFLOW</text>
+        <text x="18" y="68" class="display" font-size="26" letter-spacing="-0.4">Dopyt nezostane visieť v inboxe.</text>
+        <g transform="translate(18 92)">
+          <rect width="54" height="30" rx="15" stroke="#fffaf2" stroke-opacity="0.18"/>
+          <text x="14" y="20" class="ui" font-size="12" font-weight="800" opacity="0.78">web</text>
+          <rect x="62" width="82" height="30" rx="15" stroke="#fffaf2" stroke-opacity="0.18"/>
+          <text x="76" y="20" class="ui" font-size="12" font-weight="800" opacity="0.78">kalendár</text>
+          <rect x="152" width="58" height="30" rx="15" stroke="#fffaf2" stroke-opacity="0.18"/>
+          <text x="168" y="20" class="ui" font-size="12" font-weight="800" opacity="0.78">CRM</text>
+          <rect x="218" width="88" height="30" rx="15" stroke="#fffaf2" stroke-opacity="0.18"/>
+          <text x="232" y="20" class="ui" font-size="12" font-weight="800" opacity="0.78">Telegram</text>
+          <rect x="314" width="64" height="30" rx="15" stroke="#fffaf2" stroke-opacity="0.18"/>
+          <text x="329" y="20" class="ui" font-size="12" font-weight="800" opacity="0.78">agent</text>
+        </g>
+      </g>
+    </g>
+
+    <g id="Hero beats" transform="translate(690 810)">
+      <rect width="198" height="1" fill="#fffaf2" opacity="0.16"/>
+      <rect x="214" width="198" height="1" fill="#fffaf2" opacity="0.16"/>
+      <rect x="428" width="198" height="1" fill="#fffaf2" opacity="0.16"/>
+      <text x="0" y="30" class="ui brass" font-size="13" font-weight="900">01</text>
+      <text x="0" y="58" class="ui" font-size="17" font-weight="900">Človek na vašej strane</text>
+      <text x="214" y="30" class="ui brass" font-size="13" font-weight="900">02</text>
+      <text x="214" y="58" class="ui" font-size="17" font-weight="900">BOSEN servis za ním</text>
+      <text x="428" y="30" class="ui brass" font-size="13" font-weight="900">03</text>
+      <text x="428" y="58" class="ui" font-size="17" font-weight="900">Systém po odoslaní</text>
+    </g>
+  </g>
+
+  <g id="Desktop / menu open" transform="translate(1600 80)">
+    <rect width="1440" height="900" rx="34" fill="url(#hero-bg)"/>
+    <rect width="1440" height="900" rx="34" fill="url(#grid-dark)" opacity="0.45"/>
+    <rect width="1440" height="900" rx="34" fill="#050505" opacity="0.72"/>
+    <text x="80" y="142" class="ui brass" font-size="14" font-weight="900" letter-spacing="1.2">MENU STATE / MASSIVE GEOMETRIC OVERLAY</text>
+    <text x="80" y="230" class="display" font-size="72">
+      <tspan x="80" dy="0">Menu nemá byť</tspan>
+      <tspan x="80" dy="74">drobný hamburger.</tspan>
+      <tspan x="80" dy="74">Má niesť produktový</tspan>
+      <tspan x="80" dy="74">pocit webu.</tspan>
+    </text>
+
+    <g id="Menu panel" transform="translate(640 104)" filter="url(#soft-shadow)">
+      <rect width="720" height="650" rx="28" fill="#0b0b0a" stroke="#fffaf2" stroke-opacity="0.16"/>
+      <text x="26" y="45" class="ui brass" font-size="12" font-weight="900" letter-spacing="1.7">MAKLÉRSKY SYSTÉM</text>
+      <rect x="616" y="20" width="82" height="36" rx="18" fill="#fffaf2" fill-opacity="0.06" stroke="#fffaf2" stroke-opacity="0.18"/>
+      <text x="637" y="43" class="ui" font-size="13" font-weight="800">Zavrieť</text>
+      <line x1="24" y1="72" x2="696" y2="72" stroke="#fffaf2" stroke-opacity="0.12"/>
+      <g id="Large menu links" transform="translate(24 104)">
+        <text x="0" y="0" class="ui brass" font-size="12" font-weight="900">01</text>
+        <text x="54" y="4" class="display" font-size="46">Servis BOSEN</text>
+        <text x="0" y="82" class="ui brass" font-size="12" font-weight="900">02</text>
+        <text x="54" y="86" class="display" font-size="46">Služby</text>
+        <text x="0" y="164" class="ui brass" font-size="12" font-weight="900">03</text>
+        <text x="54" y="168" class="display" font-size="46">Proces</text>
+        <text x="0" y="246" class="ui brass" font-size="12" font-weight="900">04</text>
+        <text x="54" y="250" class="display" font-size="46">Ponuky</text>
+        <text x="0" y="328" class="ui brass" font-size="12" font-weight="900">05</text>
+        <text x="54" y="332" class="display" font-size="43">Predaj bytu Bratislava</text>
+        <text x="0" y="410" class="ui brass" font-size="12" font-weight="900">06</text>
+        <text x="54" y="414" class="display" font-size="46">Lead cockpit</text>
+      </g>
+      <g id="Menu aside card" transform="translate(420 424)">
+        <rect width="276" height="136" rx="22" fill="#d8b878" fill-opacity="0.11" stroke="#d8b878" stroke-opacity="0.24"/>
+        <text x="18" y="31" class="ui brass" font-size="12" font-weight="900" letter-spacing="1.4">SYSTÉM</text>
+        <text x="18" y="66" class="ui" font-size="24" font-weight="900">Lead nejde len</text>
+        <text x="18" y="94" class="ui" font-size="24" font-weight="900">do inboxu.</text>
+      </g>
+      <rect x="420" y="580" width="276" height="52" rx="26" fill="#d8b878"/>
+      <text x="442" y="613" class="ui-dark" font-size="15" font-weight="900">Rezervovať konzultáciu</text>
+      <circle cx="674" cy="606" r="17" fill="#0b0b0a" fill-opacity="0.13"/>
+      <text x="667" y="612" class="ui-dark" font-size="18" font-weight="900">↗</text>
+    </g>
+  </g>
+
+  <g id="Mobile / hero" transform="translate(80 1060)">
+    <rect width="390" height="844" rx="30" fill="url(#hero-bg)"/>
+    <rect width="390" height="844" rx="30" fill="url(#grid-dark)" opacity="0.55"/>
+    <g id="Mobile top bar" transform="translate(10 12)">
+      <rect width="370" height="58" rx="29" fill="#0b0b0a" fill-opacity="0.78" stroke="#fffaf2" stroke-opacity="0.18"/>
+      <rect x="14" y="15" width="100" height="28" rx="8" fill="#fffaf2" fill-opacity="0.92"/>
+      <text x="24" y="34" class="ui-dark" font-size="13" font-weight="900">Jakub Olša</text>
+      <rect x="198" y="8" width="100" height="42" rx="21" fill="#fffaf2" fill-opacity="0.08" stroke="#fffaf2" stroke-opacity="0.22"/>
+      <text x="216" y="34" class="ui" font-size="13" font-weight="850">Rezervácia</text>
+      <rect x="306" y="8" width="50" height="42" rx="21" fill="#d8b878"/>
+      <line x1="321" y1="23" x2="341" y2="23" stroke="#0b0b0a" stroke-width="2"/>
+      <line x1="327" y1="33" x2="341" y2="33" stroke="#0b0b0a" stroke-width="2"/>
+    </g>
+
+    <g id="Mobile hero copy" transform="translate(18 108)">
+      <text x="0" y="0" class="ui brass" font-size="11" font-weight="900" letter-spacing="1">JAKUB OLŠA / BOSEN / AI-ASSISTED</text>
+      <text x="0" y="68" class="display" font-size="50">
+        <tspan x="0" dy="0">Predaj nie je</tspan>
+        <tspan x="0" dy="50">inzerát.</tspan>
+        <tspan x="0" dy="50">Je to riadený</tspan>
+        <tspan x="0" dy="50">obchod.</tspan>
+      </text>
+      <text x="0" y="280" class="ui muted" font-size="16" font-weight="500">
+        <tspan x="0" dy="0">Jakub vedie predaj osobne.</tspan>
+        <tspan x="0" dy="24">BOSEN pridáva servisné zázemie.</tspan>
+        <tspan x="0" dy="24">Flow drží dopyty pokope.</tspan>
+      </text>
+      <rect x="0" y="376" width="354" height="50" rx="25" fill="#d8b878"/>
+      <text x="89" y="408" class="ui-dark" font-size="15" font-weight="900">Rezervácia konzultácie</text>
+      <rect x="0" y="438" width="354" height="50" rx="25" stroke="#fffaf2" stroke-opacity="0.42"/>
+      <text x="96" y="470" class="ui" font-size="15" font-weight="800">Čo za vás prevezmem</text>
+    </g>
+
+    <g id="Mobile portrait block" transform="translate(18 606)">
+      <rect width="354" height="210" rx="24" fill="url(#photo-wash)" stroke="#fffaf2" stroke-opacity="0.14"/>
+      <text x="24" y="45" class="ui" font-size="15" font-weight="900" opacity="0.72">PHOTO / SYSTEM VISUAL</text>
+      <text x="24" y="76" class="ui" font-size="13" font-weight="600" opacity="0.54">tu sa rozhodneme, či ide portrét,</text>
+      <text x="24" y="98" class="ui" font-size="13" font-weight="600" opacity="0.54">BOSEN servis alebo abstraktný flow</text>
+      <rect x="24" y="132" width="306" height="44" rx="22" fill="#0b0b0a" fill-opacity="0.72" stroke="#fffaf2" stroke-opacity="0.16"/>
+      <text x="42" y="160" class="ui brass" font-size="12" font-weight="900">web → kalendár → CRM → follow-up</text>
+    </g>
+  </g>
+
+  <g id="Prototype notes" transform="translate(560 1088)">
+    <text x="0" y="0" class="display-dark" font-size="42">Čo meniť v Penpote</text>
+    <text x="0" y="62" class="ui-dark" font-size="18" font-weight="700" opacity="0.72">
+      <tspan x="0" dy="0">1. Hero punch: headline, prvých 7 sekúnd, text pod ním.</tspan>
+      <tspan x="0" dy="34">2. Top bar: veľkosť, tvar, počet položiek, či BOSEN ostáva v mobile.</tspan>
+      <tspan x="0" dy="34">3. Menu: či má byť panel, full-screen overlay alebo ľavý/right rail.</tspan>
+      <tspan x="0" dy="34">4. Vizuál: portrét Jakuba vs. systémový obchodný flow.</tspan>
+      <tspan x="0" dy="34">5. AI tón: nech je systém cítiť, ale nech to nie je chatbot.</tspan>
+    </text>
+    <rect x="0" y="232" width="650" height="120" rx="22" fill="#fffaf2" stroke="#0b0b0a" stroke-opacity="0.16"/>
+    <text x="28" y="274" class="ui-dark" font-size="18" font-weight="900">Import tip</text>
+    <text x="28" y="310" class="ui-dark" font-size="15" font-weight="600" opacity="0.68">
+      <tspan x="28" dy="0">V Penpote importni SVG a potom rozdeľ skupiny podľa artboardov.</tspan>
+      <tspan x="28" dy="25">Nie je to finálny dizajn, je to pracovná mapa na rýchle skúšanie smeru.</tspan>
+    </text>
+  </g>
+</svg>

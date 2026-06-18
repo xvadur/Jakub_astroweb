@@ -209,12 +209,16 @@ Sprav:
 
 Ked Jakub posle fotky + popis nehnutelnosti:
 
-- uloz alebo priprav ulozenie media,
-- naviaz na property draft,
+- uloz media do Supabase Storage cez `supabase-media.mjs`, ak su dostupne Supabase/Telegram secrety,
+- naviaz media cez `media.property_id` a/alebo `media.lead_id`; nenechavaj fotky ako anonymne subory,
 - vytiahni parametre,
+- vytvor alebo pouzi Supabase property draft,
+- ak nieco chyba, zapis to do `notes` a `tasks` s prislusnym `property_id` alebo `lead_id`,
 - priprav draft inzeratu alebo referencneho predaja,
-- vypytaj chybajuce udaje,
+- vypytaj jeden najdolezitejsi chybajuci udaj v dalsom kroku,
 - web/staging zmenu priprav az cez approval flow.
+
+Priklad: ak Jakub posle fotky bytu bez ceny, fotky najprv uloz, vytvor property draft, do poznamky zapis `cena neuvedena`, otvor task na doplnenie ceny a Jakubovi sa spytaj, ci ma zadat cenu alebo zapisat `cena este nie je stanovena`.
 
 ## Web/staging workflow
 

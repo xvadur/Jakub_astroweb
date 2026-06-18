@@ -2,7 +2,13 @@
 
 Date: 2026-06-10
 
+Updated: 2026-06-17
+
 Purpose: turn Jakub's current web + OpenClaw backend into a repeatable seller-lead engine for people who are already thinking about selling a property.
+
+Detailed launch-readiness checklist for ads, SEO, email follow-up, Google reviews and monitoring:
+
+- `docs/LAUNCH_CHECKLIST_ADS_SEO_EMAIL_MONITORING_2026-06-18.md`
 
 ## Current base
 
@@ -20,13 +26,16 @@ Purpose: turn Jakub's current web + OpenClaw backend into a repeatable seller-le
 ## Immediate integration checklist
 
 - [ ] Switch Google Calendar OAuth/secrets from Adam/test calendar to Jakub's real working calendar.
-- [ ] Run controlled staging E2E test: web wizard -> Worker -> Google Calendar -> Supabase -> Telegram -> OpenClaw.
+- [x] Confirm wizard -> Calendar communication and event creation on Adam/test Google account.
+- [ ] Run controlled staging E2E test after current hook/secrets check: web wizard -> Worker -> Google Calendar -> Supabase -> Telegram -> OpenClaw.
 - [ ] Confirm OpenClaw receives real booking handoff from deployed staging Worker.
 - [ ] Confirm busy Google Calendar slots are disabled in the wizard.
 - [ ] Confirm second free/busy check blocks race-condition double booking at submit time.
 - [ ] Add UTM/campaign capture to booking payload.
 - [ ] Store attribution fields in Supabase lead `raw_payload`.
 - [ ] Add attribution fields to OpenClaw handoff payload.
+- [ ] Confirm production secrets are present except Jakub calendar/mail and document the exact remaining gap.
+- [ ] Confirm Telegram notification is delivered to the intended Jakub/Adam chat after web booking.
 
 ## Seller landing pages
 
@@ -127,12 +136,34 @@ Every lead should preserve attribution from first touch to closed deal.
 - [ ] selected intent
 - [ ] property type
 - [ ] location
+- [ ] booking page URL
+- [ ] user consent/cookie mode for analytics where needed
 - [ ] calendar event id
 - [ ] CRM lead id
+- [ ] Telegram notification status
+- [ ] OpenClaw handoff run id/status
 - [ ] follow-up outcome
 - [ ] listing agreement outcome
 - [ ] sale outcome
 - [ ] commission/success-fee outcome
+
+## Monitoring and failure visibility
+
+- [ ] Add Worker-side logging/admin case for failed Telegram notification.
+- [ ] Add Worker-side logging/admin case for failed OpenClaw handoff.
+- [ ] Add periodic health checks for staging/prod `/api/health`.
+- [ ] Add periodic health check for OpenClaw `https://openclaw.jakubolsa.sk/healthz`.
+- [ ] Surface failed agent runs, failed webhooks and open admin cases in Adam's global business dashboard.
+- [ ] Keep approval decisions in `approval_requests` or a dedicated approval audit trail.
+
+## Google reviews workflow
+
+- [ ] Decide whether V1 uses `tasks` + `approval_requests` or a dedicated `review_requests` table.
+- [ ] Store client/property/deal relation for each review request.
+- [ ] Store review status: draft, approved, sent, responded, skipped.
+- [ ] Store Google review link and message text.
+- [ ] Require Jakub approval before sending client-facing review request until rules are proven.
+- [ ] Surface pending review requests in dashboard.
 
 ## Commercial positioning
 
@@ -191,6 +222,8 @@ This makes the upside larger than a one-time website fee if attribution and reve
 - [ ] Pass attribution through `/api/book`.
 - [ ] Store attribution in Supabase lead payload.
 - [ ] Include attribution in Telegram and OpenClaw booking handoff.
+- [ ] Add failure visibility for Telegram/OpenClaw side effects.
+- [ ] Start dashboard module backlog with leads + follow-ups + approvals.
 - [ ] Add first seller landing page: `predaj-bytu-bratislava`.
 - [ ] Add seller FAQ content.
 - [ ] Add structured data updates.

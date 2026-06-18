@@ -15,9 +15,14 @@ const leads = [
     budget: "EUR 250,000",
     timing: "3 mesiace",
     source: "Web rezervácia",
+    attribution: "Landing page /rezervacia, UTM zatiaľ neuložené",
     motivation: "Prvé bývanie, chce sa odsťahovať z nájmu.",
     nextAction: "Zavolať a kvalifikovať lead.",
     nextTime: "Zajtra, 10:00",
+    followUpWindow: "24h SLA",
+    priority: "Vysoká",
+    approvalStatus: "Bez schvaľovania",
+    notes: ["Overiť financovanie a preferovaný termín obhliadky.", "Ak je kvalifikovaná, zaradiť do Petržalka shortlistu."],
     phone: "+421 905 123 456",
     email: "petra.vrabcova@example.com",
   },
@@ -32,9 +37,14 @@ const leads = [
     budget: "Očakáva EUR 450,000",
     timing: "6 mesiacov",
     source: "Odporúčanie",
+    attribution: "Osobné odporúčanie, presný referrer doplniť v CRM",
     motivation: "Sťahovanie do zahraničia, potrebuje realistickú cenu.",
     nextAction: "Pripraviť trhové porovnanie.",
     nextTime: "Zajtra, konzultácia",
+    followUpWindow: "Pred konzultáciou",
+    priority: "Vysoká",
+    approvalStatus: "Čaká stratégia ceny",
+    notes: ["Rozdiel medzi očakávaním a trhom bude treba ukázať cez dáta.", "Pripraviť argumentáciu: čas na trhu vs. čistý výnos."],
     phone: "+421 911 345 678",
     email: "anna.dudasova@example.com",
   },
@@ -49,9 +59,14 @@ const leads = [
     budget: "EUR 320,000",
     timing: "2 mesiace",
     source: "BOSEN sieť",
+    attribution: "BOSEN interný kontakt, zdroj kampane neznámy",
     motivation: "Rozširuje rodinu, potrebuje praktické bývanie.",
     nextAction: "Poslať tri vhodné ponuky.",
     nextTime: "Do konca dňa",
+    followUpWindow: "Dnes",
+    priority: "Stredná",
+    approvalStatus: "Bez schvaľovania",
+    notes: ["Preferuje Ružinov, treba preveriť dispozíciu a parkovanie.", "Poslať max. 3 silné ponuky, nie široký zoznam."],
     phone: "+421 908 456 789",
     email: "tomas.bena@example.com",
   },
@@ -66,9 +81,14 @@ const leads = [
     budget: "Cena na vyžiadanie",
     timing: "Urgentné",
     source: "Vlastná sieť",
+    attribution: "Obhliadka Martinčekova, ručný import kontaktu",
     motivation: "Nutne potrebuje bývanie, po obhliadke prejavila veľký záujem.",
     nextAction: "Follow-up po obhliadke.",
     nextTime: "Pred 18 hodinami",
+    followUpWindow: "Po termíne",
+    priority: "Urgentné",
+    approvalStatus: "Čaká schválenie poznámky z obhliadky",
+    notes: ["Najhorúcejší buyer pre Martinčekovu, nenechať vychladnúť.", "Zistiť námietky: cena, stav domu, financovanie."],
     phone: "+421 915 567 890",
     email: "eva.krajcova@example.com",
   },
@@ -83,9 +103,14 @@ const leads = [
     budget: "EUR 360,000",
     timing: "1-2 mesiace",
     source: "Reklama",
+    attribution: "Meta/Google kampaň placeholder, UTM pipeline chýba",
     motivation: "Hľadá investičný byt s dobrým prenájmom.",
     nextAction: "Dohodnúť druhú obhliadku.",
     nextTime: "4. jún, 11:00",
+    followUpWindow: "Po termíne",
+    priority: "Vysoká",
+    approvalStatus: "Bez schvaľovania",
+    notes: ["Investičný filter: výnos, nájomný dopyt, rekonštrukčný rozpočet.", "Druhá obhliadka má potvrdiť čísla, nie len emóciu."],
     phone: "+421 907 678 901",
     email: "juraj.novak@example.com",
   },
@@ -100,15 +125,33 @@ const leads = [
     budget: "810,000 EUR",
     timing: "Zmluvy",
     source: "BOSEN sieť",
+    attribution: "BOSEN interný deal flow",
     motivation: "Rieši podpis a finálne podklady.",
     nextAction: "Pripraviť podpis zmluvy.",
     nextTime: "Zajtra, 15:30",
+    followUpWindow: "Zajtra",
+    priority: "Urgentné",
+    approvalStatus: "Čaká podpisový checklist",
+    notes: ["Skontrolovať list vlastníctva, prílohy a termíny podpisu.", "Toto je obchod vo finále, držať nulový šum v komunikácii."],
     phone: "+421 912 789 012",
     email: "zuzana.horvatova@example.com",
   },
 ];
 
 const firstLead = leads[0];
+const followUpTasks = leads
+  .map((lead) => ({
+    id: lead.id,
+    name: lead.name,
+    action: lead.nextAction,
+    time: lead.nextTime,
+    property: lead.property,
+    status: lead.status,
+    priority: lead.priority,
+    window: lead.followUpWindow,
+    grade: lead.grade,
+  }))
+  .slice(0, 5);
 ---
 
 <!doctype html>
@@ -362,7 +405,10 @@ const firstLead = leads[0];
       }
 
       .workspace {
-        display: block;
+        display: grid;
+        grid-template-columns: minmax(280px, 0.82fr) minmax(0, 1.8fr);
+        gap: 18px;
+        align-items: start;
       }
 
       .panel {
@@ -380,6 +426,73 @@ const firstLead = leads[0];
       .panel-head h2 {
         margin: 0;
         font-size: 24px;
+      }
+
+      .panel-kicker {
+        margin: 6px 0 0;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.45;
+      }
+
+      .queue-panel {
+        position: sticky;
+        top: 20px;
+      }
+
+      .queue-list {
+        display: grid;
+        gap: 10px;
+      }
+
+      .queue-card {
+        display: grid;
+        width: 100%;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 12px;
+        align-items: start;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 13px;
+        background: #fff;
+        color: inherit;
+        cursor: pointer;
+        text-align: left;
+      }
+
+      .queue-card:hover,
+      .queue-card.is-active {
+        border-color: var(--gold);
+        background: #fffdf8;
+      }
+
+      .queue-card.urgent {
+        border-color: #ffc2cb;
+        background: var(--danger-soft);
+      }
+
+      .queue-card strong,
+      .queue-card span {
+        display: block;
+      }
+
+      .queue-card strong {
+        margin-bottom: 5px;
+        font-size: 15px;
+      }
+
+      .queue-card small {
+        display: block;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.4;
+      }
+
+      .queue-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 10px;
       }
 
       .searchbar {
@@ -519,6 +632,12 @@ const firstLead = leads[0];
         color: var(--gold);
       }
 
+      .pill.danger {
+        border-color: #ffc2cb;
+        background: var(--danger-soft);
+        color: var(--danger);
+      }
+
       .pill.cyan {
         border-color: #bdeaf0;
         background: var(--cyan-soft);
@@ -614,6 +733,7 @@ const firstLead = leads[0];
 
       .detail-grid {
         display: grid;
+        grid-template-columns: 1fr 1fr;
         gap: 12px;
         margin-bottom: 20px;
       }
@@ -654,6 +774,61 @@ const firstLead = leads[0];
         margin-bottom: 0;
         color: var(--muted);
         line-height: 1.5;
+      }
+
+      .detail-section {
+        display: grid;
+        gap: 12px;
+        margin-top: 16px;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 16px;
+        background: #fff;
+      }
+
+      .detail-section h3 {
+        margin: 0;
+        font-size: 17px;
+      }
+
+      .followup-box {
+        border-color: #ffc2cb;
+        background: var(--danger-soft);
+      }
+
+      .followup-box h3 {
+        color: var(--danger);
+      }
+
+      .section-row {
+        display: grid;
+        grid-template-columns: 118px minmax(0, 1fr);
+        gap: 10px;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.45;
+      }
+
+      .section-row span:first-child {
+        color: var(--text);
+        font-weight: 800;
+      }
+
+      .notes-list {
+        display: grid;
+        gap: 8px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .notes-list li {
+        border-radius: 12px;
+        padding: 10px 12px;
+        background: var(--panel-soft);
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.45;
       }
 
       .actions {
@@ -702,6 +877,14 @@ const firstLead = leads[0];
         .drawer-shell {
           grid-template-columns: minmax(0, 1fr) minmax(340px, 420px);
         }
+
+        .workspace {
+          grid-template-columns: 1fr;
+        }
+
+        .queue-panel {
+          position: static;
+        }
       }
 
       @media (max-width: 720px) {
@@ -725,7 +908,9 @@ const firstLead = leads[0];
         .searchbar,
         .lead-row,
         .detail-hero,
-        .actions {
+        .detail-grid,
+        .actions,
+        .section-row {
           grid-template-columns: 1fr;
         }
 
@@ -753,6 +938,17 @@ const firstLead = leads[0];
       <DashboardSidebar active="leady" />
 
       <main class="content dashboard-content">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">CRM cockpit V1</p>
+            <h1>Follow-up a lead cockpit</h1>
+            <p class="lead-intro">
+              Operačný prototyp pre rýchle rozhodovanie: kto horí, čo má byť ďalší krok a kde chýba kontext pred ďalším kontaktom.
+            </p>
+          </div>
+          <span class="status-chip">Demo CRM režim</span>
+        </header>
+
         <section class="metrics" aria-label="Lead metriky">
           <article class="metric-card"><span>Aktívne leady</span><strong>6</strong></article>
           <article class="metric-card"><span>Kvalita A</span><strong>3</strong></article>
@@ -763,9 +959,41 @@ const firstLead = leads[0];
         <hr class="page-divider" />
 
         <section class="workspace">
+          <aside class="panel queue-panel">
+            <div class="panel-head">
+              <div>
+                <h2>Follow-up fronta</h2>
+                <p class="panel-kicker">Najbližšie úkony zoradené podľa naliehavosti a obchodnej hodnoty.</p>
+              </div>
+              <span class="pill gold">V1</span>
+            </div>
+            <div class="queue-list" data-followup-list>
+              {followUpTasks.map((task) => (
+                <button
+                  type="button"
+                  class={`queue-card ${task.priority === "Urgentné" || task.window === "Po termíne" ? "urgent" : ""}`}
+                  data-lead-id={task.id}
+                >
+                  <span>
+                    <strong>{task.action}</strong>
+                    <small>{task.name} · {task.property}</small>
+                    <span class="queue-meta">
+                      <span class={task.priority === "Urgentné" ? "pill danger" : task.priority === "Vysoká" ? "pill gold" : "pill"}>{task.priority}</span>
+                      <span class="pill">{task.status}</span>
+                    </span>
+                  </span>
+                  <span class="pill">{task.time}</span>
+                </button>
+              ))}
+            </div>
+          </aside>
+
           <article class="panel">
             <div class="panel-head">
-              <h2>Lead zoznam</h2>
+              <div>
+                <h2>Lead zoznam</h2>
+                <p class="panel-kicker">Pracovný zoznam klientov s kvalitou, zámerom a ďalším krokom.</p>
+              </div>
               <span class="pill gold">klik otvorí detail</span>
             </div>
             <div class="searchbar">
@@ -848,10 +1076,55 @@ const firstLead = leads[0];
             </div>
 
             <div class="detail-note">
-              <h3>Motivácia a ďalší krok</h3>
+              <h3>Motivácia</h3>
               <p data-detail-motivation>{firstLead.motivation}</p>
-              <p style="margin-top: 12px;"><strong>Akcia:</strong> <span data-detail-action>{firstLead.nextAction}</span></p>
-              <p style="margin-top: 8px;"><strong>Termín:</strong> <span data-detail-time>{firstLead.nextTime}</span></p>
+            </div>
+
+            <section class="detail-section followup-box" aria-label="Ďalší follow-up">
+              <h3>Ďalší follow-up</h3>
+              <div class="section-row">
+                <span>Akcia</span>
+                <strong data-detail-action>{firstLead.nextAction}</strong>
+              </div>
+              <div class="section-row">
+                <span>Termín</span>
+                <strong data-detail-time>{firstLead.nextTime}</strong>
+              </div>
+              <div class="section-row">
+                <span>SLA okno</span>
+                <strong data-detail-window>{firstLead.followUpWindow}</strong>
+              </div>
+            </section>
+
+            <section class="detail-section" aria-label="Poznámky">
+              <h3>Poznámky</h3>
+              <ul class="notes-list" data-detail-notes>
+                {firstLead.notes.map((note) => <li>{note}</li>)}
+              </ul>
+            </section>
+
+            <section class="detail-section" aria-label="Zdroj a atribúcia">
+              <h3>Zdroj / atribúcia</h3>
+              <div class="section-row">
+                <span>Zdroj</span>
+                <strong data-detail-source-line>{firstLead.source}</strong>
+              </div>
+              <div class="section-row">
+                <span>Atribúcia</span>
+                <strong data-detail-attribution>{firstLead.attribution}</strong>
+              </div>
+            </section>
+
+            <section class="detail-section" aria-label="Approval status">
+              <h3>Approval status</h3>
+              <div class="section-row">
+                <span>Stav</span>
+                <strong data-detail-approval>{firstLead.approvalStatus}</strong>
+              </div>
+              <div class="section-row">
+                <span>Placeholder</span>
+                <span>Schvaľovanie OpenClaw draftov čaká na napojenie interného workflow.</span>
+              </div>
             </div>
 
             <div class="actions">
@@ -863,7 +1136,9 @@ const firstLead = leads[0];
 
     <script>
       const leadList = document.querySelector("[data-lead-list]");
+      const followupList = document.querySelector("[data-followup-list]");
       let rows = Array.from(document.querySelectorAll("[data-lead]"));
+      let queueRows = Array.from(document.querySelectorAll("[data-lead-id], [data-queue-lead]"));
       const drawer = document.querySelector("[data-drawer]");
       const closeButtons = Array.from(document.querySelectorAll("[data-drawer-close]"));
       const detail = {
@@ -880,6 +1155,11 @@ const firstLead = leads[0];
         motivation: document.querySelector("[data-detail-motivation]"),
         action: document.querySelector("[data-detail-action]"),
         time: document.querySelector("[data-detail-time]"),
+        window: document.querySelector("[data-detail-window]"),
+        notes: document.querySelector("[data-detail-notes]"),
+        sourceLine: document.querySelector("[data-detail-source-line]"),
+        attribution: document.querySelector("[data-detail-attribution]"),
+        approval: document.querySelector("[data-detail-approval]"),
         phoneLink: document.querySelector("[data-detail-phone-link]"),
       };
 
@@ -896,6 +1176,57 @@ const firstLead = leads[0];
           .replaceAll("'", "&#039;");
       }
 
+      function derivePriority(lead) {
+        const grade = String(lead.grade || "").toUpperCase();
+        const status = String(lead.status || "").toLowerCase();
+        const time = String(lead.nextTime || "").toLowerCase();
+
+        if (time.includes("pred") || status.includes("uzavretie")) return "Urgentné";
+        if (grade === "A" || status.includes("obhliadka") || status.includes("konzultácia")) return "Vysoká";
+        return "Stredná";
+      }
+
+      function deriveFollowUpWindow(lead) {
+        const time = String(lead.nextTime || "").toLowerCase();
+        if (time.includes("pred")) return "Po termíne";
+        if (time.includes("dnes") || time.includes("konca dňa")) return "Dnes";
+        if (time.includes("zajtra")) return "Zajtra";
+        return "Naplánovať";
+      }
+
+      function normalizeLead(lead = {}) {
+        const normalized = {
+          id: lead.id || lead.name || crypto.randomUUID?.() || `lead-${Date.now()}`,
+          name: lead.name || "Bez mena",
+          grade: lead.grade || "C",
+          status: lead.status || "Nový lead",
+          type: lead.type || "Lead",
+          property: lead.property || "Neurčené",
+          location: lead.location || "-",
+          budget: lead.budget || "neuvedené",
+          timing: lead.timing || "-",
+          source: lead.source || "CRM",
+          motivation: lead.motivation || "Bez poznámky.",
+          nextAction: lead.nextAction || "Doplniť ďalší krok.",
+          nextTime: lead.nextTime || "bez termínu",
+          phone: lead.phone || "",
+          email: lead.email || "",
+          attribution: lead.attribution || `${lead.source || "CRM"} / UTM a referrer zatiaľ nie sú uložené`,
+          approvalStatus: lead.approvalStatus || "Placeholder - approval workflow nie je napojený",
+        };
+
+        normalized.priority = lead.priority || derivePriority(normalized);
+        normalized.followUpWindow = lead.followUpWindow || deriveFollowUpWindow(normalized);
+        normalized.notes = Array.isArray(lead.notes) && lead.notes.length
+          ? lead.notes
+          : [
+              normalized.motivation,
+              normalized.email ? `Kontakt email: ${normalized.email}` : "Email zatiaľ nie je uložený.",
+            ];
+
+        return normalized;
+      }
+
       function getStatusClass(lead) {
         if (lead.status === "Uzavretie") return "pill green";
         if (lead.grade === "A") return "pill gold";
@@ -903,10 +1234,11 @@ const firstLead = leads[0];
       }
 
       function renderLeadRow(lead) {
-        const leadJson = escapeHtml(JSON.stringify(lead));
-        const hotClass = lead.grade === "A" ? "is-hot" : "";
-        const initial = escapeHtml((lead.name || "?").slice(0, 1));
-        const meta = [lead.type, lead.property, lead.location, lead.budget]
+        const normalized = normalizeLead(lead);
+        const leadJson = escapeHtml(JSON.stringify(normalized));
+        const hotClass = normalized.grade === "A" ? "is-hot" : "";
+        const initial = escapeHtml((normalized.name || "?").slice(0, 1));
+        const meta = [normalized.type, normalized.property, normalized.location, normalized.budget]
           .filter(Boolean)
           .map((item) => `<span>${escapeHtml(item)}</span>`)
           .join("");
@@ -916,20 +1248,48 @@ const firstLead = leads[0];
             <span class="avatar">${initial}</span>
             <span class="lead-main">
               <span class="lead-name">
-                ${escapeHtml(lead.name)}
-                <span class="grade">${escapeHtml(lead.grade)}</span>
+                ${escapeHtml(normalized.name)}
+                <span class="grade">${escapeHtml(normalized.grade)}</span>
               </span>
               <span class="lead-meta">${meta}</span>
             </span>
-            <span class="${getStatusClass(lead)}">${escapeHtml(lead.status)}</span>
+            <span class="${getStatusClass(normalized)}">${escapeHtml(normalized.status)}</span>
           </button>
         `;
+      }
+
+      function renderQueueCard(lead) {
+        const normalized = normalizeLead(lead);
+        const leadJson = escapeHtml(JSON.stringify(normalized));
+        const urgent = normalized.priority === "Urgentné" || normalized.followUpWindow === "Po termíne";
+        const priorityClass = normalized.priority === "Urgentné" ? "pill danger" : normalized.priority === "Vysoká" ? "pill gold" : "pill";
+
+        return `
+          <button type="button" class="queue-card ${urgent ? "urgent" : ""}" data-queue-lead="${leadJson}">
+            <span>
+              <strong>${escapeHtml(normalized.nextAction)}</strong>
+              <small>${escapeHtml(normalized.name)} · ${escapeHtml(normalized.property)}</small>
+              <span class="queue-meta">
+                <span class="${priorityClass}">${escapeHtml(normalized.priority)}</span>
+                <span class="pill">${escapeHtml(normalized.status)}</span>
+              </span>
+            </span>
+            <span class="pill">${escapeHtml(normalized.nextTime)}</span>
+          </button>
+        `;
+      }
+
+      function renderFollowupQueue(leads) {
+        if (!followupList || !Array.isArray(leads) || !leads.length) return;
+        followupList.innerHTML = leads.map(normalizeLead).slice(0, 5).map(renderQueueCard).join("");
+        bindQueueRows();
       }
 
       function renderLeadRows(leads) {
         if (!leadList || !Array.isArray(leads) || !leads.length) return;
         leadList.innerHTML = leads.map(renderLeadRow).join("");
         bindRows();
+        renderFollowupQueue(leads);
       }
 
       function openDrawer() {
@@ -952,35 +1312,84 @@ const firstLead = leads[0];
         if (event.key === "Escape") closeDrawer();
       });
 
+      function renderNotes(notes) {
+        if (!detail.notes) return;
+        const safeNotes = Array.isArray(notes) && notes.length ? notes : ["Poznámka zatiaľ nie je uložená."];
+        detail.notes.innerHTML = safeNotes.map((note) => `<li>${escapeHtml(note)}</li>`).join("");
+      }
+
+      function setActiveRow(activeLead) {
+        rows.forEach((item) => {
+          const itemLead = normalizeLead(JSON.parse(item.dataset.lead || "{}"));
+          const isActive = itemLead.id === activeLead.id;
+          item.classList.toggle("is-active", isActive);
+          item.setAttribute("aria-pressed", isActive ? "true" : "false");
+        });
+
+        queueRows.forEach((item) => {
+          let itemLead = null;
+          if (item.dataset.queueLead) {
+            itemLead = normalizeLead(JSON.parse(item.dataset.queueLead || "{}"));
+          } else if (item.dataset.leadId) {
+            itemLead = { id: item.dataset.leadId };
+          }
+          item.classList.toggle("is-active", itemLead?.id === activeLead.id);
+        });
+      }
+
+      function showLeadDetail(rawLead) {
+        const lead = normalizeLead(rawLead);
+        setActiveRow(lead);
+
+        setText(detail.initial, (lead.name || "?").slice(0, 1));
+        setText(detail.name, lead.name);
+        setText(detail.type, `${lead.type} · ${lead.status}`);
+        setText(detail.property, lead.property);
+        setText(detail.location, lead.location);
+        setText(detail.budget, lead.budget);
+        setText(detail.timing, lead.timing);
+        setText(detail.source, lead.source);
+        setText(detail.contact, lead.phone || lead.email || "Kontakt chýba");
+        setText(detail.motivation, lead.motivation);
+        setText(detail.action, lead.nextAction);
+        setText(detail.time, lead.nextTime);
+        setText(detail.window, lead.followUpWindow);
+        setText(detail.sourceLine, lead.source);
+        setText(detail.attribution, lead.attribution);
+        setText(detail.approval, lead.approvalStatus);
+        renderNotes(lead.notes);
+        detail.hero?.classList.toggle("is-hot", lead.grade === "A");
+        if (detail.phoneLink && lead.phone) {
+          detail.phoneLink.setAttribute("href", `tel:${lead.phone.replace(/[^\d+]/g, "")}`);
+        }
+        openDrawer();
+      }
+
       function bindRows() {
         rows = Array.from(document.querySelectorAll("[data-lead]"));
         rows.forEach((row) => {
           row.addEventListener("click", () => {
             const lead = JSON.parse(row.dataset.lead || "{}");
-            rows.forEach((item) => {
-              item.classList.remove("is-active");
-              item.setAttribute("aria-pressed", "false");
-            });
-            row.classList.add("is-active");
-            row.setAttribute("aria-pressed", "true");
+            showLeadDetail(lead);
+          });
+        });
+      }
 
-            setText(detail.initial, (lead.name || "?").slice(0, 1));
-            setText(detail.name, lead.name);
-            setText(detail.type, `${lead.type} · ${lead.status}`);
-            setText(detail.property, lead.property);
-            setText(detail.location, lead.location);
-            setText(detail.budget, lead.budget);
-            setText(detail.timing, lead.timing);
-            setText(detail.source, lead.source);
-            setText(detail.contact, lead.phone);
-            setText(detail.motivation, lead.motivation);
-            setText(detail.action, lead.nextAction);
-            setText(detail.time, lead.nextTime);
-            detail.hero?.classList.toggle("is-hot", lead.grade === "A");
-            if (detail.phoneLink && lead.phone) {
-              detail.phoneLink.setAttribute("href", `tel:${lead.phone.replace(/[^\d+]/g, "")}`);
+      function bindQueueRows() {
+        queueRows = Array.from(document.querySelectorAll("[data-lead-id], [data-queue-lead]"));
+        queueRows.forEach((row) => {
+          row.addEventListener("click", () => {
+            if (row.dataset.queueLead) {
+              showLeadDetail(JSON.parse(row.dataset.queueLead || "{}"));
+              return;
             }
-            openDrawer();
+
+            const matchingRow = rows.find((item) => {
+              const lead = normalizeLead(JSON.parse(item.dataset.lead || "{}"));
+              return lead.id === row.dataset.leadId;
+            });
+
+            matchingRow?.click();
           });
         });
       }
@@ -1004,6 +1413,7 @@ const firstLead = leads[0];
       }
 
       bindRows();
+      bindQueueRows();
       loadSupabaseLeads();
     </script>
   </body>

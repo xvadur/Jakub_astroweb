@@ -392,6 +392,27 @@ const approvals = [
         letter-spacing: 0;
       }
 
+      .section-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+        justify-content: flex-end;
+      }
+
+      .inline-link {
+        display: inline-flex;
+        min-height: 36px;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        padding: 7px 14px;
+        background: var(--text);
+        color: #fff;
+        font-size: 13px;
+        font-weight: 800;
+      }
+
       .pill {
         display: inline-flex;
         min-height: 30px;
@@ -990,8 +1011,11 @@ const approvals = [
       <section class="main-grid">
         <article class="card section-card">
           <div class="section-head">
-            <h2>Dnešné priority - TOP 5</h2>
-            <span class="pill danger">1 urgentné</span>
+            <h2>Dnešná operačná fronta</h2>
+            <div class="section-actions">
+              <span class="pill danger">1 urgentné</span>
+              <a class="inline-link" href="/dashboard/leady/">Otvoriť lead cockpit</a>
+            </div>
           </div>
           <div class="priority-list">
             {priorities.map((item) => (

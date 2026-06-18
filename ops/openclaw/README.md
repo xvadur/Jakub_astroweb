@@ -37,6 +37,7 @@ Aktualny lokalny stav 2026-06-07:
 - `docker-compose.jakub.override.yml` - portable Docker Compose override, ktory mountne Jakub Astro repo do OpenClaw kontajnera.
 - `supabase/SUPABASE_SCHEMA.sql` - prvy navrh CRM schemy pre Supabase.
 - `tools/supabase-crm.mjs` - lokalny deterministicky Supabase CRM tool pre OpenClaw.
+- `tools/supabase-media.mjs` - lokalny deterministicky media/property tool pre ulozenie Telegram alebo lokalnych fotiek do Supabase Storage a `public.media`.
 - `tools/site-listings.mjs` - lokalny deterministicky listing tool pre audit, drafty a approval requesty.
 
 ## Kriticka architektura
@@ -143,6 +144,53 @@ node /home/node/Jakub_Astro/ops/openclaw/tools/supabase-crm.mjs crm.createContac
 ```
 
 Tool pri vytvarani alebo uprave entity automaticky zapisuje audit log do `audit_logs`. CRM V0 workspace zostava iba fallback, ked Supabase tool nie je nakonfigurovany alebo zlyha.
+
+## Supabase media tool
+
+Fotky z Telegramu nemaju ist priamo do verejneho web repozitara. Prvy krok je private Supabase Storage bucket:
+
+```text
+jakub-media
+```
+
+Metadata su v:
+
+```text
+public.media
+```
+
+Cross-reference pravidlo:
+
+- media patri k `property_id`, ak ide o nehnutelnost alebo property draft,
+- media patri k `lead_id`, ak ide o lead alebo booking kontext,
+- chybajuce udaje idu do `notes`,
+- dalsi krok ide do `tasks` s `property_id` alebo `lead_id`.
+
+Tool:
+
+```bash
+node /home/node/Jakub_Astro/ops/openclaw/tools/supabase-media.mjs --help
+```
+
+Priklad ulozenia Telegram fotky:
+
+```bash
+node /home/node/Jakub_Astro/ops/openclaw/tools/supabase-media.mjs media.saveTelegramPhoto --json '{"telegram_file_id":"<file-id>","property_id":"<uuid>"}'
+```
+
+Priklad property draftu s fotkami a chybajucou cenou:
+
+```bash
+node /home/node/Jakub_Astro/ops/openclaw/tools/supabase-media.mjs media.ingestPropertyMedia --json '{"title":"Byt Ruzinov","location":"Ruzinov","missing_fields":["price_text"],"telegram_files":[{"telegram_file_id":"<file-id>"}]}'
+```
+
+Verejny web stale pouziva schvalene assets v:
+
+```text
+public/images/listings/<slug>/
+```
+
+Prechod zo Supabase media do verejneho webu je approval krok: vybrat fotky, optimalizovat pre web, pripravit patch, build, staging review, az potom produkcia.
 
 Overene 2026-06-07:
 

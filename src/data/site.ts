@@ -7,7 +7,7 @@ export const site = {
   siteUrl: "https://jakubolsa.sk",
   stagingUrl: "https://staging.jakubolsa.sk",
   cityLabel: "Slovensko",
-  shortPromise: "Osobne vás prevediem predajom. So servisom a obchodnou sieťou BOSEN Group za chrbtom.",
+  shortPromise: "Predaj vediem osobne. Zázemie BOSEN a AI-assisted systém držia proces pokope.",
   intro:
     "Hral som hokej na profesionálnej úrovni, potom som pracoval s klientmi vo financiách a dnes tieto skúsenosti používam v realitách. Pri predaji hodnotnej nehnuteľnosti nejde len o inzerát. Rozhoduje stratégia, prezentácia, čísla, právny a finančný servis a najmä to, kto vie o príležitosti v správny moment.",
   contact: {
@@ -28,9 +28,33 @@ export const site = {
   handshakeImage: "/images/jakub-handshake.png",
   proofPoints: [
     "osobný maklér, ktorý drží proces od stratégie po podpis",
-    "relevantní kupujúci, investori a interná sieť BOSEN Group",
+    "relevantní kupujúci, dopyty a interná sieť BOSEN Group",
     "právny, finančný a obchodný servis bez zbytočného presúvania práce na klienta",
   ],
+  heroStory: {
+    eyebrow: "Jakub Olša / BOSEN Group / AI-assisted lead systém",
+    title: "Predaj nie je inzerát. Je to riadený obchod.",
+    lead:
+      "Jakub vedie predaj osobne. BOSEN pridáva servisné zázemie. Web, rezervačný flow, CRM a AI-assisted follow-up držia dopyty pokope, aby sa dobrý lead nestratil po prvom kliknutí.",
+    beats: [
+      {
+        label: "01",
+        title: "Človek na vašej strane",
+        text: "Predávajúci nerieši portály, telefonáty a chaos sám. Má jedného makléra, ktorý drží stratégiu aj komunikáciu.",
+      },
+      {
+        label: "02",
+        title: "BOSEN servis za ním",
+        text: "Ocenenie, príprava, marketing, obhliadky, zmluvy, financovanie a kataster sa koordinujú cez overené zázemie.",
+      },
+      {
+        label: "03",
+        title: "Systém po odoslaní",
+        text: "Dopyt nejde len do inboxu. Rezervácia prejde cez kalendár, CRM, notifikáciu a AI-assisted pracovný follow-up.",
+      },
+    ],
+    systemSteps: ["web", "kalendár", "CRM", "Telegram", "agent"],
+  },
   trackRecord: {
     eyebrow: "Skúsenosť bez pózy",
     title: "Z hokeja cez banku do realít. Stále rozhoduje príprava, komunikácia a dôvera.",
@@ -60,7 +84,7 @@ export const site = {
     eyebrow: "Servis BOSEN Group",
     title: "Osobná starostlivosť makléra, servisné zázemie silnej realitnej agentúry.",
     text:
-      "Jakub je človek, s ktorým riešite predaj priamo. BOSEN Group je jeho domovské zázemie, ktoré mu dáva do ruky kompletný servis: od ocenenia a stratégie cez prémiový marketing až po právne, finančné, investičné a obchodné riešenia.",
+      "Jakub je človek, s ktorým riešite predaj priamo. BOSEN Group je jeho domovské zázemie, ktoré mu dáva do ruky servis od ocenenia a stratégie cez prípravu nehnuteľnosti a marketing až po právnu, finančnú a obchodnú koordináciu.",
     items: [
       {
         title: "Stratégia ceny a predaja",
@@ -76,7 +100,7 @@ export const site = {
       },
       {
         title: "Špeciálne scenáre",
-        text: "Výkup, prenájom bez starostí, kúpa nového bývania alebo investičná nehnuteľnosť nie sú bokom od predaja. Sú to možné stratégie, ktoré treba pomenovať včas.",
+        text: "Prenájom, správa nehnuteľnosti alebo nadväzujúca kúpa nového bývania nemajú zostať bokom. Sú to možné stratégie, ktoré treba pomenovať skôr, než sa spustí predaj.",
       },
     ],
   },
@@ -84,7 +108,7 @@ export const site = {
     eyebrow: "Sieť pred verejným trhom",
     title: "Silný predaj sa často začne skôr, než sa byt objaví na portáli.",
     text:
-      "Ak má nehnuteľnosť dobré parametre, nestačí čakať na náhodného záujemcu z inzerátu. Najprv treba vedieť, komu ju ukázať: konkrétnym kupujúcim, investorom, kolegom a ľuďom, ktorí už aktívne hľadajú. Toto je rozdiel medzi pasívnou inzerciou a aktívnym predajom.",
+      "Ak má nehnuteľnosť dobré parametre, nestačí čakať na náhodného záujemcu z inzerátu. Najprv treba vedieť, komu ju ukázať: konkrétnym kupujúcim, kolegom, existujúcim dopytom a ľuďom, ktorí už aktívne hľadajú. Toto je rozdiel medzi pasívnou inzerciou a aktívnym predajom.",
     items: [
       {
         kicker: "Jakub osobne",
@@ -105,39 +129,92 @@ export const site = {
   },
   services: [
     {
-      title: "Predaj hodnotnej nehnuteľnosti",
-      text: "Ak chcete predať byt, dom alebo investičnú nehnuteľnosť, začnem stratégiou. Pripravím cenu, prezentáciu, marketing, obhliadky, vyjednávanie aj nadväzujúci servis.",
+      title: "Nacenenie a predajná stratégia",
+      text: "Najprv oddelíme cenový potenciál od želania. Pozriem lokalitu, stav, dispozíciu, dopyt, porovnateľné ponuky a cieľ majiteľa: cenu, časový rámec, diskrétnosť alebo nadväzujúcu kúpu.",
     },
     {
-      title: "Kúpa alebo výmena bývania",
-      text: "Pri kúpe alebo prechode zo starého bývania do nového pomôžem čítať trh prakticky: čo dáva zmysel, kde sú riziká, čo si preveriť a ako načasovať predaj a kúpu.",
+      title: "Príprava nehnuteľnosti na predaj",
+      text: "Spolu určíme, čo má zmysel upraviť pred fotením a čo už cenu nezvýši. Pri vhodných prípadoch viem cez BOSEN zázemie koordinovať upratanie, presvetlenie, dozariadenie alebo homestaging.",
     },
     {
-      title: "Prenájom a správa",
-      text: "Pri prenájme nastavím ponuku, prefiltrujem záujemcov a nastavím proces tak, aby majiteľ nemusel riešiť každý detail sám.",
+      title: "Prémiová prezentácia a marketing",
+      text: "Ponuka musí ukázať hodnotu nehnuteľnosti, nie iba základné metre. Podľa prípadu riešim text, fotky, video, 3D prehliadku, dron, inzerciu a reklamnú podporu cez BOSEN zázemie.",
     },
     {
-      title: "Predajný audit",
-      text: "Ak ešte neviete, či predávať, čakať, prenajímať alebo riešiť výkup, začnem auditom situácie a poviem, ktorá cesta dáva najväčší zmysel.",
+      title: "Kupujúci, obhliadky a vyjednávanie",
+      text: "Nenechávam predaj len na portáli. Pracujem s relevantnými záujemcami, internou sieťou, obhliadkami, spätnou väzbou a vyjednávaním tak, aby majiteľ videl, čo sa deje.",
+    },
+    {
+      title: "Právny, finančný a katastrálny servis",
+      text: "Rezervačnú zmluvu, kúpnu dokumentáciu, úschovu, hypotéku, znalca, poistenie a kataster koordinujem cez právne a finančné zázemie BOSEN/partnerov. Klient má jeden kontakt, ale za procesom nestojí jeden človek sám.",
+    },
+    {
+      title: "Prenájom alebo správa ako alternatíva",
+      text: "Ak predaj nie je najlepší scenár, vieme prejsť aj prenájom alebo správu nehnuteľnosti cez BOSEN zázemie. Nie každý byt treba hneď predávať; niekedy je najprv dôležité porovnať možnosti.",
     },
   ],
   process: [
     {
       step: "01",
-      title: "Stratégia, cena a cieľ",
-      text: "Najprv si s vami ujasním, čo má byť dobrý výsledok. Až potom riešim inzerciu, termíny a marketing.",
+      title: "Rezervácia konzultácie",
+      text: "Cez web pošlete zámer, lokalitu, základné parametre a preferovaný termín. Nie je to len kontakt, ale prvý vstup do stratégie.",
     },
     {
       step: "02",
-      title: "Marketing a dopyt",
-      text: "Ponuka nesmie len čakať. Pracujem s prezentáciou, internou sieťou, marketingom a kupujúcimi, ktorí dávajú zmysel.",
+      title: "Príprava pred hovorom",
+      text: "Pozriem si situáciu, lokalitu, typ nehnuteľnosti a to, čo chcete dosiahnuť. Na prvý hovor tak neprichádzame naslepo.",
     },
     {
       step: "03",
-      title: "Vyjednávanie a servis",
-      text: "Držím obhliadky, komunikáciu, dohodu aj právny servis pokope. Vy sa nemusíte starať o nič.",
+      title: "Prvý hovor",
+      text: "Prejdeme cieľ, časový tlak, očakávania, možné riziká a hranice predaja. Tu sa ukáže, či má dávať zmysel cena, rýchlosť alebo diskrétnosť.",
+    },
+    {
+      step: "04",
+      title: "Obhliadka alebo podklady",
+      text: "Buď si nehnuteľnosť pozriem osobne, alebo si doplníme fotky, list vlastníctva, dispozíciu, stav a ďalšie fakty potrebné pre rozhodnutie.",
+    },
+    {
+      step: "05",
+      title: "Nacenenie a stratégia",
+      text: "Navrhnem realistický postup: cenové pásmo, spôsob uvedenia na trh, prípravu prezentácie a to, či má zmysel tichý predpredaj alebo verejná kampaň.",
+    },
+    {
+      step: "06",
+      title: "Prezentácia a marketing",
+      text: "Pripraví sa text, fotenie, video, prípadný staging, inzercia, reklama a aktivácia relevantných kupujúcich alebo siete.",
+    },
+    {
+      step: "07",
+      title: "Obhliadky a dohoda",
+      text: "Riešim komunikáciu so záujemcami, spätnú väzbu, obhliadky, ponuky a vyjednávanie. Majiteľ má prehľad bez toho, aby niesol celý operatívny tlak.",
+    },
+    {
+      step: "08",
+      title: "Zmluvy, kataster, odovzdanie",
+      text: "Po dohode sa koordinuje právny a finančný servis, podpisy, úschova, kataster a odovzdanie. Proces sa nekončí podaním ruky.",
     },
   ],
+  trustStandards: {
+    eyebrow: "Pracovný štandard",
+    title: "Dôvera nemá byť ikonka v päte. Má byť viditeľná v tom, ako sa vedie celý predaj.",
+    text:
+      "Jakub stavia na osobnom prístupe, príprave, priebežnom sledovaní predajných trendov a overených obchodných postupoch. Profesijné členstvo a presnú formuláciu etického kódexu doplníme až po potvrdení verejného znenia, bez prehnaných claimov.",
+    items: [
+      {
+        title: "Jasná stratégia pred prvým inzerátom",
+        text: "Najprv cieľ, cena, riziká a spôsob predaja. Až potom portály, fotky a reklama.",
+      },
+      {
+        title: "Osobná komunikácia bez presúvania zodpovednosti",
+        text: "Klient rieši predaj s Jakubom, pričom servisné časti vie koordinovať cez BOSEN Group a partnerov.",
+      },
+      {
+        title: "Bez neoverených sľubov",
+        text: "Nepoužívame tvrdenia typu najlepší, garantovaný alebo certifikovaný, kým na ne nie je presný a verejne použiteľný podklad.",
+      },
+    ],
+  },
   saleTime: {
     eyebrow: "Predajná stratégia",
     title: "Najlepšia cesta nemusí byť vždy okamžitý inzerát na portáli.",
@@ -151,10 +228,10 @@ export const site = {
       "Pošlite základné informácie a pripravím prvý pohľad na cenu, riziká a najvhodnejší postup. Cieľom nie je lacný automatický odhad, ale praktická stratégia predaja s človekom, ktorý vie proces dotiahnuť.",
   },
   bookingFunnel: {
-    eyebrow: "Rezervácia konzultácie",
-    title: "Vyberte si termín a pošlite mi kontext ešte pred prvým telefonátom.",
+    eyebrow: "Predajná stratégia",
+    title: "Rezervujte si hovor a pošlite mi kontext, aby sme riešili konkrétny postup.",
     text:
-      "Za pár krokov mi dáte základné údaje k nehnuteľnosti a vyberiete si čas hovoru. Vďaka tomu sa viem pripraviť na konkrétnu situáciu, nie iba na všeobecný rozhovor.",
+      "Za pár krokov pošlete zámer, lokalitu, základné parametre a časový horizont. Pred prvým telefonátom tak viem pripraviť otázky k cene, rizikám, prezentácii a ďalšiemu kroku.",
     promise: [
       "2 minúty na vyplnenie",
       "hneď vidím zámer, lokalitu a časový rámec",

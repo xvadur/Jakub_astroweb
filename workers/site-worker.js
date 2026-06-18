@@ -14,7 +14,26 @@ const DEFAULT_ALLOWED_ORIGINS = [
 const DEFAULT_WORK_START = "09:00";
 const DEFAULT_WORK_END = "19:00";
 const DEFAULT_WORKING_DAYS = [0, 1, 2, 3, 4, 5, 6];
-const DEFAULT_MIN_LEAD_MINUTES = 0;
+const DEFAULT_MIN_LEAD_MINUTES = 120;
+const ATTRIBUTION_FIELDS = [
+  ["utm_source", "UTM source"],
+  ["utm_medium", "UTM medium"],
+  ["utm_campaign", "UTM campaign"],
+  ["utm_content", "UTM content"],
+  ["utm_term", "UTM term"],
+  ["gclid", "Google click id"],
+  ["gbraid", "Google GBRAID"],
+  ["wbraid", "Google WBRAID"],
+  ["fbclid", "Meta click id"],
+  ["msclkid", "Microsoft click id"],
+  ["referrer", "Referrer"],
+  ["landing_page", "Landing page"],
+  ["landing_path", "Landing path"],
+  ["booking_page", "Booking page"],
+  ["booking_path", "Booking path"],
+  ["first_seen_at", "First seen"],
+  ["last_seen_at", "Last seen"],
+];
 
 export default {
   async fetch(request, env, ctx) {
@@ -241,8 +260,53 @@ async function handleBooking(request, env, ctx, headers) {
     crmRecords,
   });
 
-  ctx.waitUntil(telegramPromise.catch(() => null));
-  ctx.waitUntil(openClawPromise.catch(() => null));
+  if (crmStatus === "crm_failed") {
+    ctx.waitUntil(
+      createSupabaseAdminCase(env, {
+        severity: "high",
+        title: "Supabase CRM write failed after booking",
+        description: buildAdminCaseDescription(payload, {
+          service: "supabase",
+          bookingStatus,
+          mode,
+          error: crmResult.error,
+        }),
+      }).catch(() => null),
+    );
+  }
+
+  ctx.waitUntil(
+    telegramPromise.catch((error) =>
+      createSupabaseAdminCase(env, {
+        tenantId: crmRecords?.tenantId,
+        severity: "medium",
+        title: "Telegram booking notification failed",
+        description: buildAdminCaseDescription(payload, {
+          service: "telegram",
+          bookingStatus,
+          mode,
+          crmStatus,
+          error: error instanceof Error ? error.message : "Unknown Telegram error",
+        }),
+      }).catch(() => null),
+    ),
+  );
+  ctx.waitUntil(
+    openClawPromise.catch((error) =>
+      createSupabaseAdminCase(env, {
+        tenantId: crmRecords?.tenantId,
+        severity: "high",
+        title: "OpenClaw booking handoff failed",
+        description: buildAdminCaseDescription(payload, {
+          service: "openclaw",
+          bookingStatus,
+          mode,
+          crmStatus,
+          error: error instanceof Error ? error.message : "Unknown OpenClaw error",
+        }),
+      }).catch(() => null),
+    ),
+  );
 
   return json(
     {
@@ -814,6 +878,7 @@ async function createSupabaseLead(env, tenantId, contactId, payload, context) {
       next_follow_up_at: buildFollowUpAt(context.interval?.start, context.timeZone),
       raw_payload: {
         ...payload,
+        attribution: buildAttributionPayload(payload),
         booking_status: context.bookingStatus,
         booking_mode: context.mode,
         calendar_event_id: context.calendarEvent?.id || "",
@@ -864,6 +929,27 @@ async function createSupabaseNote(env, tenantId, entityType, entityId, body, sou
   });
 
   return firstRow(rows);
+}
+
+async function createSupabaseAdminCase(env, data) {
+  if (!hasSupabase(env)) {
+    return { ok: false, skipped: true, reason: "missing_supabase_config" };
+  }
+
+  const tenantId = data.tenantId || (await ensureSupabaseTenant(env)).id;
+  const rows = await supabaseRequest(env, `/admin_cases?select=id,status`, {
+    method: "POST",
+    body: {
+      tenant_id: tenantId,
+      severity: clean(data.severity) || "medium",
+      title: clean(data.title).slice(0, 180),
+      description: clean(data.description).slice(0, 4000),
+      failed_run_id: clean(data.failedRunId),
+      status: "open",
+    },
+  });
+
+  return { ok: true, case: firstRow(rows) };
 }
 
 async function supabaseRequest(env, path, options = {}) {
@@ -1046,6 +1132,8 @@ function buildTelegramMessage(payload, context) {
     context.calendarEvent?.htmlLink ? `Kalendár: ${context.calendarEvent.htmlLink}` : "",
     "",
     ...leadLines(payload),
+    "",
+    ...attributionLines(payload),
   ].filter(Boolean);
 
   return lines.join("\n");
@@ -1124,6 +1212,8 @@ function buildOpenClawBookingPayload(payload, context) {
       page_url: clean(payload.page_url),
       created_at: clean(payload.created_at),
     },
+    attribution: buildAttributionPayload(payload),
+    attribution_summary: buildAttributionSummary(payload),
     raw_payload: payload,
   };
 }
@@ -1148,6 +1238,73 @@ function leadLines(payload) {
     "Čo je dôležité:",
     clean(payload.sprava) || "-",
   ];
+}
+
+function buildAttributionPayload(payload) {
+  const attribution = {};
+
+  for (const [key] of ATTRIBUTION_FIELDS) {
+    const value = cleanAttributionValue(payload, key);
+    if (value) attribution[key] = value;
+  }
+
+  return attribution;
+}
+
+function cleanAttributionValue(payload, key) {
+  const nested = payload && typeof payload.attribution === "object" && payload.attribution ? payload.attribution[key] : "";
+  return clean(payload[key] || nested).slice(0, 500);
+}
+
+function buildAttributionSummary(payload) {
+  const attribution = buildAttributionPayload(payload);
+  const campaignParts = ["utm_source", "utm_medium", "utm_campaign"].map((key) => attribution[key]).filter(Boolean);
+  const detailParts = ["utm_content", "utm_term"].map((key) => attribution[key]).filter(Boolean);
+  const clickParts = ["gclid", "gbraid", "wbraid", "fbclid", "msclkid"].map((key) => attribution[key] && `${key}=${attribution[key]}`).filter(Boolean);
+  const pathParts = ["landing_path", "booking_path"].map((key) => attribution[key]).filter(Boolean);
+  const summary = [];
+
+  if (campaignParts.length) summary.push(`campaign=${campaignParts.join(" / ")}`);
+  if (detailParts.length) summary.push(`detail=${detailParts.join(" / ")}`);
+  if (clickParts.length) summary.push(`click=${clickParts.join(" / ")}`);
+  if (attribution.referrer) summary.push(`referrer=${attribution.referrer}`);
+  if (pathParts.length) summary.push(`path=${pathParts.join(" -> ")}`);
+  if (attribution.first_seen_at) summary.push(`first_seen=${attribution.first_seen_at}`);
+
+  return summary.join("; ");
+}
+
+function attributionLines(payload) {
+  const attribution = buildAttributionPayload(payload);
+
+  return [
+    "Attribution:",
+    ...ATTRIBUTION_FIELDS.map(([key, label]) => `${label}: ${attribution[key] || "-"}`),
+    `Summary: ${buildAttributionSummary(payload) || "-"}`,
+  ];
+}
+
+function buildAdminCaseDescription(payload, context) {
+  return [
+    `Service: ${clean(context.service) || "-"}`,
+    `Severity source: web_booking`,
+    `Booking status: ${clean(context.bookingStatus) || "-"}`,
+    `Booking mode: ${clean(context.mode) || "-"}`,
+    `CRM status: ${clean(context.crmStatus) || "-"}`,
+    `Error: ${clean(context.error) || "-"}`,
+    "",
+    "Lead:",
+    `Meno: ${clean(payload.meno) || "-"}`,
+    `Telefón: ${clean(payload.telefon) || "-"}`,
+    `Email: ${clean(payload.email) || "-"}`,
+    `Zámer: ${clean(payload.zamer) || "-"}`,
+    `Lokalita: ${clean(payload.lokalita) || "-"}`,
+    `Termín: ${clean(payload.datum) || "-"} ${clean(payload.cas) || ""}`.trim(),
+    "",
+    `Attribution: ${buildAttributionSummary(payload) || "-"}`,
+    `Page URL: ${clean(payload.page_url) || "-"}`,
+    `Created at: ${clean(payload.created_at) || "-"}`,
+  ].join("\n");
 }
 
 function buildInterval(date, time, minutes, timeZone) {

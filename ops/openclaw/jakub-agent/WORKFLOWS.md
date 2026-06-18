@@ -104,6 +104,7 @@ Approval je povinny pre:
 - publikaciu na produkcny web,
 - verejny copy alebo listing zmenu,
 - odoslanie citlivej komunikacie klientovi,
+- odoslanie Google review requestu klientovi, ak neexistuje explicitne automatizacne pravidlo,
 - mazanie alebo soft-delete CRM dat,
 - mazanie alebo presun Google Calendar eventu,
 - zmenu credentialov/secrets/access prav.
@@ -120,12 +121,33 @@ Approval netreba pre:
 
 V1 kanal: email.
 
+Databazovy objekt: `public.review_requests`.
+
+Statusy:
+
+- `draft` - agent pripravil text a priradil kontakt/lead/property/deal, este sa neposiela,
+- `approved` - Jakub alebo explicitne pravidlo schvalilo odoslanie,
+- `sent` - sprava bola odoslana klientovi,
+- `responded` - klient reagoval alebo recenzia bola zaznamenana,
+- `skipped` - request sa nema posielat.
+
 Postup:
 
 1. Review request posielaj az ked je obchod uzavrety alebo Jakub explicitne povie, ze klient moze dostat prosbu o recenziu.
-2. Najprv priprav draft emailu v Jakubovom tone.
-3. Pridaj CRM note a task/status `review_requested` az ked bol request schvaleny alebo odoslany.
-4. Neposielaj automaticky bez definovaneho pravidla a approval modelu.
+2. Najprv priprav draft emailu v Jakubovom tone a zapis `review_requests` so statusom `draft`.
+3. Naviaz request na dostupne entity: `tenant_id` povinne, potom `contact_id`, `lead_id`, `property_id`, `deal_id`, ak existuju.
+4. Uloz `channel`, `google_review_url`, `message_text` a pripadne technicke detaily do `raw_payload`.
+5. Ak neexistuje explicitne automatizacne pravidlo, vytvor `approval_requests` a uloz jeho id do `review_requests.approval_request_id`.
+6. Po schvaleni nastav `status = approved` a `approved_at`. Az potom moze nasledovat odoslanie.
+7. Po odoslani nastav `status = sent` a `sent_at`, pridaj CRM note a pripadny task/status `review_requested`.
+8. Ak klient zareagoval alebo bola recenzia zachytena, nastav `status = responded` a `responded_at`.
+9. Ak Jakub povie neposielat, nastav `status = skipped` a `skipped_at`.
+
+Zakaz:
+
+- Neposielaj Google review request automaticky len preto, ze deal je `won`.
+- Nevymyslaj Google review URL; pouzi ulozeny/overeny link alebo poziadaj Jakuba/Adama o doplnenie.
+- Ak chyba kontakt alebo kanal, nechaj request v `draft` a otvor task namiesto odoslania.
 
 ## 7. Admin/error cases
 
@@ -147,11 +169,44 @@ Spustenie: Jakub posle fotky, popis, hlasovku alebo zakladne parametre nehnuteln
 Postup:
 
 1. Vytiahni parametre: typ, lokalita, vymera, izby, stav, cena, vyhody, pravny/technicky stav.
-2. Ak chyba nieco kriticke, poloz kratku otazku.
-3. Zavolaj `site.listings.createDraft` alebo `site.listings.prepareAddListing`.
-4. Priprav draft inzeratu alebo referencneho predaja.
-5. Verejny web patch priprav az cez approval flow.
-6. Produkcia az po staging review.
+2. Fotky najprv uloz do Supabase Storage a `public.media`, nie do verejneho web repozitara.
+3. Pouzi cross-reference:
+   - `properties.id` pre property draft,
+   - `media.property_id` pre fotky,
+   - `properties.lead_id` a `media.lead_id`, ak fotky patria ku konkretnemu leadu,
+   - `notes.entity_type = property` alebo `lead` pre doplnenia,
+   - `tasks.property_id` alebo `tasks.lead_id` pre otvorene otazky.
+4. Ak chyba nieco kriticke, uloz to ako chybajuci udaj a poloz jednu kratku otazku. Nezastavuj ulozenie fotiek.
+5. Ak Jakub odpovie `cena este nie je stanovena`, zapis to do `properties.price_text` alebo do property note podla kontextu; netlac ho do vymyslenej ceny.
+6. Verejny listing draft pre web priprav cez approval flow az po tom, ako mame minimum udajov.
+7. Verejny web patch priprav az cez approval flow.
+8. Produkcia az po staging review.
+
+Primary command pre fotky/property ingest:
+
+```bash
+node /home/node/Jakub_Astro/ops/openclaw/tools/supabase-media.mjs media.ingestPropertyMedia --json '<payload>'
+```
+
+Priklad, ked chyba cena:
+
+```json
+{
+  "title": "Byt Ruzinov",
+  "location": "Ruzinov",
+  "missing_fields": ["price_text"],
+  "telegram_files": [
+    { "telegram_file_id": "<file-id>" }
+  ],
+  "source_text": "Jakub poslal fotky bytu, cena zatial nebola uvedena."
+}
+```
+
+Odpoved Jakubovi:
+
+```text
+Fotky som zaradil k draftu bytu v Ruzinove. Chyba mi cena: mam zapisat cenu, alebo tam zatial dat "cena este nie je stanovena"?
+```
 
 ## 9. Pridanie novej verejnej ponuky
 
@@ -173,17 +228,18 @@ Postup:
    - stav,
    - hlavne vyhody,
    - fotky alebo informaciu, kde su fotky.
-2. Ak chybaju fotky alebo zakladne parametre, poloz kratku otazku.
-3. Zavolaj:
+2. Ak poslal fotky cez Telegram, najprv ich uloz cez `supabase-media.mjs` a naviaz na property draft.
+3. Ak chybaju fotky alebo zakladne parametre, poloz kratku otazku a otvor task/poznamku v Supabase.
+4. Zavolaj:
 
 ```bash
 node /home/node/Jakub_Astro/ops/openclaw/tools/site-listings.mjs site.listings.prepareAddListing --json '<payload>'
 ```
 
-4. Odpovedz Jakubovi, ze draft je pripraveny a co chyba.
-5. Verejny patch do `src/data/site.ts` priprav az po approval.
-6. Po patchi spusti `npm run build`.
-7. Review najprv na stagingu.
+5. Odpovedz Jakubovi, ze draft je pripraveny a co chyba.
+6. Verejny patch do `src/data/site.ts` priprav az po approval.
+7. Po patchi spusti `npm run build`.
+8. Review najprv na stagingu.
 
 Bez approval:
 
