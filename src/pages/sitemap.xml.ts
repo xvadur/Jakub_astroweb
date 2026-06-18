@@ -1,6 +1,6 @@
 import { site } from "../data/site";
 
-const lastmod = "2026-06-03";
+const lastmod = "2026-06-18";
 
 const staticRoutes = [
   { path: "/", priority: "1.0", changefreq: "weekly" },

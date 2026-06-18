@@ -73,41 +73,41 @@ Purpose: prepare Jakub's web/backend for paid acquisition and operational handof
 
 ### Technical crawl/indexing
 
-- [ ] Production `robots.txt` allows Googlebot, Bingbot and AI/search crawlers we intentionally allow.
-- [ ] Staging remains `noindex,nofollow,noarchive`.
-- [ ] `/sitemap.xml` includes homepage, reservation page, listing details and seller landing pages.
+- [x] Production `robots.txt` allows Googlebot, Bingbot and AI/search crawlers we intentionally allow.
+- [x] Staging remains `noindex,nofollow,noarchive`.
+- [x] `/sitemap.xml` includes homepage, reservation page, listing details and seller landing pages.
 - [ ] Submit sitemap in Google Search Console after production review.
-- [ ] Verify canonical URLs on every indexable page.
-- [ ] Verify OpenGraph/Twitter metadata on indexable pages.
+- [x] Verify canonical URLs on every indexable page.
+- [x] Verify OpenGraph/Twitter metadata on indexable pages.
 - [ ] Check 404 page and redirects.
 - [ ] Run Lighthouse/Core Web Vitals pass before production ad traffic.
 
 ### Structured data
 
-- [ ] Keep `Person` structured data for Jakub.
-- [ ] Keep `RealEstateAgent` / `LocalBusiness` structured data where appropriate.
-- [ ] Add/verify `Service` structured data for:
-  - [ ] predaj nehnuteľnosti,
-  - [ ] kúpa nehnuteľnosti,
-  - [ ] prenájom,
-  - [ ] odhad ceny / predajná stratégia.
-- [ ] Add `BreadcrumbList` on landing pages and listing detail pages.
-- [ ] Add `FAQPage` only on pages with visible FAQ content.
+- [x] Keep `Person` structured data for Jakub.
+- [x] Keep `RealEstateAgent` / `LocalBusiness` structured data where appropriate.
+- [x] Add/verify `Service` structured data for:
+  - [x] predaj nehnuteľnosti,
+  - [x] kúpa nehnuteľnosti,
+  - [x] prenájom,
+  - [x] odhad ceny / predajná stratégia.
+- [x] Add `BreadcrumbList` on landing pages and listing detail pages.
+- [x] Add `FAQPage` only on pages with visible FAQ content.
 - [ ] Validate structured data in Rich Results Test / Search Console.
 
 ### Seller content
 
-- [ ] Finish `/predaj-bytu-bratislava/` as first seller-intent page.
-- [ ] Add Q&A/FAQ section answering at least 16 seller questions.
+- [x] Finish `/predaj-bytu-bratislava/` as first seller-intent page.
+- [x] Add Q&A/FAQ section answering at least 16 seller questions.
 - [ ] Create next landing pages:
   - [ ] `/ocenenie-bytu-bratislava/`
   - [ ] `/predaj-bytu-ruzinov/`
   - [ ] `/predaj-bytu-stare-mesto/`
   - [ ] `/predaj-zdedenej-nehnutelnosti/`
-- [ ] Add internal links from homepage to seller pages.
+- [x] Add internal links from homepage to seller pages.
 - [ ] Add internal links from seller pages to relevant sold references.
-- [ ] Add a short “Ako funguje konzultácia” block on seller pages.
-- [ ] Update `/llms.txt` after content changes.
+- [x] Add a short “Ako funguje konzultácia” block on seller pages.
+- [x] Update `/llms.txt` after content changes.
 
 ## 3. Client email follow-up
 

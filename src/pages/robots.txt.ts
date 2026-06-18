@@ -23,12 +23,23 @@ Disallow: /*
 `
     : `User-agent: *
 Allow: /
+Disallow: /dashboard/
+Disallow: /api/dashboard/
 
 User-agent: Googlebot
 Allow: /
+Disallow: /dashboard/
+Disallow: /api/dashboard/
+
+User-agent: Bingbot
+Allow: /
+Disallow: /dashboard/
+Disallow: /api/dashboard/
 
 User-agent: OAI-SearchBot
 Allow: /
+Disallow: /dashboard/
+Disallow: /api/dashboard/
 
 Sitemap: ${new URL("/sitemap.xml", site.siteUrl).toString()}
 `;

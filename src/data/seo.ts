@@ -265,6 +265,30 @@ export function createListingJsonLd(
       createWebsiteEntity(),
       createServiceEntity(),
       {
+        "@type": "BreadcrumbList",
+        "@id": `${meta.canonicalUrl}#breadcrumbs`,
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "Úvod",
+            item: site.siteUrl,
+          },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: listing.group === "sold" ? "Referenčné predaje" : "Aktuálne ponuky",
+            item: absoluteUrl("/#ponuky"),
+          },
+          {
+            "@type": "ListItem",
+            position: 3,
+            name: listing.title,
+            item: meta.canonicalUrl,
+          },
+        ],
+      },
+      {
         "@type": "WebPage",
         "@id": meta.canonicalUrl,
         url: meta.canonicalUrl,
@@ -276,6 +300,7 @@ export function createListingJsonLd(
           "@type": "ImageObject",
           url: meta.imageUrl,
         },
+        breadcrumb: { "@id": `${meta.canonicalUrl}#breadcrumbs` },
         about: {
           "@type": "Residence",
           name: listing.title,

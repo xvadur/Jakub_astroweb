@@ -224,9 +224,9 @@ This makes the upside larger than a one-time website fee if attribution and reve
 - [x] Include attribution in Telegram and OpenClaw booking handoff.
 - [x] Add failure visibility for Telegram/OpenClaw side effects.
 - [ ] Start dashboard module backlog with leads + follow-ups + approvals.
-- [ ] Add first seller landing page: `predaj-bytu-bratislava`.
-- [ ] Add seller FAQ content.
-- [ ] Add structured data updates.
-- [ ] Run local build.
+- [x] Add first seller landing page: `predaj-bytu-bratislava`.
+- [x] Add seller FAQ content.
+- [x] Add structured data updates.
+- [x] Run local build.
 - [ ] Deploy to staging.
 - [ ] Run a small paid search test after Jakub calendar is connected.
