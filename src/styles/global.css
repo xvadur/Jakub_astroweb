@@ -35,4 +35,14 @@
     display: block;
     max-width: 100%;
   }
+
+  :where(button[data-cookie-consent-manage]) {
+    border: 0;
+    padding: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: inherit;
+    cursor: pointer;
+  }
 }

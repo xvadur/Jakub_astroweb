@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import CookieConsent from "../components/CookieConsent.astro";
 import { site } from "../data/site";
 import { createPageMeta, createSellerIntentJsonLd, serializeJsonLd } from "../data/seo";
 
@@ -342,6 +343,7 @@ const proofReferences = site.listings
       <div class="footer-links">
         <a href="/#ponuky">Pozrieť ponuky</a>
         <a href="/ochrana-osobnych-udajov/">Ochrana údajov a cookies</a>
+        <button type="button" data-cookie-consent-manage>Spravovať cookies</button>
       </div>
     </footer>
 
@@ -1169,5 +1171,6 @@ const proofReferences = site.listings
         }
       }
     </style>
+    <CookieConsent />
   </body>
 </html>

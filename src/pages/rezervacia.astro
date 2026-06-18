@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import CookieConsent from "../components/CookieConsent.astro";
 import { site } from "../data/site";
 import { createPageMeta, createReservationJsonLd, serializeJsonLd } from "../data/seo";
 
@@ -378,6 +379,7 @@ const googleMapsScriptUrl = googleMapsApiKey
       <div class="footer-links">
         <a href="/#ponuky">Pozrieť ponuky</a>
         <a href="/ochrana-osobnych-udajov/">Ochrana údajov a cookies</a>
+        <button type="button" data-cookie-consent-manage>Spravovať cookies</button>
       </div>
     </footer>
 
@@ -432,6 +434,19 @@ const googleMapsScriptUrl = googleMapsApiKey
             page_path: window.location.pathname,
             ...detail,
           };
+          const externalEventName = (() => {
+            if (name === "step_view") {
+              if (detail.step_name === "intent") return "booking_start";
+              if (detail.step_name === "property") return "booking_step_property";
+              if (detail.step_name === "date") return "booking_step_date";
+              if (detail.step_name === "contact") return "booking_step_contact";
+            }
+
+            if (name === "intent_select") return "booking_step_intent";
+            if (name === "date_select" || name === "time_select") return "booking_step_date";
+            if (name === "submit_success") return "generate_lead";
+            return "";
+          })();
 
           try {
             if (Array.isArray(window.dataLayer)) {
@@ -447,6 +462,33 @@ const googleMapsScriptUrl = googleMapsApiKey
             window.dispatchEvent(new CustomEvent("booking:funnel", { detail: payload }));
           } catch {
             // Tracking must never block the reservation flow.
+          }
+
+          if (!externalEventName) return;
+
+          try {
+            const attribution = typeof getAttribution === "function" ? getAttribution() : {};
+            const eventParams = {
+              intent: detail.intent || funnelValue("zamer") || "",
+              property_type: funnelValue("typ") || "",
+              booking_status: detail.booking_status || "",
+              mode: detail.mode || "",
+              utm_source: attribution.utm_source || "",
+              utm_medium: attribution.utm_medium || "",
+              utm_campaign: attribution.utm_campaign || "",
+              utm_content: attribution.utm_content || "",
+              utm_term: attribution.utm_term || "",
+              landing_path: attribution.landing_path || "",
+              lead_source: attribution.utm_source || attribution.referrer || "",
+            };
+
+            window.jakubConsent?.trackEvent?.(externalEventName, eventParams);
+
+            if (externalEventName === "generate_lead") {
+              window.jakubConsent?.trackLeadConversion?.(eventParams);
+            }
+          } catch {
+            // Consent-aware analytics must never block the reservation flow.
           }
         };
 
@@ -2027,5 +2069,6 @@ const googleMapsScriptUrl = googleMapsApiKey
 
       }
     </style>
+    <CookieConsent />
   </body>
 </html>

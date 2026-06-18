@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import CookieConsent from "../components/CookieConsent.astro";
 import { site } from "../data/site";
 
 const siteEnv = import.meta.env.PUBLIC_SITE_ENV ?? "production";
@@ -100,6 +101,19 @@ const canonicalUrl = new URL("/ochrana-osobnych-udajov/", site.siteUrl).toString
         color: var(--muted);
         font-size: 14px;
       }
+
+      .cookie-manage {
+        display: inline-flex;
+        min-height: 42px;
+        align-items: center;
+        justify-content: center;
+        margin-top: 10px;
+        border: 1px solid var(--ink);
+        border-radius: 6px;
+        padding: 0 16px;
+        color: var(--ink);
+        font-weight: 800;
+      }
     </style>
   </head>
   <body>
@@ -166,12 +180,21 @@ const canonicalUrl = new URL("/ochrana-osobnych-udajov/", site.siteUrl).toString
 
       <h2>Cookies</h2>
       <p>
-        Web aktuálne nepoužíva analytické ani marketingové cookies. Rezervačný wizard môže
-        volať technické API služby Google a Cloudflare Worker bez toho, aby sa na webe spúšťal
-        remarketing. Ak budú neskôr doplnené analytiky, remarketing alebo iné cookies, ktoré nie
-        sú technicky nevyhnutné, web doplním o cookie lištu s možnosťou súhlas odmietnuť alebo
-        zmeniť.
+        Web používa technicky nevyhnutné služby potrebné na zobrazenie stránky, bezpečnosť,
+        uloženie vašej cookie voľby a fungovanie rezervačného wizardu. Pri vypĺňaní lokality môže
+        rezervačný wizard používať Google Places návrhy adries, aby sa adresa dala overiť.
       </p>
+      <p>
+        Analytické meranie a marketingové meranie sú voliteľné. Analytika slúži na pochopenie
+        návštevnosti a priechodu rezervačným funnelom bez odosielania mena, telefónu, emailu,
+        presnej adresy alebo voľného textu správy. Marketingové meranie slúži najmä na meranie
+        Google Ads konverzie po úspešne odoslanej rezervácii. Remarketing a enhanced conversions
+        nie sú vo V1 zapnuté.
+      </p>
+      <p>
+        Svoj súhlas môžete kedykoľvek zmeniť cez nastavenia cookies.
+      </p>
+      <button class="cookie-manage" type="button" data-cookie-consent-manage>Spravovať cookies</button>
 
       <h2>Vaše práva</h2>
       <p>V súvislosti so spracovaním osobných údajov môžete požiadať najmä o:</p>
@@ -187,7 +210,8 @@ const canonicalUrl = new URL("/ochrana-osobnych-udajov/", site.siteUrl).toString
         aj na Úrad na ochranu osobných údajov Slovenskej republiky.
       </p>
 
-      <p class="updated">Posledná aktualizácia: 7. jún 2026</p>
+      <p class="updated">Posledná aktualizácia: 18. jún 2026</p>
     </main>
+    <CookieConsent />
   </body>
 </html>

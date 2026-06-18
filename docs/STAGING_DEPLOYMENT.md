@@ -106,6 +106,8 @@ Wrangler needs a Cloudflare login or `CLOUDFLARE_API_TOKEN`. Do not store the to
 - `PUBLIC_SITE_ENV=staging` for staging builds.
 - `PUBLIC_BOOKING_URL` optional external calendar link.
 - `PUBLIC_GOOGLE_MAPS_API_KEY` optional browser key for Google Places autocomplete on `/rezervacia/`.
+- `PUBLIC_ANALYTICS_MODE=disabled|test|production`; staging should use `test` only with separate test GA4/Ads IDs, otherwise keep `disabled`.
+- `PUBLIC_GA4_MEASUREMENT_ID`, `PUBLIC_GOOGLE_ADS_ID`, and `PUBLIC_GOOGLE_ADS_CONVERSION_LABEL` are build-time public values for the consent-aware direct Google tag loader. Do not put production IDs into staging builds.
 - `BOOKING_TIME_ZONE`, `BOOKING_SLOT_MINUTES`, `BOOKING_WORK_START`, `BOOKING_WORK_END`, `BOOKING_WORKING_DAYS`, and `BOOKING_MIN_LEAD_MINUTES` are Worker vars in `wrangler.toml`.
 
 `PUBLIC_GOOGLE_MAPS_API_KEY` must be restricted in Google Cloud to the production and staging domains. Do not store it in Git.

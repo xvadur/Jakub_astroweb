@@ -42,15 +42,15 @@ The site must know when analytics/marketing scripts are allowed to run.
 
 ### Tasks
 
-- [ ] Define consent categories:
-  - [ ] necessary,
-  - [ ] analytics,
-  - [ ] marketing.
-- [ ] Add a lightweight consent banner/component.
-- [ ] Store consent choice in a first-party cookie or localStorage.
-- [ ] Do not load analytics/marketing scripts before consent, unless the chosen legal mode allows cookieless analytics.
-- [ ] Add “manage cookies” link in footer/privacy page.
-- [ ] Update privacy page to match actual analytics/email/review stack.
+- [x] Define consent categories:
+  - [x] necessary,
+  - [x] analytics,
+  - [x] marketing.
+- [x] Add a lightweight consent banner/component.
+- [x] Store consent choice in a first-party cookie or localStorage.
+- [x] Do not load analytics/marketing scripts before consent, unless the chosen legal mode allows cookieless analytics.
+- [x] Add “manage cookies” link in footer/privacy page.
+- [x] Update privacy page to match actual analytics/email/review stack.
 
 ### Implementation notes
 
@@ -63,15 +63,15 @@ The site must know when analytics/marketing scripts are allowed to run.
 
 ### Acceptance criteria
 
-- [ ] User can accept/reject analytics.
-- [ ] User can accept/reject marketing.
-- [ ] Choice persists across pages.
-- [ ] GA/Ads tags do not fire before required consent.
-- [ ] Privacy page reflects reality.
+- [x] User can accept/reject analytics.
+- [x] User can accept/reject marketing.
+- [x] Choice persists across pages.
+- [x] GA/Ads tags do not fire before required consent.
+- [x] Privacy page reflects reality.
 
 ### Adam input needed
 
-- [ ] Preferred legal stance: explicit opt-in for analytics/marketing, or cookieless analytics first?
+- [x] Preferred legal stance: explicit opt-in for analytics/marketing, or cookieless analytics first?
 - [ ] Whether BOSEN/legal will review privacy/cookie text.
 
 ## 2. Analytics and ads metrics
@@ -82,24 +82,24 @@ Paid ads and organic traffic must be measurable without leaking PII.
 
 ### Tasks
 
-- [ ] Pick analytics stack:
-  - [ ] GA4 + Google Ads tag,
+- [x] Pick analytics stack:
+  - [x] GA4 + Google Ads tag,
   - [ ] or internal-only tracking first,
   - [ ] or hybrid.
-- [ ] Add environment-gated analytics config:
+- [x] Add environment-gated analytics config:
   - [ ] production measurement id,
-  - [ ] staging disabled or separate test id.
-- [ ] Emit funnel events:
-  - [ ] `booking_start`,
-  - [ ] `booking_step_intent`,
-  - [ ] `booking_step_property`,
-  - [ ] `booking_step_date`,
-  - [ ] `booking_step_contact`,
-  - [ ] `generate_lead` after successful booking.
-- [ ] Add Google Ads conversion event after accepted booking.
-- [ ] Ensure failed booking does not fire conversion.
-- [ ] Ensure duplicate submit does not double-count conversion.
-- [ ] Never send name, phone, email, exact address or full message to analytics.
+  - [x] staging disabled or separate test id.
+- [x] Emit funnel events:
+  - [x] `booking_start`,
+  - [x] `booking_step_intent`,
+  - [x] `booking_step_property`,
+  - [x] `booking_step_date`,
+  - [x] `booking_step_contact`,
+  - [x] `generate_lead` after successful booking.
+- [x] Add Google Ads conversion event after accepted booking.
+- [x] Ensure failed booking does not fire conversion.
+- [x] Ensure duplicate submit does not double-count conversion.
+- [x] Never send name, phone, email, exact address or full message to analytics.
 
 ### Implementation notes
 

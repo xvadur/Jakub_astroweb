@@ -203,7 +203,8 @@ Overené 6. júna 2026:
 - Pred reálnymi klientskymi dátami zamknúť `/dashboard/*` a `/api/dashboard/*` cez Cloudflare Access alebo vlastnú autentifikáciu a až potom zapnúť CRM read mód.
 - Ďalší kritický krok: spustiť kontrolovaný staging booking E2E a overiť calendar -> Supabase -> Telegram -> OpenClaw handoff.
 - Dorobiť dashboard ako pracovný nástroj: lead detail, tasky/follow-upy, appointment view, properties/media, approval queue, agent logs/admin cases a review requesty.
-- Pridať attribution tracking pre reklamu: UTM, referrer, landing page, booking URL, conversion id, Telegram/OpenClaw status.
+- Cookies/analytics V1 je pripravené lokálne: custom consent banner, `localStorage` voľba, explicit opt-in pre analytics/marketing, direct Google tag loader, consent-aware booking funnel eventy a aktualizovaná privacy stránka. Produkčné GA4/Ads ID ešte nie sú nastavené.
+- Doplniť produkčné tracking ID a overiť staging test ID: GA4 measurement id, Google Ads conversion id/label, prípadne test ID pre staging.
 - Pripraviť Google reviews workflow pre Jakubových klientov.
 - Helper na prípadnú rotáciu/obnovu Supabase key mimo repozitára: `ops/openclaw/configure-supabase-service-key.sh`.
 - Kompletný launch TODO pre cookies, reklamy, analytics, email follow-up, review workflow, dashboard auth, anti-spam a monitoring je v `docs/FULL_LAUNCH_BACKEND_TODO_2026-06-18.md`.
@@ -341,7 +342,7 @@ npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY --name jakubastroweb-staging
 - Aktuálne ponuky: doplniť živé nehnuteľnosti, nielen referenčné predaje.
 - SEO: doplniť lokálne landing texty pre Bratislavu a okolie, ak bude cieľ organická návštevnosť.
 - SEO/AI polish: Google Search Console, sitemap submit, Breadcrumb/FAQ/Service structured data, AI-search odpovede a lokálne seller landing pages.
-- Analytics/cookies: pred reklamou vybrať analytics stack, doplniť conversion tracking, UTM attribution a cookie/legal režim.
+- Analytics/cookies: V1 custom consent layer je v kóde; pred reklamou ešte nastaviť GA4/Ads ID cez env, otestovať staging test eventy a potvrdiť finálny BOSEN/legal text.
 - Monitoring: pripraviť health checks pre web/API/OpenClaw a zobraziť failed runs/admin cases na Adamovom globálnom business dashboarde.
 
 ## Rýchly dev postup

@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import CookieConsent from "../components/CookieConsent.astro";
 import { site } from "../data/site";
 import { createHomeJsonLd, createPageMeta, serializeJsonLd } from "../data/seo";
 
@@ -511,6 +512,7 @@ const jsonLd = createHomeJsonLd(pageMeta);
       <div class="footer-links">
         <a href="#ponuky">Pozrieť ponuky</a>
         <a href="/ochrana-osobnych-udajov/">Ochrana údajov a cookies</a>
+        <button type="button" data-cookie-consent-manage>Spravovať cookies</button>
       </div>
     </footer>
 
@@ -2801,5 +2803,6 @@ const jsonLd = createHomeJsonLd(pageMeta);
         }
       }
     </style>
+    <CookieConsent />
   </body>
 </html>
