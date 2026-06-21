@@ -100,6 +100,8 @@ Paid ads and organic traffic must be measurable without leaking PII.
 - [x] Ensure failed booking does not fire conversion.
 - [x] Ensure duplicate submit does not double-count conversion.
 - [x] Never send name, phone, email, exact address or full message to analytics.
+- [x] Generate and store non-PII `analytics_conversion_id` for CRM/Ads conversion dedupe.
+- [x] Send only sanitized conversion parameters to GA4/Google Ads; CRM/calendar IDs remain internal.
 
 ### Implementation notes
 
@@ -119,8 +121,8 @@ Paid ads and organic traffic must be measurable without leaking PII.
 ### Acceptance criteria
 
 - [ ] Staging does not fire production GA/Ads conversion.
-- [ ] Successful booking fires one lead conversion.
-- [ ] Analytics events contain no PII.
+- [ ] Successful booking fires one lead conversion in Tag Assistant / GA4 DebugView after real IDs are configured.
+- [x] Analytics event allowlist excludes name, phone, email, message, CRM IDs and calendar event IDs.
 - [ ] Attribution is present in Supabase raw payload, Telegram, OpenClaw.
 
 ### Adam input needed

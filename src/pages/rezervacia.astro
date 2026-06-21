@@ -280,13 +280,39 @@ const googleMapsScriptUrl = googleMapsApiKey
             </label>
             <label>
               <span>Časový horizont</span>
-              <select name="horizont">
+              <select name="horizont" data-required data-label="časový horizont">
                 <option value="">Vyberte horizont</option>
                 <option value="Ihneď">Ihneď</option>
                 <option value="1-3 mesiace">1-3 mesiace</option>
                 <option value="3-6 mesiacov">3-6 mesiacov</option>
                 <option value="Zatiaľ len zisťujem možnosti">Zatiaľ len zisťujem možnosti</option>
               </select>
+            </label>
+            <label>
+              <span>Vzťah k nehnuteľnosti</span>
+              <select name="vztah_k_nehnutelnosti" data-required data-label="vzťah k nehnuteľnosti">
+                <option value="">Vyberte možnosť</option>
+                <option value="Som vlastník">Som vlastník</option>
+                <option value="Som spoluvlastník">Som spoluvlastník</option>
+                <option value="Riešim predaj za rodinu">Riešim predaj za rodinu</option>
+                <option value="Dedičstvo / dedičské konanie">Dedičstvo / dedičské konanie</option>
+                <option value="Zatiaľ len zisťujem">Zatiaľ len zisťujem</option>
+              </select>
+            </label>
+            <label>
+              <span>Stav predaja</span>
+              <select name="stav_predaja" data-required data-label="stav predaja">
+                <option value="">Vyberte stav</option>
+                <option value="Zatiaľ neinzerujem">Zatiaľ neinzerujem</option>
+                <option value="Už inzerujem bez RK">Už inzerujem bez RK</option>
+                <option value="Už riešim s maklérom">Už riešim s maklérom</option>
+                <option value="Mám iba cenovú predstavu">Mám iba cenovú predstavu</option>
+                <option value="Potrebujem najprv poradiť">Potrebujem najprv poradiť</option>
+              </select>
+            </label>
+            <label>
+              <span>Cenová predstava</span>
+              <input name="cenova_predstava" placeholder="napr. 240 000 €, alebo neviem" />
             </label>
             <label class="full">
               <span>Čo je pre vás dôležité?</span>
@@ -426,6 +452,7 @@ const googleMapsScriptUrl = googleMapsApiKey
         let activeStep = 0;
         let availabilityController;
         let isSubmitting = false;
+        let successfulSubmissionTracked = false;
         const funnelStepNames = ["intent", "property", "date", "contact"];
 
         const trackFunnelEvent = (name, detail = {}) => {
@@ -480,6 +507,11 @@ const googleMapsScriptUrl = googleMapsApiKey
               utm_term: attribution.utm_term || "",
               landing_path: attribution.landing_path || "",
               lead_source: attribution.utm_source || attribution.referrer || "",
+              lead_score: detail.lead_score || funnelValue("lead_score") || "",
+              time_horizon: detail.time_horizon || funnelValue("horizont") || "",
+              owner_relation: detail.owner_relation || funnelValue("vztah_k_nehnutelnosti") || "",
+              sale_status: detail.sale_status || funnelValue("stav_predaja") || "",
+              analytics_conversion_id: detail.analytics_conversion_id || detail.conversion_id || "",
             };
 
             window.jakubConsent?.trackEvent?.(externalEventName, eventParams);
@@ -509,6 +541,7 @@ const googleMapsScriptUrl = googleMapsApiKey
         let memoryAttribution = {};
 
         const safeText = (value) => String(value || "").trim().slice(0, 500);
+        const initialQueryParams = new URLSearchParams(window.location.search);
 
         const readStoredAttribution = () => {
           try {
@@ -598,6 +631,16 @@ const googleMapsScriptUrl = googleMapsApiKey
 
         getAttribution();
 
+        const buildAnalyticsConversionId = () => {
+          try {
+            if (window.crypto?.randomUUID) return window.crypto.randomUUID();
+          } catch {
+            // Fall back to a non-PII local id if Web Crypto is unavailable.
+          }
+
+          return `lead_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 12)}`;
+        };
+
         const parameterLabels = {
           typ_detail: "Typ nehnuteľnosti",
           izby: "Izby",
@@ -616,6 +659,9 @@ const googleMapsScriptUrl = googleMapsApiKey
           ocakavany_najom: "Očakávaný nájom",
           dostupne_od: "Dostupné od",
           rozsah_spravy: "Rozsah správy",
+          vztah_k_nehnutelnosti: "Vzťah k nehnuteľnosti",
+          stav_predaja: "Stav predaja",
+          cenova_predstava: "Cenová predstava",
         };
 
         const defaultRoute = {
@@ -723,6 +769,81 @@ const googleMapsScriptUrl = googleMapsApiKey
             subjectPrefix: "Prenájom alebo správa",
             submitLabel: "Odoslať prenájom/správu",
           },
+        };
+
+        const normalizePrefillValue = (value) =>
+          safeText(value)
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/^-|-$/g, "");
+
+        const intentAliases = {
+          byt: "Predať byt",
+          "predaj-bytu": "Predať byt",
+          "predat-byt": "Predať byt",
+          "predat-bytu": "Predať byt",
+          "predaj-bytu-bratislava": "Predať byt",
+          dom: "Predať dom",
+          "predaj-domu": "Predať dom",
+          "predat-dom": "Predať dom",
+          pozemok: "Predať pozemok",
+          "predaj-pozemku": "Predať pozemok",
+          "predat-pozemok": "Predať pozemok",
+          "komercny-priestor": "Predať komerčný priestor",
+          "predaj-komercneho-priestoru": "Predať komerčný priestor",
+          prenajom: "Prenájom alebo správa",
+          sprava: "Prenájom alebo správa",
+        };
+
+        const resolveIntentPrefill = (value) => {
+          const normalizedValue = normalizePrefillValue(value);
+          if (!normalizedValue) return "";
+
+          const knownIntent = Object.keys(intentRoutes).find(
+            (intent) => normalizePrefillValue(intent) === normalizedValue,
+          );
+
+          return knownIntent || intentAliases[normalizedValue] || "";
+        };
+
+        const setFormFieldIfValid = (name, value) => {
+          const field = funnelForm.elements.namedItem(name);
+          const safeValue = safeText(value);
+          if (!safeValue) return;
+
+          if (field instanceof HTMLInputElement || field instanceof HTMLTextAreaElement) {
+            field.value = safeValue;
+            return;
+          }
+
+          if (field instanceof HTMLSelectElement) {
+            const hasOption = Array.from(field.options).some((option) => option.value === safeValue);
+            if (hasOption) field.value = safeValue;
+          }
+        };
+
+        const applyInitialQueryPrefill = () => {
+          const intent = resolveIntentPrefill(
+            initialQueryParams.get("zamer") || initialQueryParams.get("intent") || initialQueryParams.get("typ"),
+          );
+
+          if (intent) {
+            const intentField = funnelForm.elements.namedItem("zamer");
+            if (intentField instanceof HTMLInputElement) intentField.value = intent;
+
+            funnelForm.querySelectorAll('[data-choice="zamer"]').forEach((button) => {
+              const isSelected = button instanceof HTMLElement && button.dataset.value === intent;
+              button.classList.toggle("is-selected", isSelected);
+              button.setAttribute("aria-pressed", isSelected ? "true" : "false");
+            });
+          }
+
+          setFormFieldIfValid("lokalita", initialQueryParams.get("lokalita"));
+          setFormFieldIfValid("horizont", initialQueryParams.get("horizont"));
+          setFormFieldIfValid("vztah_k_nehnutelnosti", initialQueryParams.get("vztah"));
+          setFormFieldIfValid("stav_predaja", initialQueryParams.get("stav_predaja"));
         };
 
         if (dateInput instanceof HTMLInputElement) {
@@ -1025,10 +1146,50 @@ const googleMapsScriptUrl = googleMapsApiKey
 
           const route = currentRoute();
           payload.parametre = routeParameterLines();
+          payload.kvalifikacia = [
+            payload.vztah_k_nehnutelnosti ? `Vzťah k nehnuteľnosti: ${payload.vztah_k_nehnutelnosti}` : "",
+            payload.horizont ? `Časový horizont: ${payload.horizont}` : "",
+            payload.stav_predaja ? `Stav predaja: ${payload.stav_predaja}` : "",
+            payload.cenova_predstava ? `Cenová predstava: ${payload.cenova_predstava}` : "",
+          ].filter(Boolean);
+          payload.lead_score = (() => {
+            const ownerSignals = new Set([
+              "Som vlastník",
+              "Som spoluvlastník",
+              "Riešim predaj za rodinu",
+              "Dedičstvo / dedičské konanie",
+            ]);
+            const hotHorizons = new Set(["Ihneď", "1-3 mesiace"]);
+            const warmHorizons = new Set(["3-6 mesiacov"]);
+            const activeSaleStates = new Set([
+              "Zatiaľ neinzerujem",
+              "Už inzerujem bez RK",
+              "Mám iba cenovú predstavu",
+              "Potrebujem najprv poradiť",
+            ]);
+
+            if (
+              ownerSignals.has(payload.vztah_k_nehnutelnosti) &&
+              hotHorizons.has(payload.horizont) &&
+              activeSaleStates.has(payload.stav_predaja)
+            ) {
+              return "A";
+            }
+
+            if (
+              ownerSignals.has(payload.vztah_k_nehnutelnosti) &&
+              (warmHorizons.has(payload.horizont) || activeSaleStates.has(payload.stav_predaja))
+            ) {
+              return "B";
+            }
+
+            return "C";
+          })();
           payload.lead_title = route.leadTitle;
           payload.subject_prefix = route.subjectPrefix;
           payload.page_url = window.location.href;
           payload.created_at = new Date().toISOString();
+          payload.analytics_conversion_id = buildAnalyticsConversionId();
 
           const attribution = getAttribution();
           payload.attribution = attribution;
@@ -1076,6 +1237,10 @@ const googleMapsScriptUrl = googleMapsApiKey
             `Preferovaný dátum: ${payload.datum || "-"}`,
             `Preferovaný čas: ${payload.cas || "-"}`,
             `Časový horizont: ${payload.horizont || "-"}`,
+            `Vzťah k nehnuteľnosti: ${payload.vztah_k_nehnutelnosti || "-"}`,
+            `Stav predaja: ${payload.stav_predaja || "-"}`,
+            `Cenová predstava: ${payload.cenova_predstava || "-"}`,
+            `Lead score: ${payload.lead_score || "-"}`,
             "",
             "Čo je dôležité:",
             payload.sprava || "-",
@@ -1142,11 +1307,22 @@ const googleMapsScriptUrl = googleMapsApiKey
               throw new Error(data.error || "Rezerváciu sa nepodarilo odoslať.");
             }
 
-            trackFunnelEvent("submit_success", {
-              intent: payload.zamer || "",
-              booking_status: data.bookingStatus || "",
-              mode: data.mode || "",
-            });
+            if (!successfulSubmissionTracked) {
+              successfulSubmissionTracked = true;
+              trackFunnelEvent("submit_success", {
+                intent: payload.zamer || "",
+                lead_score: data.leadQualification?.grade || payload.lead_score || "",
+                time_horizon: payload.horizont || "",
+                owner_relation: payload.vztah_k_nehnutelnosti || "",
+                sale_status: payload.stav_predaja || "",
+                booking_status: data.bookingStatus || "",
+                mode: data.mode || "",
+                analytics_conversion_id: data.analyticsConversionId || payload.analytics_conversion_id || "",
+                internal_booking_id: data.eventId || "",
+                internal_lead_id: data.crmRecords?.leadId || "",
+                internal_appointment_id: data.crmRecords?.appointmentId || "",
+              });
+            }
             showBookingConfirmation(data);
           } catch {
             const fallbackHref = buildMailFallbackHref(payload);
@@ -1310,6 +1486,7 @@ const googleMapsScriptUrl = googleMapsApiKey
         });
 
         setupLocationAutocomplete();
+        applyInitialQueryPrefill();
         applyIntentRoute();
         setFunnelStep(0);
       }

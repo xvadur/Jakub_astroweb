@@ -25,8 +25,8 @@ Staging is deployed as a separate Cloudflare Worker:
 - Custom route: `staging.jakubolsa.sk/*`
 - Public staging URL: `https://staging.jakubolsa.sk/`
 - Workers.dev fallback: `https://jakubastroweb-staging.yksvadur-ja.workers.dev/`
-- Last verified: 18 June 2026
-- Last deployed version: `6c4540ac-5406-4a0a-ba97-300fea55f97d`
+- Last verified: 19 June 2026
+- Last deployed version: `9b119f4f-c11e-4839-b8d2-9cdaf2afc904`
 
 The staging page currently returns:
 
@@ -155,6 +155,35 @@ Status 2026-06-06:
 - A staging smoke test confirmed `/api/availability` returns `mode: "google"`.
 - A Supabase CRM smoke test confirmed `/api/book` can return `crmStatus: "crm_created"`.
 - Public staging dashboard/API is intentionally in demo mode. Real Supabase dashboard reads stay disabled until dashboard auth is in place.
+
+Status 2026-06-18 late staging seller lead test:
+
+- Deployed `jakubastroweb-staging` version `4c6846f3-3b2e-44db-8260-5e128d5c2270`.
+- `GET https://staging.jakubolsa.sk/api/health` returned `{"ok":true,"service":"jakub-booking-api"}`.
+- `/predaj-bytu-bratislava/` returned page-level `noindex,nofollow,noarchive`.
+- Seller CTA points to `/rezervacia/?zamer=Preda%C5%A5%20byt&entry=predaj-bytu-bratislava`.
+- `npm run test:staging-booking` returned:
+  - `mode: "google"`,
+  - `bookingStatus: "calendar_created"`,
+  - `crmStatus: "crm_created"`,
+  - `eventId: "515j2vbht1nko0qn8qdpq68354"`,
+  - `leadId: "e724bd06-21bf-49df-a321-b5527b6c8398"`,
+  - `appointmentId: "5e3d9a50-22d2-481f-83aa-2e5bf144aaa9"`.
+- The staging E2E payload uses `e2e_test_mode: "internal"`, marks internal systems as `[TEST]`, writes CRM records, and skips client confirmation email.
+
+Status 2026-06-19 analytics conversion staging test:
+
+- Deployed `jakubastroweb-staging` version `9b119f4f-c11e-4839-b8d2-9cdaf2afc904`.
+- `npm run test:analytics-conversion` passed.
+- `npm run test:staging-booking` now selects the first available calendar slot before posting the test booking.
+- `npm run test:staging-booking` returned:
+  - `mode: "google"`,
+  - `bookingStatus: "calendar_created"`,
+  - `crmStatus: "crm_created"`,
+  - `eventId: "pv98q4jvcr98n1dj7nqa71gi78"`,
+  - `leadId: "3ef365e7-fe43-43b8-8089-de319f82601e"`,
+  - `appointmentId: "f65dc408-1268-4b74-b93e-b04db03e13a1"`,
+  - `analyticsConversionId: "e5f6bc86-ca42-4215-b74f-3ed06d84c70e"`.
 
 ## Supabase CRM secrets and schema
 

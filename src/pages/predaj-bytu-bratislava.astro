@@ -99,12 +99,28 @@ const faqs = [
 ];
 
 const jsonLd = createSellerIntentJsonLd(pageMeta, faqs);
+const sellerBookingUrl = "/rezervacia/?zamer=Preda%C5%A5%20byt&entry=predaj-bytu-bratislava";
 
 const intentSignals = [
   "chcem vedieť realistické cenové pásmo",
   "neviem, či predávať hneď alebo byt najprv pripraviť",
   "potrebujem vyriešiť kúpu ďalšieho bývania",
   "nechcem riešiť obhliadky, zmluvy a chaos sám",
+];
+
+const auditInputs = [
+  {
+    title: "Vlastnícky kontext",
+    text: "Či ste vlastník, spoluvlastník, riešite dedičstvo alebo predaj za rodinu.",
+  },
+  {
+    title: "Byt a lokalita",
+    text: "Mestská časť, dispozícia, výmera, poschodie, stav, balkón, pivnica, parkovanie a aktuálne užívanie.",
+  },
+  {
+    title: "Predajný zámer",
+    text: "Časový horizont, cenová predstava, či už byt inzerujete a čo je dôležitejšie: cena, rýchlosť alebo pokoj.",
+  },
 ];
 
 const processSteps = [
@@ -193,7 +209,7 @@ const proofReferences = site.listings
         <a href="#dokazy">Referencie</a>
         <a href="#faq">FAQ</a>
       </nav>
-      <a class="header-booking" href="/rezervacia/">Rezervácia</a>
+      <a class="header-booking" href={sellerBookingUrl} data-seller-booking-link>Predajný audit</a>
     </header>
 
     <main id="content">
@@ -207,7 +223,7 @@ const proofReferences = site.listings
             prezentáciu, kupujúcich, právne kroky, financovanie a dotiahnutie obchodu.
           </p>
           <div class="hero-actions" aria-label="Hlavné akcie">
-            <a class="button primary" href="/rezervacia/">Rezervovať predajnú konzultáciu</a>
+            <a class="button primary" href={sellerBookingUrl} data-seller-booking-link>Chcem predajný audit bytu</a>
             <a class="button secondary" href="#strategia">Ako začíname</a>
           </div>
         </div>
@@ -344,7 +360,20 @@ const proofReferences = site.listings
             Na hovor tak neprichádzame od nuly a vieme riešiť cenu, riziká aj ďalší krok.
           </p>
         </div>
-        <a class="button primary" href="/rezervacia/">Prejsť na rezerváciu</a>
+        <div class="audit-panel">
+          <h3>Čo stačí poslať na prvý pohľad</h3>
+          <div class="audit-inputs">
+            {
+              auditInputs.map((item) => (
+                <article>
+                  <strong>{item.title}</strong>
+                  <p>{item.text}</p>
+                </article>
+              ))
+            }
+          </div>
+          <a class="button primary" href={sellerBookingUrl} data-seller-booking-link>Vyplniť podklady k auditu</a>
+        </div>
       </section>
 
       <section class="section faq-section" id="faq" aria-labelledby="faq-title">
@@ -369,11 +398,11 @@ const proofReferences = site.listings
           <p class="eyebrow">Rezervácia konzultácie</p>
           <h2 id="final-cta-title">Najprv si povedzme, čo má váš byt reálne robiť na trhu.</h2>
         </div>
-        <a class="button primary" href="/rezervacia/">Rezervovať konzultáciu</a>
+        <a class="button primary" href={sellerBookingUrl} data-seller-booking-link>Rezervovať predajný audit</a>
       </section>
     </main>
 
-    <a class="mobile-cta" href="/rezervacia/">Rezervácia konzultácie</a>
+    <a class="mobile-cta" href={sellerBookingUrl} data-seller-booking-link>Predajný audit bytu</a>
 
     <footer>
       <div class="footer-brand">
@@ -973,6 +1002,39 @@ const proofReferences = site.listings
         justify-self: start;
       }
 
+      .audit-panel {
+        display: grid;
+        gap: 18px;
+        border-top: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+        padding: 28px 0;
+      }
+
+      .audit-panel h3 {
+        margin-bottom: 0;
+      }
+
+      .audit-inputs {
+        display: grid;
+        gap: 12px;
+      }
+
+      .audit-inputs article {
+        display: grid;
+        gap: 4px;
+        border-left: 3px solid var(--wine);
+        padding-left: 14px;
+      }
+
+      .audit-inputs strong {
+        font-size: 15px;
+      }
+
+      .audit-inputs p {
+        margin: 0;
+        font-size: 15px;
+      }
+
       .faq-list {
         display: grid;
         gap: 12px;
@@ -1231,6 +1293,38 @@ const proofReferences = site.listings
         }
       }
     </style>
+    <script>
+      {
+        const attributionKeys = [
+          "utm_source",
+          "utm_medium",
+          "utm_campaign",
+          "utm_content",
+          "utm_term",
+          "gclid",
+          "gbraid",
+          "wbraid",
+          "fbclid",
+          "msclkid",
+        ];
+        const currentParams = new URLSearchParams(window.location.search);
+        const hasAttribution = attributionKeys.some((key) => currentParams.has(key));
+
+        if (hasAttribution) {
+          document.querySelectorAll("[data-seller-booking-link]").forEach((link) => {
+            if (!(link instanceof HTMLAnchorElement)) return;
+
+            const url = new URL(link.getAttribute("href") || "/rezervacia/", window.location.origin);
+            attributionKeys.forEach((key) => {
+              const value = currentParams.get(key);
+              if (value && !url.searchParams.has(key)) url.searchParams.set(key, value);
+            });
+
+            link.href = `${url.pathname}${url.search}${url.hash}`;
+          });
+        }
+      }
+    </script>
     <CookieConsent />
   </body>
 </html>

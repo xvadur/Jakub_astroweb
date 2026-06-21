@@ -1,0 +1,29 @@
+Campaign,Level,Match type,Negative keyword,Reason
+SK | Search | Seller Audit | Bratislava | 20 lead sprint,Campaign,Phrase,prenajom,Exclude rental intent in seller acquisition campaign
+SK | Search | Seller Audit | Bratislava | 20 lead sprint,Campaign,Phrase,prenájom,Exclude rental intent in seller acquisition campaign
+SK | Search | Seller Audit | Bratislava | 20 lead sprint,Campaign,Phrase,praca,Exclude job seekers
+SK | Search | Seller Audit | Bratislava | 20 lead sprint,Campaign,Phrase,práca,Exclude job seekers
+SK | Search | Seller Audit | Bratislava | 20 lead sprint,Campaign,Phrase,brigada,Exclude job seekers
+SK | Search | Seller Audit | Bratislava | 20 lead sprint,Campaign,Phrase,brigáda,Exclude job seekers
+SK | Search | Seller Audit | Bratislava | 20 lead sprint,Campaign,Phrase,kurz,Exclude education/training intent
+SK | Search | Seller Audit | Bratislava | 20 lead sprint,Campaign,Phrase,skolenie,Exclude education/training intent
+SK | Search | Seller Audit | Bratislava | 20 lead sprint,Campaign,Phrase,školenie,Exclude education/training intent
+SK | Search | Seller Audit | Bratislava | 20 lead sprint,Campaign,Phrase,vzor zmluvy,Exclude legal-template-only intent
+SK | Search | Seller Audit | Bratislava | 20 lead sprint,Campaign,Phrase,kupna zmluva vzor,Exclude legal-template-only intent
+SK | Search | Seller Audit | Bratislava | 20 lead sprint,Campaign,Phrase,kúpna zmluva vzor,Exclude legal-template-only intent
+SK | Search | Seller Audit | Bratislava | 20 lead sprint,Campaign,Phrase,kataster navod,Exclude admin-only guide intent
+SK | Search | Seller Audit | Bratislava | 20 lead sprint,Campaign,Phrase,kataster návod,Exclude admin-only guide intent
+SK | Search | Seller Audit | Bratislava | 20 lead sprint,Campaign,Phrase,reality portal,Exclude portal-navigation intent
+SK | Search | Seller Audit | Bratislava | 20 lead sprint,Campaign,Phrase,reality portál,Exclude portal-navigation intent
+SK | Search | Seller Audit | Bratislava | 20 lead sprint,Campaign,Phrase,nehnutelnosti sk,Exclude portal brand navigation unless later proven useful
+SK | Search | Seller Audit | Bratislava | 20 lead sprint,Campaign,Phrase,nehnuteľnosti sk,Exclude portal brand navigation unless later proven useful
+SK | Search | Seller Audit | Bratislava | 20 lead sprint,Campaign,Phrase,lacno,Exclude low-value/non-strategic searches
+SK | Search | Seller Audit | Bratislava | 20 lead sprint,Campaign,Phrase,zadarmo,Exclude free-only intent except audit offer; monitor before removing
+SK | Search | Seller Audit | Bratislava | 20 lead sprint,Campaign,Phrase,kupa bytu,Exclude buyer intent
+SK | Search | Seller Audit | Bratislava | 20 lead sprint,Campaign,Phrase,kúpa bytu,Exclude buyer intent
+SK | Search | Seller Audit | Bratislava | 20 lead sprint,Campaign,Phrase,kupim byt,Exclude buyer intent
+SK | Search | Seller Audit | Bratislava | 20 lead sprint,Campaign,Phrase,kúpim byt,Exclude buyer intent
+SK | Search | Seller Audit | Bratislava | 20 lead sprint,Campaign,Phrase,hypoteka,Exclude financing-only searches
+SK | Search | Seller Audit | Bratislava | 20 lead sprint,Campaign,Phrase,hypotéka,Exclude financing-only searches
+SK | Search | Seller Audit | Bratislava | 20 lead sprint,Campaign,Phrase,znalecky posudok,Exclude appraisal-document-only intent
+SK | Search | Seller Audit | Bratislava | 20 lead sprint,Campaign,Phrase,znalecký posudok,Exclude appraisal-document-only intent

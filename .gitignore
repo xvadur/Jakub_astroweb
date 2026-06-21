@@ -26,6 +26,17 @@ ops/telegram-worker/wrangler.toml
 private/
 docs/private/
 
+# generated leadgen/operator artifacts and client-sensitive prospect data
+ops/leads/
+ops/leadgen-*
+ops/ads/seller-audit-*.html
+ops/ads/seller-audit-*.json
+ops/ads/seller-audit-*.md
+ops/ads/seller-audit-daily-performance-*.csv
+docs/MANUAL_OWNER_HUNTING_*.md
+docs/LEADGEN_VOLUME_MODEL_*.md
+docs/AI_LEADGEN_TOOL_STACK_*.md
+
 # macOS-specific files
 .DS_Store
 

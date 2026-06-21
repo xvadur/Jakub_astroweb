@@ -9,6 +9,7 @@ Purpose: turn Jakub's current web + OpenClaw backend into a repeatable seller-le
 Detailed launch-readiness checklist for ads, SEO, email follow-up, Google reviews and monitoring:
 
 - `docs/LAUNCH_CHECKLIST_ADS_SEO_EMAIL_MONITORING_2026-06-18.md`
+- 20 qualified seller lead sprint: `docs/SELLER_20_LEAD_SPRINT_2026-06-18.md`
 
 ## Current base
 
@@ -27,7 +28,8 @@ Detailed launch-readiness checklist for ads, SEO, email follow-up, Google review
 
 - [ ] Switch Google Calendar OAuth/secrets from Adam/test calendar to Jakub's real working calendar.
 - [x] Confirm wizard -> Calendar communication and event creation on Adam/test Google account.
-- [ ] Run controlled staging E2E test after current hook/secrets check: web wizard -> Worker -> Google Calendar -> Supabase -> Telegram -> OpenClaw.
+- [x] Run controlled staging E2E test after current hook/secrets check: web wizard -> Worker -> Google Calendar -> Supabase.
+- [ ] Confirm Telegram/OpenClaw received the controlled staging E2E test in destination systems.
 - [ ] Confirm OpenClaw receives real booking handoff from deployed staging Worker.
 - [ ] Confirm busy Google Calendar slots are disabled in the wizard.
 - [ ] Confirm second free/busy check blocks race-condition double booking at submit time.
@@ -98,10 +100,11 @@ Google Search should capture existing high intent. Meta/Instagram should build t
 
 Google Search test:
 
-- [ ] Start with seller-intent keywords only.
-- [ ] Avoid broad generic "reality Bratislava" campaigns at first.
+- [x] Prepare seller-intent keyword kit only.
+- [x] Avoid broad generic "reality Bratislava" campaigns at first.
 - [ ] Send each ad group to a matching landing page.
-- [ ] Use call and booking conversion tracking.
+- [x] Add booking conversion tracking scaffold.
+- [ ] Configure real ad-account conversion IDs and verify in Tag Assistant.
 - [ ] Measure lead quality, not just form volume.
 
 Example keyword groups:
@@ -116,10 +119,10 @@ Example keyword groups:
 
 Meta/Instagram test:
 
-- [ ] Use Reels/carousels for education and trust.
+- [x] Prepare first Reels/carousels/static concepts for education and trust.
 - [ ] Retarget visitors of seller landing pages.
 - [ ] Retarget people who opened but did not finish the booking wizard.
-- [ ] Use sold-property proof and process explanations.
+- [x] Use process explanations; sold-property proof stays pending until Jakub confirms usable cases.
 - [ ] Keep direct booking CTA, but expect Meta to assist trust more than close hot intent.
 
 ## Attribution and CRM tracking
@@ -225,6 +228,9 @@ This makes the upside larger than a one-time website fee if attribution and reve
 - [x] Add failure visibility for Telegram/OpenClaw side effects.
 - [ ] Start dashboard module backlog with leads + follow-ups + approvals.
 - [x] Add first seller landing page: `predaj-bytu-bratislava`.
+- [x] Send seller landing page CTA directly into the `Predať byt` booking branch.
+- [x] Add seller qualification fields and `A/B/C` lead scoring to the booking payload.
+- [x] Locally verify qualification fields reach mocked Supabase lead, appointment payload, Telegram text and OpenClaw handoff.
 - [x] Add seller FAQ content.
 - [x] Add structured data updates.
 - [x] Run local build.

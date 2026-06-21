@@ -18,15 +18,96 @@ Purpose: prepare Jakub's web/backend for paid acquisition and operational handof
 
 ### Campaign structure
 
-- [ ] Create first Google Search campaign only for high-intent seller queries.
+- [x] Prepare first Google Search campaign kit only for high-intent seller queries:
+  - [x] `docs/AI_LEADGEN_TOOL_STACK_2026-06-19.md`
+  - [x] `docs/GOOGLE_SEARCH_20_LEAD_CAMPAIGN_2026-06-18.md`
+  - [x] `ops/ads/google-search-seller-keywords-2026-06-18.csv`
+  - [x] `ops/ads/google-search-negative-keywords-2026-06-18.csv`
+  - [x] `ops/ads/google-search-rsa-copy-2026-06-18.csv`
+- [x] Prepare first Meta/Instagram creative kit:
+  - [x] `docs/META_SELLER_20_LEAD_CREATIVES_2026-06-19.md`
+  - [x] `ops/ads/meta-seller-creatives-2026-06-19.csv`
+- [x] Prepare manual AI-assisted hunting kit:
+  - [x] `docs/LEADGEN_VOLUME_MODEL_2026-06-19.md`
+  - [x] `ops/leads/daily-owner-leadgen-runbook-2026-06-19.md`
+  - [x] `ops/leads/leadgen-volume-scenarios-2026-06-19.csv`
+  - [x] `ops/leads/manual-owner-hunting-playbook-2026-06-19.md`
+  - [x] `ops/leads/manual-owner-hunting-log-2026-06-19.csv`
+  - [x] `ops/leads/manual-owner-hunting-candidates-2026-06-19.csv`
+  - [x] `ops/leads/manual-owner-hunting-first-batch-2026-06-19.md`
+  - [x] `ops/leads/manual-owner-hunting-next-seven-2026-06-19.md`
+  - [x] `ops/leads/manual-owner-hunting-reserve-ten-2026-06-19.md`
+  - [x] `ops/leads/manual-owner-hunting-reply-audits-2026-06-19.md`
+  - [x] `ops/leads/jakub-qualified-lead-handoff-template-2026-06-19.md`
+  - [x] `ops/leads/manual-owner-hunting-cockpit-2026-06-19.html`
+  - [x] `ops/leads/manual-owner-hunting-live-preflight-2026-06-19.md`
+  - [x] `ops/leads/manual-owner-hunting-live-preflight-2026-06-19.json`
+  - [x] `ops/leads/manual-owner-hunting-send-session-2026-06-19.html`
+  - [x] `ops/leads/manual-owner-hunting-send-session-2026-06-19.md`
+  - [x] `ops/leads/manual-owner-hunting-refill-plan-2026-06-19.md`
+  - [x] `ops/leads/manual-owner-hunting-refill-plan-2026-06-19.json`
+  - [x] `ops/leads/manual-owner-hunting-send-queue-2026-06-19.md`
+  - [x] `ops/leads/manual-owner-hunting-send-queue-2026-06-19.csv`
+  - [x] `ops/leads/manual-owner-hunting-followup-triage-2026-06-19.md`
+  - [x] `ops/leads/manual-owner-hunting-followup-triage-2026-06-19.csv`
+  - [x] `ops/leads/manual-owner-hunting-reserve-verification-2026-06-19.md`
+  - [x] `ops/leads/manual-owner-hunting-reserve-verification-2026-06-19.csv`
+  - [x] `docs/MANUAL_OWNER_HUNTING_FIRST_PASS_2026-06-19.md`
+  - [x] `docs/MANUAL_OWNER_HUNTING_SECOND_PASS_2026-06-19.md`
+  - [x] `docs/MANUAL_OWNER_HUNTING_LIVE_CHECK_2026-06-19.md`
+  - [x] `docs/MANUAL_OWNER_HUNTING_RESERVE_LIVE_CHECK_2026-06-19.md`
+  - [x] `docs/MANUAL_OWNER_HUNTING_EXPANSION_2026-06-19.md`
+  - [x] `ops/leads/manual-owner-hunting-expansion-candidates-2026-06-19.csv`
+  - [x] `ops/leads/manual-owner-hunting-expansion-messages-2026-06-19.md`
+  - [x] `npm run leads:manual-cockpit`
+  - [x] `npm run leads:manual-expansion-summary`
+  - [x] `npm run leads:manual-export`
+  - [x] `npm run leads:manual-followups`
+  - [x] `npm run leads:manual-import-expansion -- HUNT-021 ready_to_send --follow-up=2026-06-24 --notes="live checked from expansion; ready for outreach"`
+  - [x] `npm run leads:manual-live-preflight`
+  - [x] `npm run leads:manual-refill -- --target=10 --simulate-ready=0`
+  - [x] `npm run leads:manual-send-session`
+  - [x] `npm run leads:manual-promote -- --dry-run`
+  - [x] `npm run leads:manual-promote`
+  - [x] `npm run leads:manual-reserve`
+  - [x] `npm run leads:manual-status -- HUNT-001 contacted --follow-up=2026-06-22 --notes="sent manually via platform"`
+  - [x] `npm run leads:manual-status -- HUNT-001 replied --notes="owner accepted audit; audit observations sent"`
+  - [x] `npm run leads:manual-status -- HUNT-001 qualified --jakub-notified=yes --notes="owner gave call permission"`
+  - [x] `npm run leads:manual-validate`
+  - [x] `npm run leads:manual-summary`
+  - [x] `npm run leads:volume-model`
+- [ ] Create first Google Search campaign in Google Ads account.
+- [ ] Create first Meta campaign in Meta Ads Manager after policy/category review.
+- [x] Review first 20 public manual hunting candidates.
+- [x] Prepare first 10 manual personalized outreach attempts.
+- [x] Prepare reserve message drafts for all 20 reviewed candidates.
+- [x] Generate manual outreach cockpit for opening listings and copying messages.
+- [x] Add command-line status updater for manual outreach outcomes.
+- [x] Prepare reply-audit messages for all 20 reviewed manual candidates.
+- [x] Add reply-audit copy buttons and `replied` status commands to manual cockpit.
+- [x] Add qualified lead handoff template for Jakub.
+- [x] Live-check first send queue and replace reserved `HUNT-007` with `HUNT-012`.
+- [x] Add manual pipeline validator for send-queue guardrails.
+- [x] Export validated manual send queue as Markdown and CSV.
+- [x] Export follow-up and reply triage pack for validated send queue.
+- [x] Model manual outreach volume required for 20 qualified leads.
+- [x] Export reserve verification queue for remaining reviewed candidates.
+- [x] Live-check reserve queue and promote 7 candidates to verified reserve state.
+- [x] Add reserve promotion command for filling active queue after sends/removals.
+- [x] Expand post-reserve backlog to 40 expansion candidates; total reviewed backlog is now 60 prospects.
+- [x] Add expansion import command and cockpit support for post-reserve backlog.
+- [x] Add repeatable live preflight for ready-to-send URLs; latest run: 10 `send_ok`, 0 `manual_check`, 0 `do_not_send`.
+- [x] Add focused send-session page for the first 10 live-checked manual outreach attempts.
+- [x] Add refill plan for the next 10 ready-to-send candidates after first send block.
+- [ ] Send first 10 manual personalized outreach attempts.
 - [ ] Keep ad groups tightly matched to landing pages:
   - [ ] predaj bytu Bratislava -> `/predaj-bytu-bratislava/`
   - [ ] odhad ceny bytu Bratislava -> future `/ocenenie-bytu-bratislava/`
   - [ ] predaj bytu Ružinov -> future `/predaj-bytu-ruzinov/`
   - [ ] predaj zdedenej nehnuteľnosti -> future `/predaj-zdedenej-nehnutelnosti/`
 - [ ] Avoid broad keywords like `reality Bratislava` in the first test.
-- [ ] Define negative keywords before launch:
-  - [ ] prenájom, práca, brigáda, lacno, reality portál, bez makléra, vzor zmluvy, kataster návod.
+- [x] Define negative keywords before launch:
+  - [x] prenájom, práca, brigáda, lacno, reality portál, vzor zmluvy, kataster návod, buyer/rental/admin variants.
 - [ ] Use direct booking CTA, but optimize for lead quality, not raw lead count.
 
 ### Tracking implementation
@@ -48,22 +129,23 @@ Purpose: prepare Jakub's web/backend for paid acquisition and operational handof
 - [x] Store attribution in Supabase lead `raw_payload`.
 - [x] Include attribution in Telegram notification.
 - [x] Include attribution in OpenClaw handoff payload.
-- [ ] Store conversion identifiers:
-  - [ ] internal booking id,
-  - [ ] Supabase lead id,
-  - [ ] appointment id,
-  - [ ] calendar event id,
+- [x] Store conversion identifiers in booking response / raw payload / OpenClaw handoff:
+  - [x] non-PII `analytics_conversion_id`,
+  - [x] internal booking/calendar event id when Google Calendar creates an event,
+  - [x] Supabase lead id when CRM write succeeds,
+  - [x] appointment id when CRM write succeeds,
   - [ ] OpenClaw run id when available.
 - [x] Emit GA4 `generate_lead` after successful booking.
-- [ ] Configure Google Ads conversion for successful booking.
+- [x] Add Google Ads conversion scaffold for successful booking.
+- [ ] Configure real Google Ads conversion ID/label in Google Ads account and environment.
 - [ ] Decide if enhanced conversions are allowed legally/operationally before sending hashed customer data to Google.
-- [ ] Do not send raw PII into analytics events.
+- [x] Do not send raw PII into analytics events.
 
 ### Pre-launch ad checks
 
 - [ ] Verify conversion fires only after accepted booking, not after opening wizard.
 - [ ] Verify failed booking does not fire conversion.
-- [ ] Verify duplicate submit does not double-count conversion.
+- [x] Add client-side guard so duplicate successful submit cannot double-count conversion in the same wizard session.
 - [ ] Verify staging has no production ad tags/conversions.
 - [ ] Verify production has canonical URLs and no `noindex`.
 - [ ] Create a small test campaign budget cap.
@@ -305,7 +387,7 @@ Trigger: after consultation / meeting / viewing.
 9. [ ] Extend monitoring script/output.
 10. [ ] Add dashboard panels for attribution, follow-ups, email logs and admin cases.
 11. [ ] Add/finish seller FAQ + structured data.
-12. [ ] Run staging E2E test.
+12. [x] Run staging E2E test after analytics conversion scaffold deploy.
 
 ## Source references
 
