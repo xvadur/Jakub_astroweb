@@ -7,9 +7,9 @@ export const site = {
   siteUrl: "https://jakubolsa.sk",
   stagingUrl: "https://staging.jakubolsa.sk",
   cityLabel: "Slovensko",
-  shortPromise: "Predaj vediem osobne. Zázemie BOSEN a AI-assisted systém držia proces pokope.",
+  shortPromise: "Osobne vás prevediem predajom. So servisom BOSEN Group za chrbtom.",
   intro:
-    "Hral som hokej na profesionálnej úrovni, potom som pracoval s klientmi vo financiách a dnes tieto skúsenosti používam v realitách. Pri predaji hodnotnej nehnuteľnosti nejde len o inzerát. Rozhoduje stratégia, prezentácia, čísla, právny a finančný servis a najmä to, kto vie o príležitosti v správny moment.",
+    "Hral som hokej na profesionálnej úrovni, potom som pracoval s klientmi vo financiách a dnes tieto skúsenosti používam v realitách. Pri predaji hodnotnej nehnuteľnosti nejde len o inzerát. Ide o stratégiu, prezentáciu, čísla, právny a finančný servis a človeka, ktorý drží celý proces pokope.",
   contact: {
     phone: "+421 944 844 489",
     whatsapp: "+421 944 844 489",
@@ -32,10 +32,10 @@ export const site = {
     "právny, finančný a obchodný servis bez zbytočného presúvania práce na klienta",
   ],
   heroStory: {
-    eyebrow: "Jakub Olša / BOSEN Group / AI-assisted lead systém",
+    eyebrow: "Jakub Olša / BOSEN Group / predajný proces",
     title: "Predaj nie je inzerát. Je to riadený obchod.",
     lead:
-      "Jakub vedie predaj osobne. BOSEN pridáva servisné zázemie. Web, rezervačný flow, CRM a AI-assisted follow-up držia dopyty pokope, aby sa dobrý lead nestratil po prvom kliknutí.",
+      "Jakub vedie predaj osobne. BOSEN pridáva servisné zázemie. Rezervačný flow, kalendár a interný follow-up držia dopyty pokope, aby sa dobrý kontakt nestratil po prvom kliknutí.",
     beats: [
       {
         label: "01",
@@ -50,10 +50,10 @@ export const site = {
       {
         label: "03",
         title: "Systém po odoslaní",
-        text: "Dopyt nejde len do inboxu. Rezervácia prejde cez kalendár, CRM, notifikáciu a AI-assisted pracovný follow-up.",
+        text: "Dopyt nejde len do inboxu. Rezervácia prejde cez kalendár, interný záznam, notifikáciu a pracovný follow-up.",
       },
     ],
-    systemSteps: ["web", "kalendár", "CRM", "Telegram", "agent"],
+    systemSteps: ["web", "kalendár", "interný záznam", "notifikácia", "follow-up"],
   },
   trackRecord: {
     eyebrow: "Skúsenosť bez pózy",
