@@ -3,6 +3,7 @@ import { site } from "../data/site";
 
 const siteEnv = import.meta.env.PUBLIC_SITE_ENV ?? "production";
 const isStaging = siteEnv !== "production";
+const canonicalUrl = new URL("/rezervacia/", site.siteUrl).toString();
 const hasInstagram = site.contact.instagram.startsWith("http");
 const googleMapsApiKey = import.meta.env.PUBLIC_GOOGLE_MAPS_API_KEY?.trim() ?? "";
 const googleMapsScriptUrl = googleMapsApiKey
@@ -25,6 +26,15 @@ const googleMapsScriptUrl = googleMapsApiKey
       name="description"
       content={`Rezervácia konzultácie s realitným maklérom Jakubom Olšom. ${site.shortPromise}`}
     />
+    <meta property="og:title" content={`Rezervácia konzultácie | ${site.brand}`} />
+    <meta
+      property="og:description"
+      content={`Rezervácia konzultácie s realitným maklérom Jakubom Olšom. ${site.shortPromise}`}
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={site.heroImage} />
+    <link rel="canonical" href={canonicalUrl} />
     {isStaging ? <meta name="robots" content="noindex,nofollow,noarchive" /> : null}
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

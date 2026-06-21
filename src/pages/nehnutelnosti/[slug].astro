@@ -12,6 +12,7 @@ const { listing } = Astro.props;
 const gallery = listing.gallery?.length ? listing.gallery : [listing.image];
 const isSold = listing.group === "sold";
 const bosenUrl = listing.bosenUrl ?? "";
+const canonicalUrl = new URL(listing.href, site.siteUrl).toString();
 const hasInstagram = site.contact.instagram.startsWith("http");
 ---
 
@@ -27,7 +28,9 @@ const hasInstagram = site.contact.instagram.startsWith("http");
     <meta property="og:title" content={`${listing.title} | ${site.brand}`} />
     <meta property="og:description" content={listing.summary} />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalUrl} />
     <meta property="og:image" content={listing.image} />
+    <link rel="canonical" href={canonicalUrl} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

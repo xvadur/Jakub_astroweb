@@ -7,6 +7,7 @@ const hasEmail = site.contact.email.includes("@") && !site.contact.email.include
 const hasInstagram = site.contact.instagram.startsWith("http");
 const siteEnv = import.meta.env.PUBLIC_SITE_ENV ?? "production";
 const isStaging = siteEnv !== "production";
+const canonicalUrl = new URL("/", site.siteUrl).toString();
 const availableListings = site.listings.filter((listing) => listing.group === "available");
 const soldListings = site.listings.filter((listing) => listing.group === "sold");
 const availableListingsLabel =
@@ -48,7 +49,9 @@ const jsonLd = {
       content="Osobný maklér so servisným zázemím BOSEN Group pre predaj, kúpu, prenájom a stratégiu hodnotnej nehnuteľnosti."
     />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalUrl} />
     <meta property="og:image" content={site.heroImage} />
+    <link rel="canonical" href={canonicalUrl} />
     {isStaging ? <meta name="robots" content="noindex,nofollow,noarchive" /> : null}
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
