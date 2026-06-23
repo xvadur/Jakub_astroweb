@@ -125,9 +125,8 @@ export const site = {
   },
   bookingFunnel: {
     eyebrow: "Rezervácia konzultácie",
-    title: "Vyberte si termín a pošlite mi kontext ešte pred prvým telefonátom.",
-    text:
-      "Za pár krokov mi dáte základné údaje k nehnuteľnosti a vyberiete si čas hovoru. Vďaka tomu sa viem pripraviť na konkrétnu situáciu, nie iba na všeobecný rozhovor.",
+    title: "Rezervácia konzultácie",
+    text: "Vyberte typ požiadavky, doplňte údaje a zvoľte termín.",
     promise: [
       "2 minúty na vyplnenie",
       "hneď vidím zámer, lokalitu a časový rámec",
