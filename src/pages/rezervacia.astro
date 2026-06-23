@@ -98,8 +98,7 @@ const googleMapsScriptUrl = googleMapsApiKey
 
         <section class="wizard-step" data-funnel-step>
           <p class="step-kicker">Krok 1</p>
-          <h2>Akú situáciu mám pripraviť?</h2>
-          <p>Vyberte najbližší zámer. Podľa toho sa zobrazia otázky, ktoré pomôžu pripraviť cenu, riziká a ďalší krok pred prvým hovorom.</p>
+          <h2>Typ požiadavky</h2>
           <input type="hidden" name="zamer" data-required data-label="zámer" />
           <div class="choice-grid">
             {
@@ -114,8 +113,7 @@ const googleMapsScriptUrl = googleMapsApiKey
 
         <section class="wizard-step" data-funnel-step hidden>
           <p class="step-kicker">Krok 2</p>
-          <h2 data-route-title="property">Podklady k stratégii</h2>
-          <p data-route-text="property">Vyplňte len to, čo viete. Detaily a presné podklady prejdeme spolu v hovore.</p>
+          <h2 data-route-title="property">Základné informácie o nehnuteľnosti</h2>
           <input type="hidden" name="typ" data-route-type />
           <div class="wizard-fields two">
             <label class="location-field" data-location-field>
@@ -240,8 +238,7 @@ const googleMapsScriptUrl = googleMapsApiKey
 
         <section class="wizard-step" data-funnel-step hidden>
           <p class="step-kicker">Krok 3</p>
-          <h2 data-route-title="date">Kedy chcete prejsť ďalší postup?</h2>
-          <p data-route-text="date">Vyberte dostupný termín. Pred odoslaním ho ešte raz overím v kalendári.</p>
+          <h2 data-route-title="date">Termín hovoru</h2>
           <div class="wizard-fields">
             <label>
               <span>Preferovaný dátum</span>
@@ -263,8 +260,7 @@ const googleMapsScriptUrl = googleMapsApiKey
 
         <section class="wizard-step" data-funnel-step hidden>
           <p class="step-kicker">Krok 4</p>
-          <h2 data-route-title="contact">Na koho sa mám ozvať?</h2>
-          <p data-route-text="contact">Po odoslaní budem mať základ pre prípravu otázok a termín uložený v kalendári.</p>
+          <h2 data-route-title="contact">Kontaktné údaje</h2>
           <div class="wizard-fields two">
             <label>
               <span>Meno</span>
@@ -315,11 +311,11 @@ const googleMapsScriptUrl = googleMapsApiKey
               <input name="cenova_predstava" placeholder="napr. 240 000 €, alebo neviem" />
             </label>
             <label class="full">
-              <span>Čo je pre vás dôležité?</span>
+              <span>Poznámka</span>
               <textarea
                 name="sprava"
                 rows="4"
-                placeholder="Cena, rýchlosť, diskrétnosť, kúpa nového bývania, investícia..."
+                placeholder="Doplňujúce informácie"
                 data-route-placeholder="message"
               ></textarea>
             </label>
@@ -667,16 +663,16 @@ const googleMapsScriptUrl = googleMapsApiKey
         const defaultRoute = {
           propertyType: "",
           paramFields: ["property_kind", "rooms", "area", "condition"],
-          propertyTitle: "K akej nehnuteľnosti chcete pripraviť prvý pohľad?",
-          propertyText: "Vyberte typ a doplňte základné údaje. Podľa nich pripravím najrozumnejší prvý postup a otázky k hovoru.",
-          dateTitle: "Kedy chcete prejsť možnosti?",
-          dateText: "Vyberte čas na krátky orientačný hovor k cene, rizikám a ďalšiemu kroku bez tlaku na okamžité rozhodnutie.",
-          contactTitle: "Na koho sa mám ozvať?",
-          contactText: "Po odoslaní budem mať základný kontext a pripravím si otázky k možnostiam, cene a postupu.",
-          messagePlaceholder: "Čo zvažujete, čo vás brzdí, aký výsledok by bol dobrý...",
+          propertyTitle: "Základné informácie o nehnuteľnosti",
+          propertyText: "",
+          dateTitle: "Termín hovoru",
+          dateText: "",
+          contactTitle: "Kontaktné údaje",
+          contactText: "",
+          messagePlaceholder: "Doplňujúce informácie",
           leadTitle: "Konzultácia predajnej stratégie",
           subjectPrefix: "Predajná stratégia",
-          submitLabel: "Odoslať podklady",
+          submitLabel: "Odoslať rezerváciu",
         };
 
         const intentRoutes = {
@@ -690,16 +686,16 @@ const googleMapsScriptUrl = googleMapsApiKey
                 placeholder: "loggia/balkón, terasa, pivnica, parkovanie, výťah...",
               },
             },
-            propertyTitle: "Aký byt chcete predať?",
-            propertyText: "Pri byte sú dôležité lokalita, dispozícia, výmera, poschodie, stav a výhody ako balkón, pivnica alebo parkovanie.",
-            dateTitle: "Kedy chcete prejsť predajnú stratégiu bytu?",
-            dateText: "Vyberte termín hovoru k cene, príprave, prezentácii, dopytu a predajnému postupu.",
-            contactTitle: "Na koho sa mám ozvať k predaju bytu?",
-            contactText: "Po odoslaní budem mať základné parametre bytu a pripravím sa na konkrétny rozhovor o stratégii.",
-            messagePlaceholder: "Očakávaná cena, dôvod predaja, časový tlak, parkovanie, pivnica, právny stav...",
+            propertyTitle: "Základné informácie o byte",
+            propertyText: "",
+            dateTitle: "Termín hovoru",
+            dateText: "",
+            contactTitle: "Kontaktné údaje",
+            contactText: "",
+            messagePlaceholder: "Doplňujúce informácie",
             leadTitle: "Predajná stratégia bytu",
             subjectPrefix: "Predaj bytu",
-            submitLabel: "Odoslať podklady k bytu",
+            submitLabel: "Odoslať rezerváciu",
           },
           "Predať dom": {
             propertyType: "Dom",
@@ -710,30 +706,30 @@ const googleMapsScriptUrl = googleMapsApiKey
                 placeholder: "garáž, terasa, záhrada, bazén, krb, pivnica...",
               },
             },
-            propertyTitle: "Aký dom chcete predať?",
-            propertyText: "Pri dome potrebujem oddeliť úžitkovú plochu, pozemok, stav a veci ako garáž, terasa, bazén alebo technické zázemie.",
-            dateTitle: "Kedy chcete prejsť predajnú stratégiu domu?",
-            dateText: "Vyberte termín hovoru k cene, prezentácii, marketingu a servisnému postupu.",
-            contactTitle: "Na koho sa mám ozvať k domu?",
-            contactText: "Po odoslaní budem mať základ pre prvý odhad situácie a prípravu otázok k ďalšiemu kroku.",
-            messagePlaceholder: "Rok výstavby, rekonštrukcia, technický stav, garáž, záhrada, dôvod predaja...",
+            propertyTitle: "Základné informácie o dome",
+            propertyText: "",
+            dateTitle: "Termín hovoru",
+            dateText: "",
+            contactTitle: "Kontaktné údaje",
+            contactText: "",
+            messagePlaceholder: "Doplňujúce informácie",
             leadTitle: "Predajná stratégia domu",
             subjectPrefix: "Predaj domu",
-            submitLabel: "Odoslať podklady k domu",
+            submitLabel: "Odoslať rezerváciu",
           },
           "Predať pozemok": {
             propertyType: "Pozemok",
             paramFields: ["land_area", "land_type", "land_use", "utilities", "access"],
-            propertyTitle: "Aký pozemok chcete predať?",
-            propertyText: "Pri pozemku rozhoduje výmera, typ pozemku, siete, prístup a regulácia. Detaily sa preveria následne.",
-            dateTitle: "Kedy chcete prejsť stratégiu predaja pozemku?",
-            dateText: "Vyberte termín hovoru k potenciálu pozemku, prevereniu rizík a predajnému postupu.",
-            contactTitle: "Na koho sa mám ozvať k pozemku?",
-            contactText: "Po odoslaní budem mať kontext k pozemku a pripravím si ďalšie otázky.",
-            messagePlaceholder: "Územný plán, list vlastníctva, prístup, siete, či už máte cenovú predstavu...",
+            propertyTitle: "Základné informácie o pozemku",
+            propertyText: "",
+            dateTitle: "Termín hovoru",
+            dateText: "",
+            contactTitle: "Kontaktné údaje",
+            contactText: "",
+            messagePlaceholder: "Doplňujúce informácie",
             leadTitle: "Predajná stratégia pozemku",
             subjectPrefix: "Predaj pozemku",
-            submitLabel: "Odoslať podklady k pozemku",
+            submitLabel: "Odoslať rezerváciu",
           },
           "Predať komerčný priestor": {
             propertyType: "Komerčný priestor",
@@ -744,30 +740,30 @@ const googleMapsScriptUrl = googleMapsApiKey
                 placeholder: "parkovanie, výklad, zásobovanie, terasa, technické zázemie...",
               },
             },
-            propertyTitle: "Aký komerčný priestor chcete predať?",
-            propertyText: "Pri komerčnej nehnuteľnosti sú podstatné typ priestoru, výmera, stav, obsadenosť a investičný potenciál.",
-            dateTitle: "Kedy chcete prejsť stratégiu predaja komerčného priestoru?",
-            dateText: "Vyberte termín hovoru k stratégii predaja, číslam, nájomcom a prezentácii.",
-            contactTitle: "Na koho sa mám ozvať ku komerčnému priestoru?",
-            contactText: "Po odoslaní budem mať základ pre obchodný a investičný pohľad na nehnuteľnosť.",
-            messagePlaceholder: "Nájomca, výnos, prevádzka, stav zmlúv, parkovanie, technické špecifiká...",
+            propertyTitle: "Základné informácie o priestore",
+            propertyText: "",
+            dateTitle: "Termín hovoru",
+            dateText: "",
+            contactTitle: "Kontaktné údaje",
+            contactText: "",
+            messagePlaceholder: "Doplňujúce informácie",
             leadTitle: "Predajná stratégia komerčného priestoru",
             subjectPrefix: "Predaj komerčného priestoru",
-            submitLabel: "Odoslať komerčné podklady",
+            submitLabel: "Odoslať rezerváciu",
           },
           "Prenájom alebo správa": {
             propertyType: "Prenájom / správa",
             paramFields: ["property_kind", "rooms", "area", "condition", "rent_target", "available_from", "management_scope"],
-            propertyTitle: "Čo chcete prenajať alebo spravovať?",
-            propertyText: "Pri prenájme rozhoduje lokalita, dispozícia, stav, zariadenie a očakávaný typ nájomcu.",
-            dateTitle: "Kedy chcete prejsť prenájom alebo správu?",
-            dateText: "Vyberte čas hovoru k nájomnému, prezentácii, výberu nájomcu a správe.",
-            contactTitle: "Na koho sa mám ozvať k prenájmu alebo správe?",
-            contactText: "Po odoslaní budem mať základ pre návrh prenájmu alebo správy.",
-            messagePlaceholder: "Zariadenie, očakávaný nájom, či chcete iba nájomcu alebo aj správu...",
+            propertyTitle: "Základné informácie k prenájmu",
+            propertyText: "",
+            dateTitle: "Termín hovoru",
+            dateText: "",
+            contactTitle: "Kontaktné údaje",
+            contactText: "",
+            messagePlaceholder: "Doplňujúce informácie",
             leadTitle: "Prenájom alebo správa",
             subjectPrefix: "Prenájom alebo správa",
-            submitLabel: "Odoslať prenájom/správu",
+            submitLabel: "Odoslať rezerváciu",
           },
         };
 
