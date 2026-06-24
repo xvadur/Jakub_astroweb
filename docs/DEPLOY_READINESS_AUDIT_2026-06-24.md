@@ -119,6 +119,34 @@ Dia/browser E2E uz preukazal:
 
 ## Externy setup pred live deployom
 
+## Live domain snapshot
+
+Overene read-only 24. juna 2026:
+
+```text
+https://jakubolsa.sk/         HTTP 200
+https://staging.jakubolsa.sk/ HTTP 200
+https://jakubolsa.sk/api/health         {"ok":true,"service":"jakub-booking-api"}
+https://staging.jakubolsa.sk/api/health {"ok":true,"service":"jakub-booking-api"}
+```
+
+SEO stav:
+
+```text
+production robots.txt povoľuje indexovanie verejneho webu
+staging robots.txt blokuje indexovanie
+staging HTML obsahuje noindex a STAGING badge
+```
+
+Availability stav:
+
+```text
+production /api/availability mode: mock
+staging    /api/availability mode: google
+```
+
+Poznamka: live `POST /api/book` nebol spusteny bez explicitneho suhlasu, pretoze staging moze vytvorit realny Google Calendar event a po doplneni secrets aj CRM/email zaznam.
+
 ### Build-time public env
 
 Tieto hodnoty musi poznat build prostredie, nie iba runtime Worker:
