@@ -126,21 +126,18 @@ info@jakubolsa.sk -> <verified destination mailbox>
 
 Outbound booking confirmations are a separate task from Cloudflare Email Routing. Use Resend or another transactional email provider for sending. Keep sending disabled until the sender domain and API secret are configured.
 
-Planned Worker variables for outbound email, once implemented and approved:
+Worker variables for outbound email:
 
 ```text
-EMAIL_PROVIDER=resend
-EMAIL_FROM="Jakub Olša <rezervacie@jakubolsa.sk>"
-EMAIL_REPLY_TO="rezervacie@jakubolsa.sk"
-JAKUB_CONTACT_EMAIL="<verified destination mailbox>"
+RESEND_FROM_EMAIL="Jakub Olša <rezervacie@jakubolsa.sk>"
+BOOKING_REPLY_TO_EMAIL="olsa@bosen.sk"
 ```
 
 `RESEND_API_KEY` must be stored as a Cloudflare secret, never in the repository.
 
 ## Booking API secrets
 
-The Worker API can run without secrets in mock mode. For live Google Calendar sync, set these as
-Cloudflare secrets on `jakubastroweb-staging` first:
+The Worker API can run without secrets in mock/skip mode. For live Google Calendar, Telegram, Supabase CRM, and Resend email confirmation, set these on `jakubastroweb-staging` first:
 
 ```bash
 npx wrangler secret put GOOGLE_CLIENT_ID --name jakubastroweb-staging
@@ -149,6 +146,30 @@ npx wrangler secret put GOOGLE_REFRESH_TOKEN --name jakubastroweb-staging
 npx wrangler secret put GOOGLE_CALENDAR_ID --name jakubastroweb-staging
 npx wrangler secret put TELEGRAM_BOT_TOKEN --name jakubastroweb-staging
 npx wrangler secret put TELEGRAM_CHAT_ID --name jakubastroweb-staging
+npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY --name jakubastroweb-staging
+npx wrangler secret put RESEND_API_KEY --name jakubastroweb-staging
+```
+
+Non-secret Worker vars for staging:
+
+```text
+SUPABASE_URL=<project-url>
+SUPABASE_TENANT_SLUG=jakub-olsa
+SUPABASE_TENANT_NAME=Jakub Olša
+RESEND_FROM_EMAIL=Jakub Olša <rezervacie@jakubolsa.sk>
+BOOKING_REPLY_TO_EMAIL=olsa@bosen.sk
+```
+
+After complete setup, `/api/book` should return:
+
+```json
+{
+  "ok": true,
+  "mode": "google",
+  "bookingStatus": "calendar_created",
+  "crmStatus": "created",
+  "emailStatus": "queued"
+}
 ```
 
 Repeat on `jakubastroweb` only after the staging flow is approved.

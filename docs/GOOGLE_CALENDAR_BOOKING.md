@@ -17,13 +17,15 @@ API routy:
 
 - `GET /api/health` - smoke check backendu.
 - `GET /api/availability?date=YYYY-MM-DD` - vráti sloty pre daný dátum.
-- `POST /api/book` - prijme lead, overí slot, prípadne zapíše Google Calendar event a pošle Telegram.
+- `POST /api/book` - prijme lead, overí slot, prípadne zapíše Google Calendar event, zapíše CRM záznamy, pošle Telegram a queueuje potvrdzovací email.
 
 Kým nie sú nastavené Google secrets, API beží v `mock` režime:
 
 - vracia 30-minútové sloty v pracovnom okne,
 - nevolá Google Calendar,
 - `POST /api/book` vráti `bookingStatus: "pending_calendar_config"`,
+- bez Supabase env vráti `crmStatus: "skipped"`,
+- bez Resend env vráti `emailStatus: "skipped"`,
 - ak sú nastavené Telegram secrets, aj mock booking pošle Telegram notifikáciu.
 
 ## Target flow
@@ -38,7 +40,9 @@ wizard submit
   -> POST /api/book
   -> second freeBusy check
   -> Google Calendar events.insert
+  -> Supabase CRM records
   -> Telegram notification
+  -> Resend confirmation email
   -> later OpenClaw follow-up
 ```
 
@@ -105,6 +109,8 @@ npx wrangler secret put GOOGLE_REFRESH_TOKEN --name jakubastroweb-staging
 npx wrangler secret put GOOGLE_CALENDAR_ID --name jakubastroweb-staging
 npx wrangler secret put TELEGRAM_BOT_TOKEN --name jakubastroweb-staging
 npx wrangler secret put TELEGRAM_CHAT_ID --name jakubastroweb-staging
+npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY --name jakubastroweb-staging
+npx wrangler secret put RESEND_API_KEY --name jakubastroweb-staging
 ```
 
 Repeat for `jakubastroweb` only after the staging flow is approved.
@@ -148,7 +154,9 @@ Expected before Google secrets:
 {
   "ok": true,
   "mode": "mock",
-  "bookingStatus": "pending_calendar_config"
+  "bookingStatus": "pending_calendar_config",
+  "crmStatus": "skipped",
+  "emailStatus": "skipped"
 }
 ```
 
@@ -158,7 +166,9 @@ Expected after Google secrets:
 {
   "ok": true,
   "mode": "google",
-  "bookingStatus": "calendar_created"
+  "bookingStatus": "calendar_created",
+  "crmStatus": "created",
+  "emailStatus": "queued"
 }
 ```
 

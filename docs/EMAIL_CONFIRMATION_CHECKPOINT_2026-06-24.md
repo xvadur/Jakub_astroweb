@@ -94,7 +94,7 @@ Potrebujeme vsak:
 - overit domenu `jakubolsa.sk` alebo vhodnu subdomenu v Resende,
 - nastavit DNS zaznamy pre SPF/DKIM/DMARC podla Resendu,
 - ulozit `RESEND_API_KEY` ako Cloudflare secret,
-- pridat Worker odosielanie emailu po uspesnom bookingu.
+- nastavit `RESEND_FROM_EMAIL` a `BOOKING_REPLY_TO_EMAIL` vo Worker environment.
 
 ## Odporucany V1 flow
 
@@ -106,6 +106,36 @@ Potrebujeme vsak:
 5. Worker posle klientovi potvrdenie cez Resend
 6. Ak email zlyha, booking nesmie spadnut; chyba ide do internych logov/notifikacie
 ```
+
+## Implementacny stav
+
+Worker ma pripravenu Resend podporu pre potvrdzovacie emaily.
+
+Aktivuje sa iba ked je nastavene:
+
+```text
+RESEND_API_KEY
+RESEND_FROM_EMAIL
+BOOKING_REPLY_TO_EMAIL
+```
+
+Ak `RESEND_API_KEY` chyba, `/api/book` vrati:
+
+```json
+{
+  "emailStatus": "skipped"
+}
+```
+
+Ak je `RESEND_API_KEY` nastavene a payload obsahuje platny email, Worker email zaradi cez `ctx.waitUntil` a API vrati:
+
+```json
+{
+  "emailStatus": "queued"
+}
+```
+
+Email je neblokujuci. Zlyhanie Resendu nesmie pokazit prijatu rezervaciu.
 
 ## Minimalny email klientovi
 

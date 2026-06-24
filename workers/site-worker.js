@@ -1,5 +1,6 @@
 const GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
 const GOOGLE_CALENDAR_API_URL = "https://www.googleapis.com/calendar/v3";
+const RESEND_EMAIL_URL = "https://api.resend.com/emails";
 const SUPABASE_REST_PREFIX = "/rest/v1";
 
 const DEFAULT_ALLOWED_ORIGINS = [
@@ -17,6 +18,8 @@ const DEFAULT_WORKING_DAYS = [0, 1, 2, 3, 4, 5, 6];
 const DEFAULT_MIN_LEAD_MINUTES = 0;
 const DEFAULT_CRM_TENANT_SLUG = "jakub-olsa";
 const DEFAULT_CRM_TENANT_NAME = "Jakub Olša";
+const DEFAULT_BOOKING_FROM_EMAIL = "Jakub Olša <rezervacie@jakubolsa.sk>";
+const DEFAULT_BOOKING_REPLY_TO_EMAIL = "olsa@bosen.sk";
 
 export default {
   async fetch(request, env, ctx) {
@@ -216,6 +219,12 @@ async function handleBooking(request, env, ctx, headers) {
     calendarEvent,
     crmResult,
   });
+  const emailResult = queueBookingConfirmationEmail(ctx, payload, {
+    env,
+    bookingStatus,
+    mode,
+    calendarEvent,
+  });
 
   ctx.waitUntil(telegramPromise.catch(() => null));
 
@@ -225,12 +234,84 @@ async function handleBooking(request, env, ctx, headers) {
       mode,
       bookingStatus,
       crmStatus: crmResult.status,
+      emailStatus: emailResult.status,
       eventId: calendarEvent?.id || "",
       eventLink: calendarEvent?.htmlLink || "",
     },
     200,
     headers,
   );
+}
+
+function queueBookingConfirmationEmail(ctx, payload, context) {
+  const { env } = context;
+  const recipient = clean(payload.email).toLowerCase();
+
+  if (!env.RESEND_API_KEY) {
+    return { status: "skipped" };
+  }
+
+  if (!isLikelyEmail(recipient)) {
+    return { status: "skipped_no_recipient" };
+  }
+
+  ctx.waitUntil(sendBookingConfirmationEmail(recipient, payload, context).catch(() => null));
+  return { status: "queued" };
+}
+
+async function sendBookingConfirmationEmail(recipient, payload, context) {
+  const { env } = context;
+  const from = clean(env.RESEND_FROM_EMAIL) || DEFAULT_BOOKING_FROM_EMAIL;
+  const replyTo = clean(env.BOOKING_REPLY_TO_EMAIL) || DEFAULT_BOOKING_REPLY_TO_EMAIL;
+  const subject = "Rezervácia konzultácie - Jakub Olša";
+  const text = buildBookingConfirmationText(payload, context);
+
+  const body = {
+    from,
+    to: [recipient],
+    reply_to: replyTo,
+    subject,
+    text,
+  };
+
+  const response = await fetch(RESEND_EMAIL_URL, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${env.RESEND_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!response.ok) {
+    throw new Error("Resend confirmation email failed");
+  }
+
+  return response.json();
+}
+
+function buildBookingConfirmationText(payload, context) {
+  const statusLine =
+    context.bookingStatus === "calendar_created"
+      ? "Termín som si zapísal do kalendára."
+      : "Termín beriem ako predbežný a ozvem sa s potvrdením.";
+
+  return [
+    "Dobrý deň,",
+    "",
+    "ďakujem za rezerváciu konzultácie.",
+    "",
+    `Termín: ${clean(payload.datum)} o ${clean(payload.cas)}`,
+    `Téma: ${clean(payload.zamer)}`,
+    `Lokalita: ${clean(payload.lokalita)}`,
+    "",
+    statusLine,
+    "Ak bude potrebné termín upraviť, odpíšte na tento email alebo zavolajte.",
+    "",
+    "Jakub Olša",
+    "realitný maklér | BOSEN Group",
+    "+421 944 844 489",
+  ].join("\n");
 }
 
 async function tryCreateBookingCrmRecords(payload, context) {
@@ -821,6 +902,10 @@ function isValidDate(date) {
 
 function isValidTime(time) {
   return /^([01]\d|2[0-3]):[0-5]\d$/.test(String(time));
+}
+
+function isLikelyEmail(value) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value));
 }
 
 function dayOfWeek(date) {

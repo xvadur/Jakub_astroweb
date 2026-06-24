@@ -50,6 +50,7 @@ Toto nie je len kontaktny formular. Toto je zaciatok kvalifikovaneho lead funnel
   - `Kontaktne udaje`.
 - Copy vo wizarde uz nehovori o Jakubovi ako o tretej osobe typu "poslite Jakubovi".
 - Projekt ma zdokumentovany booking/backend smer cez Cloudflare Worker, Google Calendar a notifikacie.
+- Worker ma pripravenu server-side vrstvu pre Google Calendar, Supabase CRM, Telegram a Resend email potvrdenia.
 - Cloudflare Email Routing je pripraveny na domene, ale cielova adresa este musi byt potvrdena.
 
 ## Co este nie je hotove
@@ -57,6 +58,7 @@ Toto nie je len kontaktny formular. Toto je zaciatok kvalifikovaneho lead funnel
 Toto treba povedat rovno, aby piatok nevyzeral ako divadlo:
 
 - Realny Jakubov Google Calendar este nie je plne napojeny na produkcny booking.
+- CRM a potvrdzovacie emaily su pripravene v kode, ale este cakaju na Cloudflare secrets, Resend setup a live staging smoke.
 - Treba potvrdit cielovy email pre domenu `jakubolsa.sk`.
 - Treba rozhodnut, ci notifikacie maju chodit na email, Telegram, WhatsApp alebo CRM-lite.
 - Treba zapnut realne meranie konverzii az po rozhodnuti cookies/GDPR rezimu.
@@ -145,6 +147,7 @@ P0 pred piatkom:
 - Mat pripraveny 5-minutovy demo script.
 - Mat jasne pomenovane, co je V1 a co je dalsi sprint.
 - Potvrdit, ci su `main` a `staging` stale zladene.
+- Mat deploy-readiness audit z `docs/DEPLOY_READINESS_AUDIT_2026-06-24.md`.
 - Zobrat so sebou zoznam rozhodnuti pre Jakuba:
   - cielovy email,
   - Google Calendar ucet,
