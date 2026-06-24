@@ -1,5 +1,6 @@
 const GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
 const GOOGLE_CALENDAR_API_URL = "https://www.googleapis.com/calendar/v3";
+const SUPABASE_REST_PREFIX = "/rest/v1";
 
 const DEFAULT_ALLOWED_ORIGINS = [
   "https://jakubolsa.sk",
@@ -14,6 +15,8 @@ const DEFAULT_WORK_START = "09:00";
 const DEFAULT_WORK_END = "19:00";
 const DEFAULT_WORKING_DAYS = [0, 1, 2, 3, 4, 5, 6];
 const DEFAULT_MIN_LEAD_MINUTES = 0;
+const DEFAULT_CRM_TENANT_SLUG = "jakub-olsa";
+const DEFAULT_CRM_TENANT_NAME = "Jakub Olša";
 
 export default {
   async fetch(request, env, ctx) {
@@ -163,6 +166,7 @@ async function handleBooking(request, env, ctx, headers) {
   }
 
   const googleEnabled = hasGoogleCalendar(env);
+  let crmResult = { status: "skipped" };
 
   let calendarEvent = null;
   let bookingStatus = "pending_calendar_config";
@@ -188,6 +192,21 @@ async function handleBooking(request, env, ctx, headers) {
 
     calendarEvent = await createCalendarEvent(payload, interval, timeZone, token, env);
     bookingStatus = "calendar_created";
+
+    crmResult = await tryCreateBookingCrmRecords(payload, {
+      env,
+      interval,
+      source: "jakubolsa.sk/rezervacia",
+      appointmentStatus: "confirmed",
+      googleEventId: calendarEvent.id || null,
+    });
+  } else {
+    crmResult = await tryCreateBookingCrmRecords(payload, {
+      env,
+      interval,
+      source: "jakubolsa.sk/rezervacia",
+      appointmentStatus: "requested",
+    });
   }
 
   const telegramPromise = sendTelegramNotification(payload, {
@@ -195,6 +214,7 @@ async function handleBooking(request, env, ctx, headers) {
     bookingStatus,
     mode,
     calendarEvent,
+    crmResult,
   });
 
   ctx.waitUntil(telegramPromise.catch(() => null));
@@ -204,12 +224,255 @@ async function handleBooking(request, env, ctx, headers) {
       ok: true,
       mode,
       bookingStatus,
+      crmStatus: crmResult.status,
       eventId: calendarEvent?.id || "",
       eventLink: calendarEvent?.htmlLink || "",
     },
     200,
     headers,
   );
+}
+
+async function tryCreateBookingCrmRecords(payload, context) {
+  try {
+    return await createBookingCrmRecords(payload, context);
+  } catch (error) {
+    return {
+      status: "failed",
+      error: error instanceof Error ? error.message : "CRM write failed",
+    };
+  }
+}
+
+async function createBookingCrmRecords(payload, context) {
+  const { env, interval, source, appointmentStatus, googleEventId = null } = context;
+  const crmConfig = getCrmConfig(env);
+
+  if (!crmConfig.enabled) {
+    return { status: "skipped" };
+  }
+
+  const tenant = await ensureCrmTenant(crmConfig);
+  const contact = await upsertCrmContact(crmConfig, tenant, payload, source);
+  const lead = await insertCrmRow(crmConfig, "leads", {
+    tenant_id: tenant.id,
+    contact_id: contact.id,
+    intent: normalizeCrmIntent(payload.zamer),
+    status: "new",
+    location: clean(payload.lokalita) || null,
+    location_place_id: clean(payload.lokalita_place_id) || null,
+    property_type: clean(payload.typ_detail) || clean(payload.typ) || clean(payload.typ_komercneho_priestoru) || null,
+    budget: clean(payload.ocakavany_najom) || null,
+    time_horizon: clean(payload.horizont) || null,
+    source,
+    qualification_score: null,
+    raw_payload: buildCrmRawPayload(payload, source),
+  });
+
+  const appointment = await insertCrmRow(crmConfig, "appointments", {
+    tenant_id: tenant.id,
+    contact_id: contact.id,
+    lead_id: lead.id,
+    google_event_id: googleEventId,
+    starts_at: interval.start ? new Date(interval.start).toISOString() : null,
+    ends_at: interval.end ? new Date(interval.end).toISOString() : null,
+    status: appointmentStatus,
+    qualification_payload: buildCrmQualificationPayload(payload),
+    source,
+  });
+
+  await insertCrmRow(crmConfig, "notes", {
+    tenant_id: tenant.id,
+    entity_type: "lead",
+    entity_id: lead.id,
+    author_type: "system",
+    body: leadLines(payload).join("\n"),
+    source,
+  });
+
+  return {
+    status: "created",
+    contactId: contact.id,
+    leadId: lead.id,
+    appointmentId: appointment.id,
+    appointmentStatus: appointment.status,
+  };
+}
+
+function getCrmConfig(env) {
+  const supabaseUrl = clean(env.SUPABASE_URL || env.PUBLIC_SUPABASE_URL).replace(/\/+$/, "");
+  const serviceKey = clean(env.SUPABASE_SERVICE_ROLE_KEY || env.SUPABASE_SERVICE_KEY || env.SUPABASE_SECRET_KEY);
+  const hasAnyCrmEnv = Boolean(supabaseUrl || serviceKey);
+
+  if (!hasAnyCrmEnv) {
+    return { enabled: false };
+  }
+
+  if (!supabaseUrl || !serviceKey) {
+    throw new Error("CRM Supabase configuration is incomplete");
+  }
+
+  return {
+    enabled: true,
+    supabaseUrl,
+    serviceKey,
+    tenantSlug: clean(env.SUPABASE_TENANT_SLUG) || DEFAULT_CRM_TENANT_SLUG,
+    tenantName: clean(env.SUPABASE_TENANT_NAME) || DEFAULT_CRM_TENANT_NAME,
+  };
+}
+
+async function ensureCrmTenant(crmConfig) {
+  const rows = await supabaseCrmRequest(
+    crmConfig,
+    "GET",
+    `/tenants?slug=eq.${encodeURIComponent(crmConfig.tenantSlug)}&select=id,slug,name&limit=1`,
+  );
+
+  if (rows[0]?.id) {
+    return rows[0];
+  }
+
+  return insertCrmRow(crmConfig, "tenants", {
+    slug: crmConfig.tenantSlug,
+    name: crmConfig.tenantName,
+  });
+}
+
+async function upsertCrmContact(crmConfig, tenant, payload, source) {
+  const phone = clean(payload.telefon);
+  const email = clean(payload.email).toLowerCase();
+  const duplicate = await findCrmContact(crmConfig, tenant.id, { phone, email });
+
+  if (duplicate) {
+    return duplicate;
+  }
+
+  return insertCrmRow(crmConfig, "contacts", {
+    tenant_id: tenant.id,
+    name: clean(payload.meno),
+    phone: phone || null,
+    email: email || null,
+    source,
+    notes_summary: buildCrmContactSummary(payload),
+    raw_payload: buildCrmRawPayload(payload, source),
+  });
+}
+
+async function findCrmContact(crmConfig, tenantId, values) {
+  const orTerms = [];
+
+  if (values.phone) orTerms.push(`phone.eq.${escapePostgrestValue(values.phone)}`);
+  if (values.email) orTerms.push(`email.eq.${escapePostgrestValue(values.email)}`);
+  if (!orTerms.length) return null;
+
+  const params = new URLSearchParams({
+    tenant_id: `eq.${tenantId}`,
+    deleted_at: "is.null",
+    select: "*",
+    limit: "1",
+    or: `(${orTerms.join(",")})`,
+  });
+  const rows = await supabaseCrmRequest(crmConfig, "GET", `/contacts?${params.toString()}`);
+
+  return rows[0] || null;
+}
+
+async function insertCrmRow(crmConfig, table, row) {
+  const rows = await supabaseCrmRequest(crmConfig, "POST", `/${table}?select=*`, row);
+
+  if (!rows[0]?.id) {
+    throw new Error(`CRM insert into ${table} did not return an id`);
+  }
+
+  return rows[0];
+}
+
+async function supabaseCrmRequest(crmConfig, method, path, body) {
+  const headers = {
+    apikey: crmConfig.serviceKey,
+    Authorization: `Bearer ${crmConfig.serviceKey}`,
+    "Content-Type": "application/json",
+  };
+
+  if (method !== "GET") {
+    headers.Prefer = "return=representation";
+  }
+
+  const response = await fetch(`${crmConfig.supabaseUrl}${SUPABASE_REST_PREFIX}${path}`, {
+    method,
+    headers,
+    body: body === undefined ? undefined : JSON.stringify(body),
+  });
+
+  const text = await response.text();
+  const parsed = text ? parseJsonResponse(text) : [];
+
+  if (!response.ok) {
+    throw new Error(`CRM ${method} ${path.split("?")[0]} failed`);
+  }
+
+  return parsed;
+}
+
+function parseJsonResponse(text) {
+  try {
+    return JSON.parse(text);
+  } catch {
+    return [];
+  }
+}
+
+function buildCrmRawPayload(payload, source) {
+  return {
+    source,
+    booking_payload: payload,
+    attribution: payload.attribution && typeof payload.attribution === "object" ? payload.attribution : {},
+  };
+}
+
+function buildCrmQualificationPayload(payload) {
+  return {
+    zamer: clean(payload.zamer),
+    typ: clean(payload.typ),
+    typ_detail: clean(payload.typ_detail),
+    lokalita: clean(payload.lokalita),
+    lokalita_place_id: clean(payload.lokalita_place_id),
+    lokalita_lat: clean(payload.lokalita_lat),
+    lokalita_lng: clean(payload.lokalita_lng),
+    lokalita_overena: clean(payload.lokalita_overena),
+    parametre: Array.isArray(payload.parametre) ? payload.parametre.map(clean).filter(Boolean) : [],
+    datum: clean(payload.datum),
+    cas: clean(payload.cas),
+    horizont: clean(payload.horizont),
+    sprava: clean(payload.sprava),
+    page_url: clean(payload.page_url),
+    attribution: payload.attribution && typeof payload.attribution === "object" ? payload.attribution : {},
+  };
+}
+
+function buildCrmContactSummary(payload) {
+  return [clean(payload.zamer), clean(payload.lokalita), `${clean(payload.datum)} ${clean(payload.cas)}`.trim()]
+    .filter(Boolean)
+    .join(" | ");
+}
+
+function normalizeCrmIntent(value) {
+  const intent = clean(value).toLowerCase();
+  if (["sell", "buy", "rent", "consult", "estimate", "unknown"].includes(intent)) return intent;
+
+  if (["predaj", "predať", "predat", "predávam", "predavam"].some((term) => intent.includes(term))) return "sell";
+  if (["kúpa", "kupa", "kúpiť", "kupit", "kupujem"].some((term) => intent.includes(term))) return "buy";
+  if (["prenájom", "prenajom", "prenajať", "prenajat"].some((term) => intent.includes(term))) return "rent";
+  if (["odhad", "ocenenie", "cena"].some((term) => intent.includes(term))) return "estimate";
+  if (["konzultácia", "konzultacia", "audit", "stratégia", "strategia"].some((term) => intent.includes(term))) {
+    return "consult";
+  }
+
+  return "unknown";
+}
+
+function escapePostgrestValue(value) {
+  return String(value).replaceAll(",", "\\,").replaceAll(")", "\\)");
 }
 
 function buildCorsHeaders(origin, env) {

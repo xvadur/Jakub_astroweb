@@ -147,14 +147,34 @@ GET  /api/availability
 POST /api/book
 ```
 
-Worker vie pracovat s Google Calendar konfiguraciou a Telegram notifikaciou. V aktualnom `main` stave nebol potvrdeny priamy zapis z `/api/book` do Supabase CRM tabuliek.
+Worker vie pracovat s Google Calendar konfiguraciou, Telegram notifikaciou a priamym Supabase CRM zapisom z `/api/book`.
+
+CRM zapis je server-side a aktivuje sa iba ked ma Worker nastavene:
+
+```text
+SUPABASE_URL
+SUPABASE_SERVICE_ROLE_KEY
+SUPABASE_TENANT_SLUG
+SUPABASE_TENANT_NAME
+```
+
+Booking flow zapisuje:
+
+```text
+contacts
+leads
+appointments
+notes
+```
+
+Ak CRM env nie je nastavene, API vrati `crmStatus: "skipped"` a rezervacia pokracuje. Ak CRM env je nastavene, ale zapis zlyha, API vrati `crmStatus: "failed"` a rezervacia sa stale nepokazi pre pouzivatela. Kriticka cesta zostava booking/kalendár, CRM je server-side evidencia leadu.
 
 Zaver:
 
 ```text
 OpenClaw + Jakub agent + Supabase CRM existuju a databaza obsahuje testovacie/prevadzkove zaznamy.
 Aktualne chyba mountnuty deterministicky tool layer v Jakub_Astro main/staging.
-Web booking este treba priamo napojit na Supabase CRM alebo obnovit tool layer a pouzit ho z Worker/OpenClaw handoffu.
+Web booking ma priamy Supabase CRM write path, ale staging/produkcia este potrebuju Cloudflare env/secrets a live insert smoke.
 ```
 
 ## Najblizsie technicke kroky
@@ -167,5 +187,5 @@ node /home/node/Jakub_Astro/ops/openclaw/tools/supabase-crm.mjs crm.searchContac
 ```
 
 3. Overit, ze tooly nepisu secrety do stdout/logov.
-4. Rozhodnut, ci `/api/book` zapisuje do Supabase priamo v Cloudflare Worker, alebo ci Worker posiela system event OpenClaw agentovi.
-5. Pre produkcny booking preferovat deterministicky server-side CRM zapis pred agentickou interpretaciou.
+4. Nastavit Cloudflare secret `SUPABASE_SERVICE_ROLE_KEY` a var `SUPABASE_URL` pre staging Worker.
+5. Spravit staging live insert smoke s testovacim leadom a overit zaznamy v `contacts`, `leads`, `appointments`, `notes`.
