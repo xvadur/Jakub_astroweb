@@ -1,0 +1,331 @@
+---
+const gtmId = import.meta.env.PUBLIC_GTM_ID?.trim() ?? "";
+const gaMeasurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID?.trim() ?? "";
+const metaPixelId = import.meta.env.PUBLIC_META_PIXEL_ID?.trim() ?? "";
+const analyticsEnabled = Boolean(gtmId || gaMeasurementId || metaPixelId);
+---
+
+{
+  analyticsEnabled ? (
+    <>
+      <div class="cookie-consent" data-cookie-consent hidden>
+        <div>
+          <strong>Cookies a meranie</strong>
+          <p>
+            Používam analytiku na meranie návštevnosti a rezervácií. Bez súhlasu sa analytické a marketingové skripty
+            nenačítajú.
+          </p>
+        </div>
+        <div class="cookie-consent__actions">
+          <button type="button" data-cookie-reject>Odmietnuť</button>
+          <button type="button" data-cookie-accept>Prijať</button>
+        </div>
+      </div>
+
+      <script define:vars={{ gtmId, gaMeasurementId, metaPixelId }}>
+        (() => {
+          const STORAGE_KEY = "jakub_cookie_consent_v1";
+          const SAFE_KEYS = new Set([
+            "event",
+            "page_path",
+            "intent",
+            "step",
+            "step_name",
+            "booking_status",
+            "mode",
+            "link_type",
+            "link_label",
+            "component",
+          ]);
+          const PII_KEYS = new Set([
+            "meno",
+            "name",
+            "email",
+            "telefon",
+            "phone",
+            "sprava",
+            "message",
+            "lokalita",
+            "address",
+            "date",
+            "datum",
+            "cas",
+            "time",
+          ]);
+
+          const banner = document.querySelector("[data-cookie-consent]");
+          const acceptButton = document.querySelector("[data-cookie-accept]");
+          const rejectButton = document.querySelector("[data-cookie-reject]");
+          const queue = [];
+          let loaded = false;
+
+          window.dataLayer = window.dataLayer || [];
+
+          const readConsent = () => {
+            try {
+              return localStorage.getItem(STORAGE_KEY);
+            } catch {
+              return null;
+            }
+          };
+
+          const writeConsent = (value) => {
+            try {
+              localStorage.setItem(STORAGE_KEY, value);
+            } catch {
+              // Local storage can be blocked. Keep the current page behavior only.
+            }
+          };
+
+          const loadScript = (src) =>
+            new Promise((resolve, reject) => {
+              const script = document.createElement("script");
+              script.async = true;
+              script.src = src;
+              script.onload = resolve;
+              script.onerror = reject;
+              document.head.appendChild(script);
+            });
+
+          const cleanParams = (params = {}) => {
+            const output = {};
+
+            Object.entries(params).forEach(([key, value]) => {
+              if (!SAFE_KEYS.has(key) || PII_KEYS.has(key)) return;
+              if (value === undefined || value === null || value === "") return;
+              output[key] = String(value).slice(0, 160);
+            });
+
+            output.page_path = window.location.pathname;
+            return output;
+          };
+
+          const pushEvent = (name, params = {}) => {
+            const safeParams = cleanParams(params);
+            const eventName = String(name || "").replace(/^booking_/, "booking_").slice(0, 80);
+            const payload = { event: eventName, ...safeParams };
+
+            if (readConsent() !== "accepted") {
+              queue.push(payload);
+              return;
+            }
+
+            window.dataLayer.push(payload);
+
+            if (typeof window.gtag === "function") {
+              window.gtag("event", eventName, safeParams);
+            }
+
+            if (typeof window.fbq === "function" && eventName === "booking_submit_success") {
+              window.fbq("track", "Lead");
+            }
+          };
+
+          window.jakubTrackEvent = pushEvent;
+
+          if (document.querySelector(".wizard-shell") && banner instanceof HTMLElement) {
+            banner.classList.add("cookie-consent--reservation");
+          }
+
+          const loadAnalytics = async () => {
+            if (loaded) return;
+            loaded = true;
+
+            if (gtmId) {
+              window.dataLayer.push({ "gtm.start": Date.now(), event: "gtm.js" });
+              await loadScript(`https://www.googletagmanager.com/gtm.js?id=${encodeURIComponent(gtmId)}`).catch(() => {});
+            }
+
+            if (gaMeasurementId) {
+              window.gtag =
+                window.gtag ||
+                function gtag() {
+                  window.dataLayer.push(arguments);
+                };
+              await loadScript(
+                `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(gaMeasurementId)}`,
+              ).catch(() => {});
+              window.gtag("js", new Date());
+              window.gtag("config", gaMeasurementId, {
+                anonymize_ip: true,
+                send_page_view: true,
+              });
+            }
+
+            if (metaPixelId) {
+              const fbq =
+                window.fbq ||
+                function fbq() {
+                  fbq.callMethod ? fbq.callMethod.apply(fbq, arguments) : fbq.queue.push(arguments);
+                };
+              window.fbq = fbq;
+              window._fbq = window._fbq || fbq;
+              fbq.push = fbq;
+              fbq.loaded = true;
+              fbq.version = "2.0";
+              fbq.queue = fbq.queue || [];
+              await loadScript("https://connect.facebook.net/en_US/fbevents.js").catch(() => {});
+              window.fbq("init", metaPixelId);
+              window.fbq("track", "PageView");
+            }
+
+            while (queue.length) {
+              window.dataLayer.push(queue.shift());
+            }
+          };
+
+          const accept = () => {
+            writeConsent("accepted");
+            if (banner instanceof HTMLElement) banner.hidden = true;
+            loadAnalytics();
+          };
+
+          const reject = () => {
+            writeConsent("rejected");
+            queue.length = 0;
+            if (banner instanceof HTMLElement) banner.hidden = true;
+          };
+
+          document.addEventListener("click", (event) => {
+            const target = event.target instanceof Element ? event.target.closest("a") : null;
+            if (!(target instanceof HTMLAnchorElement)) return;
+
+            const href = target.getAttribute("href") || "";
+            const label = target.textContent?.trim().replace(/\s+/g, " ").slice(0, 80) || target.getAttribute("aria-label") || "";
+            const linkType = href.startsWith("tel:")
+              ? "phone"
+              : href.startsWith("mailto:")
+                ? "email"
+                : href.includes("instagram.com")
+                  ? "instagram"
+                  : href.includes("/rezervacia/")
+                    ? "reservation"
+                    : "";
+
+            if (!linkType) return;
+
+            pushEvent("cta_click", {
+              link_type: linkType,
+              link_label: label,
+              component: target.closest("footer") ? "footer" : target.closest("header") ? "header" : "content",
+            });
+          });
+
+          acceptButton?.addEventListener("click", accept);
+          rejectButton?.addEventListener("click", reject);
+
+          const currentConsent = readConsent();
+          if (currentConsent === "accepted") {
+            loadAnalytics();
+          } else if (currentConsent !== "rejected" && banner instanceof HTMLElement) {
+            banner.hidden = false;
+          }
+        })();
+      </script>
+
+      <style>
+        .cookie-consent {
+          position: fixed;
+          right: 18px;
+          bottom: 18px;
+          z-index: 40;
+          display: grid;
+          width: min(460px, calc(100vw - 36px));
+          gap: 18px;
+          border: 1px solid rgba(255, 250, 242, 0.18);
+          border-radius: 8px;
+          padding: 18px;
+          background: rgba(11, 11, 10, 0.94);
+          box-shadow: 0 24px 70px rgba(11, 11, 10, 0.28);
+          color: #fffaf2;
+          font-family: "Instrument Sans", system-ui, sans-serif;
+        }
+
+        .cookie-consent[hidden] {
+          display: none;
+        }
+
+        .cookie-consent--reservation {
+          top: 72px;
+          right: 18px;
+          left: 18px;
+          bottom: auto;
+          width: auto;
+          grid-template-columns: 1fr auto;
+          align-items: center;
+          padding: 14px 16px;
+        }
+
+        .cookie-consent strong {
+          display: block;
+          margin-bottom: 6px;
+          font-size: 15px;
+        }
+
+        .cookie-consent p {
+          margin: 0;
+          color: rgba(255, 250, 242, 0.72);
+          font-size: 13px;
+          line-height: 1.45;
+        }
+
+        .cookie-consent__actions {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 10px;
+        }
+
+        .cookie-consent button {
+          min-height: 42px;
+          border: 1px solid rgba(255, 250, 242, 0.22);
+          border-radius: 6px;
+          padding: 0 16px;
+          background: rgba(255, 250, 242, 0.08);
+          color: inherit;
+          cursor: pointer;
+          font: inherit;
+          font-weight: 700;
+          transition:
+            background 180ms ease,
+            border-color 180ms ease,
+            transform 180ms ease;
+        }
+
+        .cookie-consent button:hover {
+          border-color: rgba(216, 184, 120, 0.72);
+          background: rgba(216, 184, 120, 0.14);
+        }
+
+        .cookie-consent button:active {
+          transform: translateY(1px);
+        }
+
+        .cookie-consent button[data-cookie-accept] {
+          border-color: #d8b878;
+          background: #d8b878;
+          color: #0b0b0a;
+        }
+
+        @media (max-width: 620px) {
+          .cookie-consent {
+            right: 12px;
+            bottom: 12px;
+            width: calc(100vw - 24px);
+          }
+
+          .cookie-consent--reservation {
+            top: 68px;
+            right: 12px;
+            left: 12px;
+            bottom: auto;
+            grid-template-columns: 1fr;
+          }
+
+          .cookie-consent__actions {
+            display: grid;
+          }
+        }
+      </style>
+    </>
+  ) : null
+}

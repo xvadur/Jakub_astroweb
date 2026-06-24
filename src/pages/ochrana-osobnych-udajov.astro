@@ -1,4 +1,5 @@
 ---
+import AnalyticsConsent from "../components/AnalyticsConsent.astro";
 import { site } from "../data/site";
 
 const canonicalUrl = new URL("/ochrana-osobnych-udajov/", site.siteUrl).toString();
@@ -147,17 +148,18 @@ const canonicalUrl = new URL("/ochrana-osobnych-udajov/", site.siteUrl).toString
       <h2>Komu údaje poskytujem</h2>
       <p>
         Údaje môžu byť technicky spracované poskytovateľom emailovej schránky, hostingu alebo
-        služby Google Kalendár, ak použijete rezervačný odkaz. Údaje neposkytujem tretím stranám
-        na marketingové účely.
+        služby Google Kalendár, ak použijete rezervačný formulár. Ak udelíte súhlas s analytikou,
+        môžu byť technicky spracované aj poskytovateľmi merania návštevnosti alebo reklamných
+        nástrojov podľa aktuálne zapnutého meracieho nastavenia webu. Údaje z formulára
+        neposkytujem tretím stranám na marketingové účely.
       </p>
 
       <h2>Cookies</h2>
       <p>
-        Web nepoužíva analytické ani marketingové cookies. Rezervácia prebieha mimo tejto
-        stránky v rozhraní Google Kalendára, kde sa spracovanie riadi pravidlami služby Google.
-        Ak budú neskôr doplnené meracie nástroje, remarketing alebo iné cookies, ktoré nie sú
-        technicky nevyhnutné, web pred ich použitím doplním o cookie lištu s možnosťou súhlas
-        odmietnuť alebo zmeniť.
+        Web môže používať technicky nevyhnutné úložisko pre uloženie vašej voľby cookies.
+        Analytické alebo marketingové skripty sa načítajú iba po vašom súhlase v cookie lište.
+        Do analytiky sa neposiela meno, telefón, email, presná adresa ani text správy z
+        rezervačného formulára.
       </p>
 
       <h2>Vaše práva</h2>
@@ -174,7 +176,8 @@ const canonicalUrl = new URL("/ochrana-osobnych-udajov/", site.siteUrl).toString
         aj na Úrad na ochranu osobných údajov Slovenskej republiky.
       </p>
 
-      <p class="updated">Posledná aktualizácia: 26. máj 2026</p>
+      <p class="updated">Posledná aktualizácia: 24. jún 2026</p>
     </main>
+    <AnalyticsConsent />
   </body>
 </html>

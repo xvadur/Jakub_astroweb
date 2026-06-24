@@ -1,4 +1,5 @@
 ---
+import AnalyticsConsent from "../components/AnalyticsConsent.astro";
 import { site } from "../data/site";
 
 const siteEnv = import.meta.env.PUBLIC_SITE_ENV ?? "production";
@@ -419,10 +420,8 @@ const googleMapsScriptUrl = googleMapsApiKey
           };
 
           try {
-            if (Array.isArray(window.dataLayer)) {
-              window.dataLayer.push(payload);
-            } else if (Object.isExtensible(window)) {
-              window.dataLayer = [payload];
+            if (typeof window.jakubTrackEvent === "function") {
+              window.jakubTrackEvent(payload.event, payload);
             }
           } catch {
             // Analytics hooks must stay best-effort only.
@@ -1886,5 +1885,6 @@ const googleMapsScriptUrl = googleMapsApiKey
 
       }
     </style>
+    <AnalyticsConsent />
   </body>
 </html>
