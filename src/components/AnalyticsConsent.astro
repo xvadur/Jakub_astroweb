@@ -5,9 +5,9 @@ const metaPixelId = import.meta.env.PUBLIC_META_PIXEL_ID?.trim() ?? "";
 const analyticsEnabled = Boolean(gtmId || gaMeasurementId || metaPixelId);
 ---
 
-{
-  analyticsEnabled ? (
-    <>
+<>
+  {
+    analyticsEnabled ? (
       <div class="cookie-consent" data-cookie-consent hidden>
         <div>
           <strong>Cookies a meranie</strong>
@@ -21,10 +21,14 @@ const analyticsEnabled = Boolean(gtmId || gaMeasurementId || metaPixelId);
           <button type="button" data-cookie-accept>Prijať</button>
         </div>
       </div>
+    ) : null
+  }
 
       <script define:vars={{ gtmId, gaMeasurementId, metaPixelId }}>
         (() => {
           const STORAGE_KEY = "jakub_cookie_consent_v1";
+          const ATTRIBUTION_KEY = "jakub_attribution_v1";
+          const ATTRIBUTION_SESSION_KEY = "jakub_session_attribution_v1";
           const SAFE_KEYS = new Set([
             "event",
             "page_path",
@@ -36,6 +40,13 @@ const analyticsEnabled = Boolean(gtmId || gaMeasurementId || metaPixelId);
             "link_type",
             "link_label",
             "component",
+            "utm_source",
+            "utm_medium",
+            "utm_campaign",
+            "utm_content",
+            "utm_term",
+            "referrer_host",
+            "landing_path",
           ]);
           const PII_KEYS = new Set([
             "meno",
@@ -61,20 +72,36 @@ const analyticsEnabled = Boolean(gtmId || gaMeasurementId || metaPixelId);
 
           window.dataLayer = window.dataLayer || [];
 
-          const readConsent = () => {
+          const safeReadStorage = (storage, key) => {
             try {
-              return localStorage.getItem(STORAGE_KEY);
+              return storage.getItem(key);
             } catch {
               return null;
             }
           };
 
-          const writeConsent = (value) => {
+          const safeWriteStorage = (storage, key, value) => {
             try {
-              localStorage.setItem(STORAGE_KEY, value);
+              storage.setItem(key, value);
             } catch {
-              // Local storage can be blocked. Keep the current page behavior only.
+              // Storage can be blocked. Tracking remains best-effort.
             }
+          };
+
+          const parseJson = (value) => {
+            try {
+              return value ? JSON.parse(value) : null;
+            } catch {
+              return null;
+            }
+          };
+
+          const readConsent = () => {
+            return safeReadStorage(localStorage, STORAGE_KEY);
+          };
+
+          const writeConsent = (value) => {
+            safeWriteStorage(localStorage, STORAGE_KEY, value);
           };
 
           const loadScript = (src) =>
@@ -87,10 +114,70 @@ const analyticsEnabled = Boolean(gtmId || gaMeasurementId || metaPixelId);
               document.head.appendChild(script);
             });
 
+          const readAttribution = () => {
+            return (
+              parseJson(safeReadStorage(sessionStorage, ATTRIBUTION_SESSION_KEY)) ||
+              parseJson(safeReadStorage(localStorage, ATTRIBUTION_KEY)) ||
+              {}
+            );
+          };
+
+          const captureAttribution = () => {
+            const existingSession = parseJson(safeReadStorage(sessionStorage, ATTRIBUTION_SESSION_KEY));
+            if (existingSession) {
+              window.jakubAttribution = existingSession;
+              return existingSession;
+            }
+
+            const currentUrl = new URL(window.location.href);
+            const params = currentUrl.searchParams;
+            const referrerUrl = document.referrer ? safeUrl(document.referrer) : null;
+            const attribution = {
+              landing_path: `${currentUrl.pathname}${currentUrl.search}`,
+              landing_url: window.location.href,
+              referrer: document.referrer || "",
+              referrer_host: referrerUrl ? referrerUrl.hostname : "",
+              utm_source: cleanAttribution(params.get("utm_source")),
+              utm_medium: cleanAttribution(params.get("utm_medium")),
+              utm_campaign: cleanAttribution(params.get("utm_campaign")),
+              utm_content: cleanAttribution(params.get("utm_content")),
+              utm_term: cleanAttribution(params.get("utm_term")),
+              captured_at: new Date().toISOString(),
+            };
+
+            safeWriteStorage(sessionStorage, ATTRIBUTION_SESSION_KEY, JSON.stringify(attribution));
+
+            if (
+              attribution.utm_source ||
+              attribution.utm_medium ||
+              attribution.utm_campaign ||
+              attribution.referrer_host
+            ) {
+              safeWriteStorage(localStorage, ATTRIBUTION_KEY, JSON.stringify(attribution));
+            }
+
+            window.jakubAttribution = attribution;
+            return attribution;
+          };
+
+          const safeUrl = (value) => {
+            try {
+              return new URL(value);
+            } catch {
+              return null;
+            }
+          };
+
+          const cleanAttribution = (value) => {
+            return value ? String(value).trim().slice(0, 120) : "";
+          };
+
+          const attribution = captureAttribution();
+
           const cleanParams = (params = {}) => {
             const output = {};
 
-            Object.entries(params).forEach(([key, value]) => {
+            Object.entries({ ...readAttribution(), ...params }).forEach(([key, value]) => {
               if (!SAFE_KEYS.has(key) || PII_KEYS.has(key)) return;
               if (value === undefined || value === null || value === "") return;
               output[key] = String(value).slice(0, 160);
@@ -122,6 +209,7 @@ const analyticsEnabled = Boolean(gtmId || gaMeasurementId || metaPixelId);
           };
 
           window.jakubTrackEvent = pushEvent;
+          window.jakubGetAttribution = () => ({ ...attribution, ...readAttribution() });
 
           if (document.querySelector(".wizard-shell") && banner instanceof HTMLElement) {
             banner.classList.add("cookie-consent--reservation");
@@ -223,6 +311,8 @@ const analyticsEnabled = Boolean(gtmId || gaMeasurementId || metaPixelId);
         })();
       </script>
 
+  {
+    analyticsEnabled ? (
       <style>
         .cookie-consent {
           position: fixed;
@@ -326,6 +416,6 @@ const analyticsEnabled = Boolean(gtmId || gaMeasurementId || metaPixelId);
           }
         }
       </style>
-    </>
-  ) : null
-}
+    ) : null
+  }
+</>

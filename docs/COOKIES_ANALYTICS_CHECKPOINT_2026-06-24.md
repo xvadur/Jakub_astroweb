@@ -30,6 +30,8 @@ Komponent robi:
 
 - zobrazi cookie banner iba vtedy, ked je nastavene aspon jedno analytics env ID,
 - uklada rozhodnutie do `localStorage` pod klucom `jakub_cookie_consent_v1`,
+- zachytava attribution pri prvej navsteve: UTM parametre, referrer a landing path,
+- attribution helper bezi aj bez analytics env ID, aby booking payload vedel priradit zdroj leadu,
 - pred suhlasom nenacitava GTM, GA ani Meta Pixel,
 - po suhlase nacita nastavene meracie skripty,
 - pri odmietnuti zahodi queue a nenacita skripty,
@@ -71,6 +73,13 @@ page_path
 link_type     phone | email | instagram | reservation
 link_label
 component     header | footer | content
+utm_source
+utm_medium
+utm_campaign
+utm_content
+utm_term
+referrer_host
+landing_path
 ```
 
 Booking wizard:
@@ -94,6 +103,60 @@ step
 step_name
 booking_status
 mode
+utm_source
+utm_medium
+utm_campaign
+referrer_host
+landing_path
+```
+
+## Attribution
+
+Pridana je navstevnicka attribution vrstva.
+
+Pri prvej navsteve sa uklada:
+
+```text
+utm_source
+utm_medium
+utm_campaign
+utm_content
+utm_term
+referrer
+referrer_host
+landing_path
+landing_url
+captured_at
+```
+
+Session hodnota:
+
+```text
+sessionStorage.jakub_session_attribution_v1
+```
+
+Trvalejsia posledna znama kampanova hodnota:
+
+```text
+localStorage.jakub_attribution_v1
+```
+
+Do analytics eventov sa posielaju iba whitelisted attribution polia:
+
+```text
+utm_source
+utm_medium
+utm_campaign
+utm_content
+utm_term
+referrer_host
+landing_path
+```
+
+Do booking payloadu sa posiela aj `payload.attribution`, aby CRM/Worker vedeli priradit lead k zdroju navstevy. Worker pridava kratke zhrnutie attribution aj do Telegram notifikacie:
+
+```text
+Zdroj návštevy: utm_source=google, utm_medium=cpc, utm_campaign=..., referrer=..., landing=...
 ```
 
 ## PII pravidlo

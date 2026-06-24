@@ -865,6 +865,13 @@ const googleMapsScriptUrl = googleMapsApiKey
           payload.subject_prefix = route.subjectPrefix;
           payload.page_url = window.location.href;
           payload.created_at = new Date().toISOString();
+          payload.attribution =
+            typeof window.jakubGetAttribution === "function"
+              ? window.jakubGetAttribution()
+              : {
+                  landing_path: window.location.pathname,
+                  referrer: document.referrer || "",
+                };
 
           return payload;
         };

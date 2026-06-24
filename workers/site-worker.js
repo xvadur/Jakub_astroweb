@@ -474,10 +474,30 @@ function leadLines(payload) {
     "",
     `Termín: ${clean(payload.datum)} o ${clean(payload.cas)}`,
     `Časový horizont: ${clean(payload.horizont) || "-"}`,
+    `Zdroj návštevy: ${buildAttributionSummary(payload.attribution)}`,
     "",
     "Čo je dôležité:",
     clean(payload.sprava) || "-",
   ];
+}
+
+function buildAttributionSummary(attribution) {
+  if (!attribution || typeof attribution !== "object") return "-";
+
+  const parts = [];
+  const source = clean(attribution.utm_source);
+  const medium = clean(attribution.utm_medium);
+  const campaign = clean(attribution.utm_campaign);
+  const referrerHost = clean(attribution.referrer_host);
+  const landingPath = clean(attribution.landing_path);
+
+  if (source) parts.push(`utm_source=${source}`);
+  if (medium) parts.push(`utm_medium=${medium}`);
+  if (campaign) parts.push(`utm_campaign=${campaign}`);
+  if (referrerHost) parts.push(`referrer=${referrerHost}`);
+  if (landingPath) parts.push(`landing=${landingPath}`);
+
+  return parts.length ? parts.join(", ") : "-";
 }
 
 function buildInterval(date, time, minutes, timeZone) {
