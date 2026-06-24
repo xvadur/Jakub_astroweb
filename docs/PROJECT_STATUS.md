@@ -1,6 +1,6 @@
 # Stav projektu Jakub Olša web
 
-Posledná aktualizácia: 5. jún 2026
+Posledná aktualizácia: 24. jún 2026
 
 ## Aktuálny stav
 
@@ -107,6 +107,19 @@ DNSSEC:
 - Starý Websupport DS záznam bol odstránený.
 - DNSSEC nechávame vypnutý, kým doména nebude stabilne aktívna v Cloudflare.
 
+Doménový email:
+
+- Cloudflare Email Routing je zapnutý pre `jakubolsa.sk`.
+- MX záznamy sú prepnuté z Websupportu na Cloudflare:
+  - `route2.mx.cloudflare.net` s prioritou `14`,
+  - `route3.mx.cloudflare.net` s prioritou `46`,
+  - `route1.mx.cloudflare.net` s prioritou `86`.
+- Starý Websupport SPF TXT záznam bol odstránený.
+- Aktívny SPF TXT je `v=spf1 include:_spf.mx.cloudflare.net ~all`.
+- Destination address `olsa@bosen.sk` je v Cloudflare pridaná, ale k 24. júnu 2026 ešte čaká na potvrdenie.
+- Forwarding aliasy `rezervacie@jakubolsa.sk`, `kontakt@jakubolsa.sk` a `info@jakubolsa.sk` sa majú vytvoriť až po potvrdení destination adresy.
+- Ak Jakub používa inú cieľovú emailovú adresu, vytvoriť novú destination adresu a počkať na jej potvrdenie pred vytvorením forwarding pravidiel.
+
 Cloudflare build:
 
 - Install command: `bun install --frozen-lockfile`
@@ -168,6 +181,11 @@ Podrobnosti sú v `docs/FILESYSTEM_LAYOUT.md`.
 - V Cloudflare DNS odstrániť staré Websupport záznamy, ak ešte existujú:
   - `A @ 37.9.175.132`
   - `A www 37.9.175.132`
+- Potvrdiť s Jakubom, ktorý email chce používať ako reálny cieľ pre doménové aliasy.
+- Po potvrdení cieľového emailu v Cloudflare vytvoriť forwarding aliasy:
+  - `rezervacie@jakubolsa.sk`,
+  - `kontakt@jakubolsa.sk`,
+  - `info@jakubolsa.sk`.
 - V `Workers & Pages` pripojiť custom domains:
   - `jakubolsa.sk`
   - `www.jakubolsa.sk`

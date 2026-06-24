@@ -105,6 +105,38 @@ Wrangler needs a Cloudflare login or `CLOUDFLARE_API_TOKEN`. Do not store the to
 
 `PUBLIC_GOOGLE_MAPS_API_KEY` must be restricted in Google Cloud to the production and staging domains. Do not store it in Git.
 
+## Domain Email Routing
+
+Status as of 24 June 2026:
+
+- Inbound mail for `jakubolsa.sk` is handled by Cloudflare Email Routing.
+- Websupport MX records were removed from Cloudflare DNS.
+- Cloudflare MX records are active for the zone.
+- Cloudflare SPF is active: `v=spf1 include:_spf.mx.cloudflare.net ~all`.
+- Destination address `olsa@bosen.sk` exists in Cloudflare but is still unverified.
+- Do not create forwarding aliases until the destination address is verified.
+
+After Jakub confirms the final destination mailbox, create routing aliases:
+
+```text
+rezervacie@jakubolsa.sk -> <verified destination mailbox>
+kontakt@jakubolsa.sk -> <verified destination mailbox>
+info@jakubolsa.sk -> <verified destination mailbox>
+```
+
+Outbound booking confirmations are a separate task from Cloudflare Email Routing. Use Resend or another transactional email provider for sending. Keep sending disabled until the sender domain and API secret are configured.
+
+Planned Worker variables for outbound email, once implemented and approved:
+
+```text
+EMAIL_PROVIDER=resend
+EMAIL_FROM="Jakub Olša <rezervacie@jakubolsa.sk>"
+EMAIL_REPLY_TO="rezervacie@jakubolsa.sk"
+JAKUB_CONTACT_EMAIL="<verified destination mailbox>"
+```
+
+`RESEND_API_KEY` must be stored as a Cloudflare secret, never in the repository.
+
 ## Booking API secrets
 
 The Worker API can run without secrets in mock mode. For live Google Calendar sync, set these as
