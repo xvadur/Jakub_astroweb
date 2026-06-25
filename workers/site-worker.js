@@ -169,6 +169,7 @@ async function handleBooking(request, env, ctx, headers) {
   }
 
   const googleEnabled = hasGoogleCalendar(env);
+  const leadScore = calculateLeadScore(payload);
   let crmResult = { status: "skipped" };
 
   let calendarEvent = null;
@@ -202,6 +203,7 @@ async function handleBooking(request, env, ctx, headers) {
       source: "jakubolsa.sk/rezervacia",
       appointmentStatus: "confirmed",
       googleEventId: calendarEvent.id || null,
+      leadScore,
     });
   } else {
     crmResult = await tryCreateBookingCrmRecords(payload, {
@@ -209,6 +211,7 @@ async function handleBooking(request, env, ctx, headers) {
       interval,
       source: "jakubolsa.sk/rezervacia",
       appointmentStatus: "requested",
+      leadScore,
     });
   }
 
@@ -218,6 +221,7 @@ async function handleBooking(request, env, ctx, headers) {
     mode,
     calendarEvent,
     crmResult,
+    leadScore,
   });
   const emailResult = queueBookingConfirmationEmail(ctx, payload, {
     env,
@@ -235,6 +239,8 @@ async function handleBooking(request, env, ctx, headers) {
       bookingStatus,
       crmStatus: crmResult.status,
       emailStatus: emailResult.status,
+      leadScore: leadScore.score,
+      leadScoreBucket: leadScore.bucket,
       eventId: calendarEvent?.id || "",
       eventLink: calendarEvent?.htmlLink || "",
     },
@@ -326,7 +332,7 @@ async function tryCreateBookingCrmRecords(payload, context) {
 }
 
 async function createBookingCrmRecords(payload, context) {
-  const { env, interval, source, appointmentStatus, googleEventId = null } = context;
+  const { env, interval, source, appointmentStatus, googleEventId = null, leadScore = calculateLeadScore(payload) } = context;
   const crmConfig = getCrmConfig(env);
 
   if (!crmConfig.enabled) {
@@ -346,8 +352,8 @@ async function createBookingCrmRecords(payload, context) {
     budget: clean(payload.ocakavany_najom) || null,
     time_horizon: clean(payload.horizont) || null,
     source,
-    qualification_score: null,
-    raw_payload: buildCrmRawPayload(payload, source),
+    qualification_score: leadScore.score,
+    raw_payload: buildCrmRawPayload(payload, source, leadScore),
   });
 
   const appointment = await insertCrmRow(crmConfig, "appointments", {
@@ -358,7 +364,7 @@ async function createBookingCrmRecords(payload, context) {
     starts_at: interval.start ? new Date(interval.start).toISOString() : null,
     ends_at: interval.end ? new Date(interval.end).toISOString() : null,
     status: appointmentStatus,
-    qualification_payload: buildCrmQualificationPayload(payload),
+    qualification_payload: buildCrmQualificationPayload(payload, leadScore),
     source,
   });
 
@@ -367,7 +373,7 @@ async function createBookingCrmRecords(payload, context) {
     entity_type: "lead",
     entity_id: lead.id,
     author_type: "system",
-    body: leadLines(payload).join("\n"),
+    body: leadLines(payload, { leadScore }).join("\n"),
     source,
   });
 
@@ -503,15 +509,21 @@ function parseJsonResponse(text) {
   }
 }
 
-function buildCrmRawPayload(payload, source) {
+function buildCrmRawPayload(payload, source, leadScore = null) {
   return {
     source,
     booking_payload: payload,
     attribution: payload.attribution && typeof payload.attribution === "object" ? payload.attribution : {},
+    lead_score: leadScore,
+    correlation: {
+      session_id: clean(payload.session_id),
+      lead_correlation_id: clean(payload.lead_correlation_id),
+      consent_state: clean(payload.consent_state),
+    },
   };
 }
 
-function buildCrmQualificationPayload(payload) {
+function buildCrmQualificationPayload(payload, leadScore = null) {
   return {
     zamer: clean(payload.zamer),
     typ: clean(payload.typ),
@@ -527,6 +539,10 @@ function buildCrmQualificationPayload(payload) {
     horizont: clean(payload.horizont),
     sprava: clean(payload.sprava),
     page_url: clean(payload.page_url),
+    session_id: clean(payload.session_id),
+    lead_correlation_id: clean(payload.lead_correlation_id),
+    consent_state: clean(payload.consent_state),
+    lead_score: leadScore,
     attribution: payload.attribution && typeof payload.attribution === "object" ? payload.attribution : {},
   };
 }
@@ -550,6 +566,115 @@ function normalizeCrmIntent(value) {
   }
 
   return "unknown";
+}
+
+function calculateLeadScore(payload) {
+  const reasons = [];
+  let score = 0;
+  const intent = normalizeCrmIntent(payload.zamer);
+  const phone = clean(payload.telefon);
+  const email = clean(payload.email);
+  const name = clean(payload.meno);
+  const location = clean(payload.lokalita);
+  const placeId = clean(payload.lokalita_place_id);
+  const date = clean(payload.datum);
+  const time = clean(payload.cas);
+  const message = clean(payload.sprava);
+  const parameters = Array.isArray(payload.parametre) ? payload.parametre.map(clean).filter(Boolean) : [];
+
+  if (intent === "sell") {
+    score += 30;
+    reasons.push("seller_intent");
+  }
+
+  if (name && phone && email) {
+    score += 20;
+    reasons.push("complete_contact");
+  }
+
+  if (placeId || location) {
+    score += 15;
+    reasons.push(placeId ? "verified_or_specific_location" : "location_present");
+  }
+
+  if (date && time) {
+    score += 15;
+    reasons.push("selected_slot");
+  }
+
+  if (isNearTermHorizon(payload.horizont)) {
+    score += 10;
+    reasons.push("near_term_horizon");
+  }
+
+  if (parameters.length >= 3) {
+    score += 10;
+    reasons.push("property_context");
+  }
+
+  if (message.length >= 40) {
+    score += 5;
+    reasons.push("useful_message");
+  }
+
+  if (!phone) {
+    score -= 20;
+    reasons.push("missing_phone");
+  }
+
+  if (!email) {
+    score -= 15;
+    reasons.push("missing_email");
+  }
+
+  if (!clean(payload.zamer)) {
+    score -= 20;
+    reasons.push("missing_intent");
+  }
+
+  const clamped = Math.max(0, Math.min(100, score));
+
+  return {
+    score: clamped,
+    bucket: leadScoreBucket(clamped),
+    reasons,
+    nextAction: leadScoreNextAction(clamped),
+  };
+}
+
+function isNearTermHorizon(value) {
+  const horizon = clean(value).toLowerCase();
+  if (!horizon) return false;
+
+  return [
+    "hneď",
+    "hned",
+    "ihneď",
+    "ihned",
+    "čo najskôr",
+    "co najskor",
+    "do mesiaca",
+    "1 mesiac",
+    "do 3 mesiac",
+    "3 mesiac",
+    "tento mesiac",
+  ].some((term) => horizon.includes(term));
+}
+
+function leadScoreBucket(score) {
+  if (score >= 80) return "hot";
+  if (score >= 50) return "qualified";
+  if (score >= 25) return "nurture";
+  return "weak";
+}
+
+function leadScoreNextAction(score) {
+  const bucket = leadScoreBucket(score);
+
+  if (bucket === "hot") return "Zavolať alebo potvrdiť konzultáciu do 2 hodín.";
+  if (bucket === "qualified") return "Potvrdiť konzultáciu do 24 hodín.";
+  if (bucket === "nurture") return "Uložiť follow-up a poslať jemné potvrdenie.";
+  return "Skontrolovať manuálne, neeskalovať ako urgent.";
 }
 
 function escapePostgrestValue(value) {
@@ -745,7 +870,7 @@ async function createCalendarEvent(payload, interval, timeZone, accessToken, env
 }
 
 async function sendTelegramNotification(payload, context) {
-  const { env, bookingStatus, mode, calendarEvent } = context;
+  const { env, bookingStatus, mode, calendarEvent, leadScore } = context;
 
   if (!env.TELEGRAM_BOT_TOKEN || !env.TELEGRAM_CHAT_ID) {
     return { ok: false, skipped: true };
@@ -756,7 +881,7 @@ async function sendTelegramNotification(payload, context) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       chat_id: env.TELEGRAM_CHAT_ID,
-      text: buildTelegramMessage(payload, { bookingStatus, mode, calendarEvent }),
+      text: buildTelegramMessage(payload, { bookingStatus, mode, calendarEvent, leadScore }),
       disable_web_page_preview: true,
     }),
   });
@@ -796,16 +921,20 @@ function buildTelegramMessage(payload, context) {
     `Režim: ${context.mode}`,
     context.calendarEvent?.htmlLink ? `Kalendár: ${context.calendarEvent.htmlLink}` : "",
     "",
-    ...leadLines(payload),
+    ...leadLines(payload, { leadScore: context.leadScore }),
   ].filter(Boolean);
 
   return lines.join("\n");
 }
 
-function leadLines(payload) {
+function leadLines(payload, context = {}) {
   const parameters = Array.isArray(payload.parametre) ? payload.parametre : [];
+  const leadScore = context.leadScore || null;
 
   return [
+    leadScore ? `Lead score: ${leadScore.score} / ${leadScore.bucket}` : "",
+    leadScore?.nextAction ? `Ďalší krok: ${leadScore.nextAction}` : "",
+    leadScore ? "" : "",
     `Meno: ${clean(payload.meno)}`,
     `Telefón: ${clean(payload.telefon)}`,
     `Email: ${clean(payload.email) || "-"}`,
@@ -819,10 +948,11 @@ function leadLines(payload) {
     `Termín: ${clean(payload.datum)} o ${clean(payload.cas)}`,
     `Časový horizont: ${clean(payload.horizont) || "-"}`,
     `Zdroj návštevy: ${buildAttributionSummary(payload.attribution)}`,
+    `Correlation ID: ${clean(payload.lead_correlation_id) || "-"}`,
     "",
     "Čo je dôležité:",
     clean(payload.sprava) || "-",
-  ];
+  ].filter((line, index, lines) => line || lines[index - 1]);
 }
 
 function buildAttributionSummary(attribution) {
@@ -834,10 +964,20 @@ function buildAttributionSummary(attribution) {
   const campaign = clean(attribution.utm_campaign);
   const referrerHost = clean(attribution.referrer_host);
   const landingPath = clean(attribution.landing_path);
+  const gclid = clean(attribution.gclid);
+  const gbraid = clean(attribution.gbraid);
+  const wbraid = clean(attribution.wbraid);
+  const fbclid = clean(attribution.fbclid);
+  const msclkid = clean(attribution.msclkid);
 
   if (source) parts.push(`utm_source=${source}`);
   if (medium) parts.push(`utm_medium=${medium}`);
   if (campaign) parts.push(`utm_campaign=${campaign}`);
+  if (gclid) parts.push("gclid=present");
+  if (gbraid) parts.push("gbraid=present");
+  if (wbraid) parts.push("wbraid=present");
+  if (fbclid) parts.push("fbclid=present");
+  if (msclkid) parts.push("msclkid=present");
   if (referrerHost) parts.push(`referrer=${referrerHost}`);
   if (landingPath) parts.push(`landing=${landingPath}`);
 

@@ -584,6 +584,12 @@ const googleMapsScriptUrl = googleMapsApiKey
 
         const currentRoute = () => intentRoutes[funnelValue("zamer")] || defaultRoute;
 
+        const createLeadCorrelationId = () => {
+          if (typeof window.jakubCreateCorrelationId === "function") return window.jakubCreateCorrelationId();
+          if (window.crypto?.randomUUID) return window.crypto.randomUUID();
+          return `lead_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`;
+        };
+
         const defaultFieldMeta = {
           extras: {
             label: "Výhody nehnuteľnosti",
@@ -872,6 +878,10 @@ const googleMapsScriptUrl = googleMapsApiKey
                   landing_path: window.location.pathname,
                   referrer: document.referrer || "",
                 };
+          payload.session_id = payload.attribution?.session_id || "";
+          payload.consent_state =
+            typeof window.jakubGetConsentState === "function" ? window.jakubGetConsentState() : "unset";
+          payload.lead_correlation_id = createLeadCorrelationId();
 
           return payload;
         };

@@ -29,6 +29,7 @@ const analyticsEnabled = Boolean(gtmId || gaMeasurementId || metaPixelId);
           const STORAGE_KEY = "jakub_cookie_consent_v1";
           const ATTRIBUTION_KEY = "jakub_attribution_v1";
           const ATTRIBUTION_SESSION_KEY = "jakub_session_attribution_v1";
+          const SESSION_ID_KEY = "jakub_session_id_v1";
           const SAFE_KEYS = new Set([
             "event",
             "page_path",
@@ -100,6 +101,8 @@ const analyticsEnabled = Boolean(gtmId || gaMeasurementId || metaPixelId);
             return safeReadStorage(localStorage, STORAGE_KEY);
           };
 
+          const consentState = () => readConsent() || "unset";
+
           const writeConsent = (value) => {
             safeWriteStorage(localStorage, STORAGE_KEY, value);
           };
@@ -122,6 +125,20 @@ const analyticsEnabled = Boolean(gtmId || gaMeasurementId || metaPixelId);
             );
           };
 
+          const createId = () => {
+            if (window.crypto?.randomUUID) return window.crypto.randomUUID();
+            return `id_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`;
+          };
+
+          const readSessionId = () => {
+            const existing = safeReadStorage(sessionStorage, SESSION_ID_KEY);
+            if (existing) return existing;
+
+            const sessionId = createId();
+            safeWriteStorage(sessionStorage, SESSION_ID_KEY, sessionId);
+            return sessionId;
+          };
+
           const captureAttribution = () => {
             const existingSession = parseJson(safeReadStorage(sessionStorage, ATTRIBUTION_SESSION_KEY));
             if (existingSession) {
@@ -133,6 +150,7 @@ const analyticsEnabled = Boolean(gtmId || gaMeasurementId || metaPixelId);
             const params = currentUrl.searchParams;
             const referrerUrl = document.referrer ? safeUrl(document.referrer) : null;
             const attribution = {
+              session_id: readSessionId(),
               landing_path: `${currentUrl.pathname}${currentUrl.search}`,
               landing_url: window.location.href,
               referrer: document.referrer || "",
@@ -142,6 +160,11 @@ const analyticsEnabled = Boolean(gtmId || gaMeasurementId || metaPixelId);
               utm_campaign: cleanAttribution(params.get("utm_campaign")),
               utm_content: cleanAttribution(params.get("utm_content")),
               utm_term: cleanAttribution(params.get("utm_term")),
+              gclid: cleanAttribution(params.get("gclid")),
+              gbraid: cleanAttribution(params.get("gbraid")),
+              wbraid: cleanAttribution(params.get("wbraid")),
+              fbclid: cleanAttribution(params.get("fbclid")),
+              msclkid: cleanAttribution(params.get("msclkid")),
               captured_at: new Date().toISOString(),
             };
 
@@ -151,6 +174,11 @@ const analyticsEnabled = Boolean(gtmId || gaMeasurementId || metaPixelId);
               attribution.utm_source ||
               attribution.utm_medium ||
               attribution.utm_campaign ||
+              attribution.gclid ||
+              attribution.gbraid ||
+              attribution.wbraid ||
+              attribution.fbclid ||
+              attribution.msclkid ||
               attribution.referrer_host
             ) {
               safeWriteStorage(localStorage, ATTRIBUTION_KEY, JSON.stringify(attribution));
@@ -209,7 +237,9 @@ const analyticsEnabled = Boolean(gtmId || gaMeasurementId || metaPixelId);
           };
 
           window.jakubTrackEvent = pushEvent;
-          window.jakubGetAttribution = () => ({ ...attribution, ...readAttribution() });
+          window.jakubGetAttribution = () => ({ ...attribution, ...readAttribution(), consent_state: consentState() });
+          window.jakubGetConsentState = consentState;
+          window.jakubCreateCorrelationId = createId;
 
           if (document.querySelector(".wizard-shell") && banner instanceof HTMLElement) {
             banner.classList.add("cookie-consent--reservation");
