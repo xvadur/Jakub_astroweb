@@ -154,15 +154,15 @@ Live booking smoke po explicitnom suhlase 26. juna 2026:
 ```json
 {
   "ok": true,
-  "mode": "mock",
-  "bookingStatus": "pending_calendar_config",
+  "mode": "google",
+  "bookingStatus": "calendar_created",
   "crmStatus": "created",
   "emailStatus": "skipped",
   "leadScoreBucket": "hot"
 }
 ```
 
-Produkcia ma zapnute Google Calendar, Supabase CRM secrets a Telegram secrets. Test vytvoril `contact`, `lead`, `appointment` a `note` v Supabase. Telegram bot aj cielovy private chat su validne; dorucenie spravy treba potvrdit vizualne v Telegrame. Resend ostava vypnuty, pretoze dostupny token nebol platny Resend API key.
+Produkcia ma zapnute Google Calendar, Supabase CRM secrets a Telegram secrets. Test vytvoril Google Calendar event, `contact`, `lead`, `appointment` a `note` v Supabase. Nasledny `/api/availability` ukazal testovany slot ako `busy`. Telegram bot aj cielovy private chat su validne; dorucenie spravy treba potvrdit vizualne v Telegrame. Resend ostava vypnuty, pretoze dostupny token nebol platny Resend API key.
 
 ### Build-time public env
 
@@ -199,7 +199,7 @@ GOOGLE_REFRESH_TOKEN
 GOOGLE_CALENDAR_ID
 ```
 
-Produkcia aj staging: nastavene 26. juna 2026 pre Jakubov Google účet `jakubolsa90@gmail.com` a kalendár `Konzultácie`.
+Produkcia aj staging: nastavene 26. juna 2026 pre Jakubov Google účet `jakubolsa90@gmail.com` a kalendár `Konzultácie`; live calendar smoke presiel.
 
 Telegram:
 

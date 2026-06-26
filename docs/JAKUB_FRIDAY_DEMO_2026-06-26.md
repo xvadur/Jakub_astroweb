@@ -55,6 +55,7 @@ Toto nie je len kontaktny formular. Toto je zaciatok kvalifikovaneho lead funnel
 - Produkcny Worker uz zapisuje web booking do Supabase CRM (`contacts`, `leads`, `appointments`, `notes`).
 - Produkcny Worker uz posiela Telegram notifikaciu cez Jakubov Telegram bot; dorucenie treba este vizualne potvrdit v Telegrame.
 - Cloudflare Email Routing ma potvrdeny ciel `olsa@bosen.sk` a alias `rezervacie@jakubolsa.sk -> olsa@bosen.sk`.
+- Produkcny Worker uz zapisuje rezervacie do Jakubovho Google Calendaru. Smoke test vratil `bookingStatus: "calendar_created"` a dalsia kontrola dostupnosti oznacila slot ako `busy`.
 - Cookie/analytics vrstva vie po suhlase merat CTA kliky, booking funnel, GA4 `generate_lead` a Google Ads `conversion`.
 - Na zapnutie Google Ads konverzie uz treba hlavne hodnoty z Ads uctu: `AW-...` ID a conversion label.
 
