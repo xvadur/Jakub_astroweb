@@ -107,21 +107,20 @@ Wrangler needs a Cloudflare login or `CLOUDFLARE_API_TOKEN`. Do not store the to
 
 ## Domain Email Routing
 
-Status as of 24 June 2026:
+Status as of 26 June 2026:
 
 - Inbound mail for `jakubolsa.sk` is handled by Cloudflare Email Routing.
 - Websupport MX records were removed from Cloudflare DNS.
 - Cloudflare MX records are active for the zone.
 - Cloudflare SPF is active: `v=spf1 include:_spf.mx.cloudflare.net ~all`.
-- Destination address `olsa@bosen.sk` exists in Cloudflare but is still unverified.
-- Do not create forwarding aliases until the destination address is verified.
+- Destination address `olsa@bosen.sk` is verified in Cloudflare.
+- Forwarding rule `rezervacie@jakubolsa.sk -> olsa@bosen.sk` is created and enabled.
 
-After Jakub confirms the final destination mailbox, create routing aliases:
+Optional remaining routing aliases:
 
 ```text
-rezervacie@jakubolsa.sk -> <verified destination mailbox>
-kontakt@jakubolsa.sk -> <verified destination mailbox>
-info@jakubolsa.sk -> <verified destination mailbox>
+kontakt@jakubolsa.sk -> olsa@bosen.sk
+info@jakubolsa.sk -> olsa@bosen.sk
 ```
 
 Outbound booking confirmations are a separate task from Cloudflare Email Routing. Use Resend or another transactional email provider for sending. Keep sending disabled until the sender domain and API secret are configured.
@@ -137,13 +136,9 @@ BOOKING_REPLY_TO_EMAIL="olsa@bosen.sk"
 
 ## Booking API secrets
 
-The Worker API can run without secrets in mock/skip mode. For live Google Calendar, Telegram, Supabase CRM, and Resend email confirmation, set these on `jakubastroweb-staging` first:
+The Worker API can run without secrets in mock/skip mode. Google Calendar secrets are already configured on both `jakubastroweb-staging` and `jakubastroweb` for Jakub's Google Calendar `Konzultácie`; `/api/availability` returns `mode: "google"` on both domains. For live Telegram, Supabase CRM, and Resend email confirmation, set or verify these on `jakubastroweb-staging` first:
 
 ```bash
-npx wrangler secret put GOOGLE_CLIENT_ID --name jakubastroweb-staging
-npx wrangler secret put GOOGLE_CLIENT_SECRET --name jakubastroweb-staging
-npx wrangler secret put GOOGLE_REFRESH_TOKEN --name jakubastroweb-staging
-npx wrangler secret put GOOGLE_CALENDAR_ID --name jakubastroweb-staging
 npx wrangler secret put TELEGRAM_BOT_TOKEN --name jakubastroweb-staging
 npx wrangler secret put TELEGRAM_CHAT_ID --name jakubastroweb-staging
 npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY --name jakubastroweb-staging

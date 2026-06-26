@@ -141,9 +141,11 @@ staging HTML obsahuje noindex a STAGING badge
 Availability stav:
 
 ```text
-production /api/availability mode: mock
+production /api/availability mode: google
 staging    /api/availability mode: google
 ```
+
+Aktualizácia 26. júna 2026: produkcia aj staging používajú Jakubov Google Calendar `Konzultácie` cez Cloudflare Worker secrets. Produkcia bola prepnutá z pôvodného mock režimu na `mode: "google"` po Jakubovom OAuth consente.
 
 Poznamka: live `POST /api/book` nebol spusteny bez explicitneho suhlasu, pretoze staging moze vytvorit realny Google Calendar event a po doplneni secrets aj CRM/email zaznam.
 
@@ -160,7 +162,7 @@ Live booking smoke po explicitnom suhlase 26. juna 2026:
 }
 ```
 
-Produkcia ma zapnute Supabase CRM secrets a Telegram secrets. Test vytvoril `contact`, `lead`, `appointment` a `note` v Supabase. Telegram bot aj cielovy private chat su validne; dorucenie spravy treba potvrdit vizualne v Telegrame. Resend ostava vypnuty, pretoze dostupny token nebol platny Resend API key.
+Produkcia ma zapnute Google Calendar, Supabase CRM secrets a Telegram secrets. Test vytvoril `contact`, `lead`, `appointment` a `note` v Supabase. Telegram bot aj cielovy private chat su validne; dorucenie spravy treba potvrdit vizualne v Telegrame. Resend ostava vypnuty, pretoze dostupny token nebol platny Resend API key.
 
 ### Build-time public env
 
@@ -197,6 +199,8 @@ GOOGLE_REFRESH_TOKEN
 GOOGLE_CALENDAR_ID
 ```
 
+Produkcia aj staging: nastavene 26. juna 2026 pre Jakubov Google účet `jakubolsa90@gmail.com` a kalendár `Konzultácie`.
+
 Telegram:
 
 ```text
@@ -229,9 +233,10 @@ Produkcia: `RESEND_API_KEY` nie je nastavene. Email confirmation ostava vypnuty,
 
 ### Email/DNS
 
-- Potvrdit Cloudflare Email Routing destination pre `olsa@bosen.sk` alebo inu Jakubovu cielovu adresu.
-- Vytvorit aliasy:
-  - `rezervacie@jakubolsa.sk`
+- Cloudflare Email Routing destination `olsa@bosen.sk` je overena.
+- Vytvoreny alias:
+  - `rezervacie@jakubolsa.sk -> olsa@bosen.sk`
+- Volitelne este vytvorit aliasy:
   - `kontakt@jakubolsa.sk`
   - `info@jakubolsa.sk`
 - V Resende overit domenu/subdomenu a nastavit SPF/DKIM/DMARC podla Resendu.

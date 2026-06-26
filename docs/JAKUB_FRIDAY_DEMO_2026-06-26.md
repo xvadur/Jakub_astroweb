@@ -51,9 +51,10 @@ Toto nie je len kontaktny formular. Toto je zaciatok kvalifikovaneho lead funnel
 - Copy vo wizarde uz nehovori o Jakubovi ako o tretej osobe typu "poslite Jakubovi".
 - Projekt ma zdokumentovany booking/backend smer cez Cloudflare Worker, Google Calendar a notifikacie.
 - Worker ma pripravenu server-side vrstvu pre Google Calendar, Supabase CRM, Telegram a Resend email potvrdenia.
+- Po piatkovom setupe je Jakubov Google Calendar napojeny cez OAuth na staging aj produkciu; booking cita kalendar `Konzultácie`.
 - Produkcny Worker uz zapisuje web booking do Supabase CRM (`contacts`, `leads`, `appointments`, `notes`).
 - Produkcny Worker uz posiela Telegram notifikaciu cez Jakubov Telegram bot; dorucenie treba este vizualne potvrdit v Telegrame.
-- Cloudflare Email Routing je pripraveny na domene, ale cielova adresa este musi byt potvrdena.
+- Cloudflare Email Routing ma potvrdeny ciel `olsa@bosen.sk` a alias `rezervacie@jakubolsa.sk -> olsa@bosen.sk`.
 - Cookie/analytics vrstva vie po suhlase merat CTA kliky, booking funnel, GA4 `generate_lead` a Google Ads `conversion`.
 - Na zapnutie Google Ads konverzie uz treba hlavne hodnoty z Ads uctu: `AW-...` ID a conversion label.
 
@@ -61,9 +62,7 @@ Toto nie je len kontaktny formular. Toto je zaciatok kvalifikovaneho lead funnel
 
 Toto treba povedat rovno, aby piatok nevyzeral ako divadlo:
 
-- Realny Jakubov Google Calendar este nie je plne napojeny na produkcny booking.
 - Potvrdzovacie emaily su pripravene v kode, ale Resend este nie je produkcne nastaveny. Aktualny Resend token nebol platny API key.
-- Treba potvrdit cielovy email pre domenu `jakubolsa.sk`.
 - Treba potvrdit, ci Telegram notifikacia ma chodit priamo Jakubovi alebo do skupiny s Adamom/Jakubom.
 - Treba doplnit realne GA4/Google Ads ID a overit ich v Tag Assistante.
 - Reklamy este nemaju bezat, kym nie je jasne meranie a landing/conversion path.
@@ -165,7 +164,7 @@ P1 ak ostane cas:
 - Rebuildnut seller landing page koncept z backlogu do aktualneho `main` stylu.
 - Pripravit jednoduchy campaign brief pre Google Search.
 - Pripravit UTM naming a meranie konverzie `booking_submit_success` / GA4 `generate_lead` / Google Ads `conversion`.
-- Overit, ci Cloudflare Email Routing destination `olsa@bosen.sk` uz Jakub potvrdil.
+- Overit live prijatie emailu na `rezervacie@jakubolsa.sk` v BOSEN schránke `olsa@bosen.sk`.
 
 ## Co pytat od Jakuba
 

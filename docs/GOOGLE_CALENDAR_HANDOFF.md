@@ -1,6 +1,6 @@
 # Google Calendar OAuth handoff
 
-Posledná aktualizácia: 5. jún 2026
+Posledná aktualizácia: 26. jún 2026
 
 ## Cieľ
 
@@ -10,13 +10,15 @@ Do GitHubu patria iba tieto inštrukcie a názvy klientov. OAuth client secret, 
 
 ## Aktuálny stav
 
-- Google účet, ktorý má autorizovať Calendar: `jakubolsa90@gmail.com`.
+- Google účet, ktorý autorizoval Calendar: `jakubolsa90@gmail.com`.
 - OAuth client typ: Desktop app.
 - Lokálny `gog` OAuth client name: `jakub-calendar`.
 - OAuth client credentials boli importnuté do `gog` na tomto stroji.
-- Jakubov Google účet ešte neprešiel úspešným OAuth consent flow.
-- Refresh token pre `jakubolsa90@gmail.com` zatiaľ nie je uložený.
-- Calendar ID ešte nie je vybrané; po autorizácii treba vypísať kalendáre a rozhodnúť medzi `primary` alebo samostatným kalendárom pre obhliadky.
+- Jakubov Google účet prešiel OAuth consent flow.
+- Refresh token pre `jakubolsa90@gmail.com` je uložený mimo repozitára v `.secrets/` a v Cloudflare Worker secrets.
+- Calendar ID je samostatný Google Calendar `Konzultácie`.
+- `jakubastroweb-staging` aj `jakubastroweb` majú nastavené Google Calendar secrets.
+- Read-only smoke overil, že `/api/availability` vracia `mode: "google"` na stagingu aj produkcii.
 
 ## Lokálne súbory mimo Git
 
@@ -26,6 +28,8 @@ Na pracovnom MacBooku sú credentials uložené mimo repozitára:
 /Users/_xvadur/Jakub_astroweb/.secrets/google-oauth-client-id.txt
 /Users/_xvadur/Jakub_astroweb/.secrets/google-oauth-client-secret.txt
 /Users/_xvadur/Jakub_astroweb/.secrets/google-oauth-desktop-client.json
+/Users/_xvadur/Jakub_astroweb/.secrets/jakub-calendar-refresh-token.json
+/Users/_xvadur/Jakub_astroweb/.secrets/gog-keyring-password
 ```
 
 `gog` má importovaný klientsky credentials súbor:
@@ -117,8 +121,14 @@ gog calendar events primary --client=jakub-calendar --account=jakubolsa90@gmail.
 Úspešný stav:
 
 - `gog auth list --client=jakub-calendar` ukáže `jakubolsa90@gmail.com`.
-- `gog calendar calendars` vypíše Jakubove kalendáre.
+- `gog calendar calendars` vypíše Jakubove kalendáre vrátane `Konzultácie`.
 - `gog calendar events primary` vráti udalosti alebo prázdny zoznam bez auth chyby.
+
+Ak je `gog` nastavený na file keyring backend, pred overením nastav:
+
+```bash
+export GOG_KEYRING_PASSWORD="$(cat .secrets/gog-keyring-password)"
+```
 
 ## Produkčné rozhodnutia
 
