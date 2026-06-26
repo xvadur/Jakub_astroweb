@@ -51,17 +51,21 @@ Toto nie je len kontaktny formular. Toto je zaciatok kvalifikovaneho lead funnel
 - Copy vo wizarde uz nehovori o Jakubovi ako o tretej osobe typu "poslite Jakubovi".
 - Projekt ma zdokumentovany booking/backend smer cez Cloudflare Worker, Google Calendar a notifikacie.
 - Worker ma pripravenu server-side vrstvu pre Google Calendar, Supabase CRM, Telegram a Resend email potvrdenia.
+- Produkcny Worker uz zapisuje web booking do Supabase CRM (`contacts`, `leads`, `appointments`, `notes`).
+- Produkcny Worker uz posiela Telegram notifikaciu cez Jakubov Telegram bot; dorucenie treba este vizualne potvrdit v Telegrame.
 - Cloudflare Email Routing je pripraveny na domene, ale cielova adresa este musi byt potvrdena.
+- Cookie/analytics vrstva vie po suhlase merat CTA kliky, booking funnel, GA4 `generate_lead` a Google Ads `conversion`.
+- Na zapnutie Google Ads konverzie uz treba hlavne hodnoty z Ads uctu: `AW-...` ID a conversion label.
 
 ## Co este nie je hotove
 
 Toto treba povedat rovno, aby piatok nevyzeral ako divadlo:
 
 - Realny Jakubov Google Calendar este nie je plne napojeny na produkcny booking.
-- CRM a potvrdzovacie emaily su pripravene v kode, ale este cakaju na Cloudflare secrets, Resend setup a live staging smoke.
+- Potvrdzovacie emaily su pripravene v kode, ale Resend este nie je produkcne nastaveny. Aktualny Resend token nebol platny API key.
 - Treba potvrdit cielovy email pre domenu `jakubolsa.sk`.
-- Treba rozhodnut, ci notifikacie maju chodit na email, Telegram, WhatsApp alebo CRM-lite.
-- Treba zapnut realne meranie konverzii az po rozhodnuti cookies/GDPR rezimu.
+- Treba potvrdit, ci Telegram notifikacia ma chodit priamo Jakubovi alebo do skupiny s Adamom/Jakubom.
+- Treba doplnit realne GA4/Google Ads ID a overit ich v Tag Assistante.
 - Reklamy este nemaju bezat, kym nie je jasne meranie a landing/conversion path.
 - Staging-only leadgen skripty a dashboardy su odlozene na review; netreba ich teraz bulk mergovat.
 
@@ -160,7 +164,7 @@ P1 ak ostane cas:
 
 - Rebuildnut seller landing page koncept z backlogu do aktualneho `main` stylu.
 - Pripravit jednoduchy campaign brief pre Google Search.
-- Pripravit UTM naming a meranie konverzie `booking_submit_success`.
+- Pripravit UTM naming a meranie konverzie `booking_submit_success` / GA4 `generate_lead` / Google Ads `conversion`.
 - Overit, ci Cloudflare Email Routing destination `olsa@bosen.sk` uz Jakub potvrdil.
 
 ## Co pytat od Jakuba
@@ -169,6 +173,8 @@ Otazky:
 
 - Ktory email ma byt hlavny pre `rezervacie@jakubolsa.sk`?
 - Pouziva realne denne Google Calendar?
+- Ma pristup do GA4 a Google Ads, alebo to bude spravovat Adam?
+- Vie vytvorit/poslat GA4 Measurement ID, Google Ads Conversion ID a conversion label?
 - Ma byt rezervacia telefonat, Google Meet alebo iba predbezny termin?
 - Aku dlzku hovoru chce: 15, 20 alebo 30 minut?
 - Chce kazdy lead hned sebe, alebo najprv filter cez Adama?

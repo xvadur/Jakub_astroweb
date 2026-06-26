@@ -979,6 +979,7 @@ const googleMapsScriptUrl = googleMapsApiKey
               intent: payload.zamer || "",
               booking_status: data.bookingStatus || "",
               mode: data.mode || "",
+              lead_correlation_id: payload.lead_correlation_id || "",
             });
             showBookingConfirmation(data);
           } catch {

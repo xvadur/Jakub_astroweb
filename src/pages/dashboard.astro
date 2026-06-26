@@ -1,0 +1,755 @@
+---
+import { site } from "../data/site";
+
+const siteEnv = import.meta.env.PUBLIC_SITE_ENV ?? "production";
+const isStaging = siteEnv !== "production";
+const generatedAt = new Intl.DateTimeFormat("sk-SK", {
+  dateStyle: "medium",
+  timeStyle: "short",
+  timeZone: "Europe/Bratislava",
+}).format(new Date());
+
+const availableListings = site.listings.filter((listing) => listing.group === "available");
+const soldListings = site.listings.filter((listing) => listing.group === "sold");
+const listingCount = availableListings.length;
+const soldCount = soldListings.length;
+const primaryListing = availableListings[0];
+const stats = site.trackRecord.stats;
+
+const kpis = [
+  {
+    label: "Aktívne ponuky",
+    value: listingCount.toString(),
+    detail: "na webe",
+    source: "web",
+  },
+  {
+    label: "Uzavreté predaje",
+    value: soldCount.toString(),
+    detail: "referencie v dátach webu",
+    source: "web",
+  },
+  {
+    label: "Konverzia wizardu",
+    value: "0 %",
+    detail: "čaká na zber eventov",
+    source: "na zapojenie",
+  },
+  {
+    label: "OpenClaw",
+    value: "check",
+    detail: "health panel pripravený na napojenie",
+    source: "na zapojenie",
+  },
+];
+
+const funnel = [
+  { step: "Návšteva webu", count: "0", source: "eventy" },
+  { step: "Klik na konzultáciu", count: "0", source: "eventy" },
+  { step: "Začiatok wizardu", count: "0", source: "eventy" },
+  { step: "Vyplnené údaje", count: "0", source: "eventy" },
+  { step: "Odoslaná rezervácia", count: "0", source: "CRM" },
+];
+
+const priorities = [
+  {
+    title: "Skontrolovať nové rezervácie",
+    detail: "Po napojení CRM sa sem bude ťahať posledný lead, skóre a odporúčaný ďalší krok.",
+    state: "na zapojenie",
+  },
+  {
+    title: "Doplniť metriky pre ponuky",
+    detail: "Zobrazenia, kliky na detail, kliky na rezerváciu a zdroj návštevy podľa listingov.",
+    state: "pripravené",
+  },
+  {
+    title: "OpenClaw health",
+    detail: "Zobraziť stav agenta, Telegramu, kalendára a posledného handoffu.",
+    state: "pripravené",
+  },
+  {
+    title: "Follow-up queue",
+    detail: "Po rezervácii vytvoriť úlohu: prvý kontakt, potvrdenie termínu, návrh ďalšieho kroku.",
+    state: "pripravené",
+  },
+  {
+    title: "GA4 a reklamné zdroje",
+    detail: "UTM, gclid, fbclid a referer už patria do funnel reportu.",
+    state: "čaká na účty",
+  },
+];
+
+const followups = [
+  {
+    lead: "Nový lead z wizardu",
+    action: "Zavolať do 10 minút a potvrdiť zámer",
+    due: "hneď",
+    source: "CRM",
+  },
+  {
+    lead: "Obhliadka",
+    action: "Poslať rekapituláciu a ďalší krok",
+    due: "po obhliadke",
+    source: "proces",
+  },
+  {
+    lead: "OpenClaw draft",
+    action: "Schváliť alebo upraviť návrh odpovede",
+    due: "podľa priority",
+    source: "agent",
+  },
+];
+---
+
+<!doctype html>
+<html lang="sk">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow,noarchive" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2" />
+    <link rel="icon" type="image/png" href="/favicon.png?v=2" />
+    <link rel="icon" href="/favicon.ico?v=2" />
+    <title>Maklérsky dashboard | {site.brand}</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f5f1ea;
+        --surface: #fffaf2;
+        --surface-strong: #efe5d7;
+        --ink: #201913;
+        --muted: #776b60;
+        --line: #ded2c1;
+        --accent: #8c5632;
+        --accent-strong: #5c331f;
+        --good: #246b4a;
+        --warn: #95621d;
+        --pending: #735f4f;
+        font-family:
+          "Instrument Sans",
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background:
+          linear-gradient(180deg, rgba(255, 250, 242, 0.8), rgba(245, 241, 234, 1) 30%),
+          var(--bg);
+        color: var(--ink);
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .shell {
+        width: min(1440px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 24px 0 48px;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        border-bottom: 1px solid var(--line);
+        padding-bottom: 18px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 0;
+      }
+
+      .brand img {
+        width: 42px;
+        height: 42px;
+        object-fit: contain;
+      }
+
+      .brand strong,
+      .brand span {
+        display: block;
+      }
+
+      .brand strong {
+        font-size: 1rem;
+      }
+
+      .brand span,
+      .timestamp,
+      .source {
+        color: var(--muted);
+        font-size: 0.82rem;
+      }
+
+      .actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+
+      .button {
+        display: inline-flex;
+        min-height: 38px;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 0 13px;
+        background: rgba(255, 250, 242, 0.86);
+        color: var(--ink);
+        font-weight: 700;
+        font-size: 0.85rem;
+        text-decoration: none;
+      }
+
+      .button.primary {
+        border-color: var(--accent-strong);
+        background: var(--accent-strong);
+        color: #fffaf2;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.65fr);
+        gap: 24px;
+        padding: 28px 0 18px;
+      }
+
+      .hero-main {
+        display: grid;
+        align-content: end;
+        min-height: 240px;
+        border-bottom: 1px solid var(--line);
+        padding-bottom: 24px;
+      }
+
+      .eyebrow {
+        margin: 0 0 10px;
+        color: var(--accent);
+        font-weight: 800;
+        font-size: 0.78rem;
+        letter-spacing: 0;
+        text-transform: uppercase;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin-top: 0;
+      }
+
+      h1 {
+        max-width: 900px;
+        margin-bottom: 12px;
+        font-size: clamp(2.1rem, 6vw, 5.6rem);
+        line-height: 0.95;
+        letter-spacing: 0;
+      }
+
+      .hero-main p:last-child {
+        max-width: 760px;
+        margin: 0;
+        color: var(--muted);
+        font-size: 1.02rem;
+        line-height: 1.55;
+      }
+
+      .status-panel {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 250, 242, 0.9);
+        padding: 18px;
+      }
+
+      .status-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 14px;
+        border-top: 1px solid var(--line);
+        padding: 13px 0 0;
+        margin-top: 13px;
+      }
+
+      .status-row:first-of-type {
+        border-top: 0;
+        padding-top: 0;
+        margin-top: 0;
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        border-radius: 999px;
+        padding: 5px 9px;
+        background: #ead7c1;
+        color: var(--accent-strong);
+        font-size: 0.75rem;
+        font-weight: 800;
+        white-space: nowrap;
+      }
+
+      .pill.live {
+        background: #dcebdd;
+        color: var(--good);
+      }
+
+      .pill.pending {
+        background: #efe2cc;
+        color: var(--warn);
+      }
+
+      .grid {
+        display: grid;
+        gap: 16px;
+      }
+
+      .kpis {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        margin: 20px 0;
+      }
+
+      .card {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 250, 242, 0.82);
+        padding: 18px;
+      }
+
+      .kpi strong {
+        display: block;
+        margin-bottom: 8px;
+        font-size: clamp(1.8rem, 5vw, 3rem);
+        line-height: 0.95;
+      }
+
+      .kpi span {
+        display: block;
+        color: var(--muted);
+        font-size: 0.88rem;
+      }
+
+      .main-grid {
+        grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.75fr);
+        align-items: start;
+      }
+
+      .section-title {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 14px;
+      }
+
+      h2 {
+        margin-bottom: 0;
+        font-size: 1.15rem;
+      }
+
+      .listing-table,
+      .queue {
+        display: grid;
+        gap: 10px;
+      }
+
+      .listing-row,
+      .queue-row,
+      .funnel-row {
+        display: grid;
+        gap: 12px;
+        border-top: 1px solid var(--line);
+        padding-top: 12px;
+      }
+
+      .listing-row {
+        grid-template-columns: 88px minmax(0, 1fr) auto;
+        align-items: center;
+      }
+
+      .listing-row:first-child,
+      .queue-row:first-child,
+      .funnel-row:first-child {
+        border-top: 0;
+        padding-top: 0;
+      }
+
+      .listing-row img {
+        width: 88px;
+        aspect-ratio: 4 / 3;
+        border-radius: 6px;
+        object-fit: cover;
+        background: var(--surface-strong);
+      }
+
+      .listing-row h3,
+      .queue-row h3 {
+        margin: 0 0 5px;
+        font-size: 0.98rem;
+      }
+
+      .listing-row p,
+      .queue-row p,
+      .funnel-row p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.86rem;
+        line-height: 1.4;
+      }
+
+      .price {
+        color: var(--accent-strong);
+        font-size: 0.88rem;
+        font-weight: 800;
+        text-align: right;
+      }
+
+      .funnel {
+        display: grid;
+        gap: 11px;
+      }
+
+      .funnel-row {
+        grid-template-columns: minmax(0, 1fr) 52px;
+        align-items: center;
+      }
+
+      .bar {
+        height: 8px;
+        margin-top: 8px;
+        border-radius: 999px;
+        background: var(--surface-strong);
+        overflow: hidden;
+      }
+
+      .bar span {
+        display: block;
+        width: 4%;
+        height: 100%;
+        background: var(--accent);
+      }
+
+      .count {
+        font-weight: 800;
+        text-align: right;
+      }
+
+      .side {
+        display: grid;
+        gap: 16px;
+      }
+
+      .agent-grid {
+        display: grid;
+        gap: 10px;
+      }
+
+      .agent-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        border-top: 1px solid var(--line);
+        padding-top: 10px;
+      }
+
+      .agent-row:first-child {
+        border-top: 0;
+        padding-top: 0;
+      }
+
+      .note {
+        border: 1px dashed var(--accent);
+        border-radius: 8px;
+        background: rgba(140, 86, 50, 0.08);
+        padding: 14px;
+        color: var(--accent-strong);
+        font-size: 0.9rem;
+        line-height: 1.45;
+      }
+
+      .footer-note {
+        margin-top: 20px;
+        color: var(--muted);
+        font-size: 0.82rem;
+        line-height: 1.45;
+      }
+
+      @media (max-width: 980px) {
+        .hero,
+        .main-grid,
+        .kpis {
+          grid-template-columns: 1fr;
+        }
+
+        .hero-main {
+          min-height: auto;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .shell {
+          width: min(100% - 22px, 1440px);
+          padding-top: 14px;
+        }
+
+        .topbar,
+        .section-title {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .actions {
+          width: 100%;
+          justify-content: flex-start;
+        }
+
+        .button {
+          flex: 1 1 auto;
+        }
+
+        .listing-row {
+          grid-template-columns: 72px minmax(0, 1fr);
+        }
+
+        .listing-row img {
+          width: 72px;
+        }
+
+        .price {
+          grid-column: 1 / -1;
+          text-align: left;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <div class="brand">
+          <img src={site.logoImage} alt="" />
+          <div>
+            <strong>{site.brand}</strong>
+            <span>Maklérsky dashboard</span>
+          </div>
+        </div>
+        <div class="actions">
+          {isStaging ? <span class="pill pending">STAGING</span> : null}
+          <span class="timestamp">Aktualizované: {generatedAt}</span>
+          <a class="button" href="/">Web</a>
+          <a class="button primary" href="/rezervacia/">Rezervácia</a>
+        </div>
+      </header>
+
+      <section class="hero" aria-labelledby="dashboard-title">
+        <div class="hero-main">
+          <p class="eyebrow">Broker operating cockpit</p>
+          <h1 id="dashboard-title">Ponuky, leady, follow-upy a stav agenta na jednom mieste.</h1>
+          <p>
+            Toto je pracovná verzia dashboardu pre Jakuba. Reálne dáta z webu sú označené ako
+            <strong>web</strong>; analytika, CRM a OpenClaw health sú pripravené bloky na napojenie.
+          </p>
+        </div>
+        <aside class="status-panel" aria-label="Stav systému">
+          <div class="status-row">
+            <div>
+              <strong>Web</strong>
+              <div class="source">Astro + Cloudflare</div>
+            </div>
+            <span class="pill live">online</span>
+          </div>
+          <div class="status-row">
+            <div>
+              <strong>CRM / booking</strong>
+              <div class="source">rezervácie, lead score, admin notifikácia</div>
+            </div>
+            <span class="pill pending">test</span>
+          </div>
+          <div class="status-row">
+            <div>
+              <strong>OpenClaw</strong>
+              <div class="source">health, Telegram, kalendár, handoff</div>
+            </div>
+            <span class="pill pending">napojiť</span>
+          </div>
+        </aside>
+      </section>
+
+      <section class="grid kpis" aria-label="Hlavné metriky">
+        {
+          kpis.map((kpi) => (
+            <article class="card kpi">
+              <span class="source">{kpi.source}</span>
+              <strong>{kpi.value}</strong>
+              <h2>{kpi.label}</h2>
+              <span>{kpi.detail}</span>
+            </article>
+          ))
+        }
+      </section>
+
+      <section class="grid main-grid">
+        <div class="grid">
+          <article class="card">
+            <div class="section-title">
+              <h2>Listingy</h2>
+              <span class="source">zdroj: src/data/site.ts</span>
+            </div>
+            <div class="listing-table">
+              {
+                availableListings.map((listing) => (
+                  <a class="listing-row" href={listing.href}>
+                    <img src={listing.image} alt="" loading="lazy" />
+                    <div>
+                      <h3>{listing.title}</h3>
+                      <p>{listing.place}</p>
+                      <p>{listing.status}</p>
+                    </div>
+                    <strong class="price">{listing.price}</strong>
+                  </a>
+                ))
+              }
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="section-title">
+              <h2>Funnel</h2>
+              <span class="source">zdroj: eventy + CRM, zatiaľ nuly</span>
+            </div>
+            <div class="funnel">
+              {
+                funnel.map((item) => (
+                  <div class="funnel-row">
+                    <div>
+                      <strong>{item.step}</strong>
+                      <p>{item.source}</p>
+                      <div class="bar" aria-hidden="true"><span></span></div>
+                    </div>
+                    <span class="count">{item.count}</span>
+                  </div>
+                ))
+              }
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="section-title">
+              <h2>Follow-upy</h2>
+              <span class="source">pracovný model</span>
+            </div>
+            <div class="queue">
+              {
+                followups.map((item) => (
+                  <div class="queue-row">
+                    <div>
+                      <h3>{item.lead}</h3>
+                      <p>{item.action}</p>
+                    </div>
+                    <span class="pill pending">{item.due}</span>
+                  </div>
+                ))
+              }
+            </div>
+          </article>
+        </div>
+
+        <aside class="side">
+          <article class="card">
+            <div class="section-title">
+              <h2>Dnešné priority - TOP 5</h2>
+              <span class="source">demo queue</span>
+            </div>
+            <div class="queue">
+              {
+                priorities.map((item) => (
+                  <div class="queue-row">
+                    <div>
+                      <h3>{item.title}</h3>
+                      <p>{item.detail}</p>
+                    </div>
+                    <span class="pill pending">{item.state}</span>
+                  </div>
+                ))
+              }
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="section-title">
+              <h2>OpenClaw Agent</h2>
+              <span class="source">health panel</span>
+            </div>
+            <div class="agent-grid">
+              <div class="agent-row">
+                <strong>Agent</strong>
+                <span class="pill pending">napojiť health</span>
+              </div>
+              <div class="agent-row">
+                <strong>Telegram</strong>
+                <span class="pill pending">kanál pripravený</span>
+              </div>
+              <div class="agent-row">
+                <strong>Google Calendar</strong>
+                <span class="pill pending">booking API</span>
+              </div>
+              <div class="agent-row">
+                <strong>CRM handoff</strong>
+                <span class="pill pending">lead score</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="section-title">
+              <h2>Výsledky</h2>
+              <span class="source">web copy</span>
+            </div>
+            <div class="agent-grid">
+              {
+                stats.map((stat) => (
+                  <div class="agent-row">
+                    <strong>{stat.value}</strong>
+                    <span>{stat.label}</span>
+                  </div>
+                ))
+              }
+            </div>
+          </article>
+
+          <div class="note">
+            {primaryListing ? (
+              <>
+                Najbližší praktický krok: začať merať zobrazenia a CTA kliky pre listing
+                <strong> {primaryListing.title}</strong>, potom to poslať do funnelu a priorít.
+              </>
+            ) : (
+              <>Najbližší praktický krok: doplniť prvý aktívny listing a naviazať naň eventy.</>
+            )}
+          </div>
+        </aside>
+      </section>
+
+      <p class="footer-note">
+        Dáta: listingy a výsledky idú z aktuálneho webového datasetu. Funnel, follow-up queue a OpenClaw
+        panel sú zatiaľ pracovné bloky pripravené na napojenie na event collector, CRM a health endpoint.
+      </p>
+    </main>
+  </body>
+</html>

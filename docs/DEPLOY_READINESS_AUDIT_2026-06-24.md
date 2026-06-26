@@ -147,6 +147,21 @@ staging    /api/availability mode: google
 
 Poznamka: live `POST /api/book` nebol spusteny bez explicitneho suhlasu, pretoze staging moze vytvorit realny Google Calendar event a po doplneni secrets aj CRM/email zaznam.
 
+Live booking smoke po explicitnom suhlase 26. juna 2026:
+
+```json
+{
+  "ok": true,
+  "mode": "mock",
+  "bookingStatus": "pending_calendar_config",
+  "crmStatus": "created",
+  "emailStatus": "skipped",
+  "leadScoreBucket": "hot"
+}
+```
+
+Produkcia ma zapnute Supabase CRM secrets a Telegram secrets. Test vytvoril `contact`, `lead`, `appointment` a `note` v Supabase. Telegram bot aj cielovy private chat su validne; dorucenie spravy treba potvrdit vizualne v Telegrame. Resend ostava vypnuty, pretoze dostupny token nebol platny Resend API key.
+
 ### Build-time public env
 
 Tieto hodnoty musi poznat build prostredie, nie iba runtime Worker:
@@ -156,7 +171,10 @@ PUBLIC_SITE_ENV
 PUBLIC_GOOGLE_MAPS_API_KEY
 PUBLIC_GTM_ID
 PUBLIC_GA_MEASUREMENT_ID
+PUBLIC_GOOGLE_ADS_ID
+PUBLIC_GOOGLE_ADS_CONVERSION_LABEL
 PUBLIC_META_PIXEL_ID
+PUBLIC_ANALYTICS_DEBUG
 ```
 
 Minimum pre staging:
@@ -166,7 +184,7 @@ PUBLIC_SITE_ENV=staging
 PUBLIC_GOOGLE_MAPS_API_KEY=<restricted browser key>
 ```
 
-GA4/GTM/Meta zapnut az ked Adam vytvori meracie ucty a rozhodne, co ide cez GTM a co priamo.
+GA4 a Google Ads su build-time public ID. Po zmene treba rebuild a deploy. Google Ads conversion sa odosiela cez `booking_submit_success` po suhlase pouzivatela.
 
 ### Runtime Worker env/secrets
 
@@ -186,6 +204,8 @@ TELEGRAM_BOT_TOKEN
 TELEGRAM_CHAT_ID
 ```
 
+Produkcia: nastavene 26. juna 2026.
+
 Supabase CRM:
 
 ```text
@@ -195,6 +215,8 @@ SUPABASE_TENANT_SLUG=jakub-olsa
 SUPABASE_TENANT_NAME=Jakub Olša
 ```
 
+Produkcia: nastavene 26. juna 2026, live insert smoke presiel.
+
 Resend:
 
 ```text
@@ -202,6 +224,8 @@ RESEND_API_KEY
 RESEND_FROM_EMAIL=Jakub Olša <rezervacie@jakubolsa.sk>
 BOOKING_REPLY_TO_EMAIL=olsa@bosen.sk
 ```
+
+Produkcia: `RESEND_API_KEY` nie je nastavene. Email confirmation ostava vypnuty, kym nebude overena domena v Resende a vygenerovany platny API key.
 
 ### Email/DNS
 

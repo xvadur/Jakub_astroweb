@@ -32,11 +32,13 @@ Komponent robi:
 - uklada rozhodnutie do `localStorage` pod klucom `jakub_cookie_consent_v1`,
 - zachytava attribution pri prvej navsteve: UTM parametre, referrer a landing path,
 - attribution helper bezi aj bez analytics env ID, aby booking payload vedel priradit zdroj leadu,
-- pred suhlasom nenacitava GTM, GA ani Meta Pixel,
+- pred suhlasom nenacitava GTM, GA, Google Ads ani Meta Pixel,
+- nastavuje Google Consent Mode defaultne na `denied` a po jednom kliknuti aktualizuje consent,
 - po suhlase nacita nastavene meracie skripty,
 - pri odmietnuti zahodi queue a nenacita skripty,
 - zachytava kliky na telefon, email, Instagram a rezervaciu,
 - spracuje existujuce wizard eventy cez `window.jakubTrackEvent`.
+- pri uspesnej rezervacii posiela GA4 `generate_lead` a Google Ads `conversion`, ak su nastavene prislusne ID.
 
 ## Env variables
 
@@ -45,7 +47,10 @@ Build-time public env variables:
 ```text
 PUBLIC_GTM_ID
 PUBLIC_GA_MEASUREMENT_ID
+PUBLIC_GOOGLE_ADS_ID
+PUBLIC_GOOGLE_ADS_CONVERSION_LABEL
 PUBLIC_META_PIXEL_ID
+PUBLIC_ANALYTICS_DEBUG
 ```
 
 Ak nie su nastavene, cookie banner ani analytics skripty sa nezobrazia ani nenacitaju.
@@ -57,6 +62,15 @@ Priklad pre lokalny test:
 ```bash
 PUBLIC_GTM_ID=GTM-TEST PUBLIC_GA_MEASUREMENT_ID=G-TEST npm run dev
 ```
+
+Pre Google Ads treba z Ads uctu ziskat:
+
+```text
+PUBLIC_GOOGLE_ADS_ID=AW-...
+PUBLIC_GOOGLE_ADS_CONVERSION_LABEL=...
+```
+
+Hodnota `AW-.../...` sa neposiela ako jeden string. V kode je rozdelena na Ads ID a conversion label.
 
 ## Merane eventy
 
@@ -92,6 +106,8 @@ booking_time_select
 booking_submit_attempt
 booking_submit_success
 booking_submit_error
+generate_lead             # GA4 recommended lead event, odosiela sa pri booking_submit_success
+conversion                # Google Ads conversion, odosiela sa pri booking_submit_success
 ```
 
 Povolene parametre:
@@ -103,6 +119,7 @@ step
 step_name
 booking_status
 mode
+lead_correlation_id
 utm_source
 utm_medium
 utm_campaign
@@ -213,4 +230,6 @@ Poznamka: Playwright nie je dependency projektu. Nebol pridany do `package.json`
 5. Po nasadeni overit v real-time analytics, ze:
    - page view pride az po suhlase,
    - `booking_submit_success` neobsahuje PII,
+   - `generate_lead` sa objavi az po uspesnej rezervacii a suhlase,
+   - Google Ads `conversion` sa objavi az po uspesnej rezervacii, suhlase a nastavenom Ads ID + labeli,
    - telefon/email/Instagram kliky sa meraju ako CTA eventy.
