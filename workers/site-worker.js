@@ -215,7 +215,7 @@ async function handleBooking(request, env, ctx, headers) {
     });
   }
 
-  const telegramPromise = sendTelegramNotification(payload, {
+  const telegramResult = await trySendTelegramNotification(payload, {
     env,
     bookingStatus,
     mode,
@@ -230,14 +230,13 @@ async function handleBooking(request, env, ctx, headers) {
     calendarEvent,
   });
 
-  ctx.waitUntil(telegramPromise.catch(() => null));
-
   return json(
     {
       ok: true,
       mode,
       bookingStatus,
       crmStatus: crmResult.status,
+      telegramStatus: telegramResult.status,
       emailStatus: emailResult.status,
       leadScore: leadScore.score,
       leadScoreBucket: leadScore.bucket,
@@ -867,6 +866,18 @@ async function createCalendarEvent(payload, interval, timeZone, accessToken, env
   }
 
   return response.json();
+}
+
+async function trySendTelegramNotification(payload, context) {
+  try {
+    const result = await sendTelegramNotification(payload, context);
+    if (result?.skipped) {
+      return { status: "skipped" };
+    }
+    return { status: "sent" };
+  } catch {
+    return { status: "failed" };
+  }
 }
 
 async function sendTelegramNotification(payload, context) {
