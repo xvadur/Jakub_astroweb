@@ -538,6 +538,14 @@ function buildCrmQualificationPayload(payload, leadScore = null) {
     horizont: clean(payload.horizont),
     sprava: clean(payload.sprava),
     page_url: clean(payload.page_url),
+    source_lead_id: clean(payload.source_lead_id),
+    offer: clean(payload.offer),
+    zdroj: clean(payload.zdroj),
+    utm_source: clean(payload.utm_source),
+    utm_medium: clean(payload.utm_medium),
+    utm_campaign: clean(payload.utm_campaign),
+    utm_content: clean(payload.utm_content),
+    utm_term: clean(payload.utm_term),
     session_id: clean(payload.session_id),
     lead_correlation_id: clean(payload.lead_correlation_id),
     consent_state: clean(payload.consent_state),
@@ -794,7 +802,7 @@ async function getGoogleAccessToken(env) {
 }
 
 async function fetchBusyIntervals(date, timeZone, accessToken, env) {
-  const calendarId = env.GOOGLE_CALENDAR_ID || "primary";
+  const calendarIds = getGoogleBusyCalendarIds(env);
   const response = await fetch(`${GOOGLE_CALENDAR_API_URL}/freeBusy`, {
     method: "POST",
     headers: {
@@ -805,7 +813,7 @@ async function fetchBusyIntervals(date, timeZone, accessToken, env) {
       timeMin: zonedDateTimeToUtcIso(date, "00:00", timeZone),
       timeMax: zonedDateTimeToUtcIso(addDays(date, 1), "00:00", timeZone),
       timeZone,
-      items: [{ id: calendarId }],
+      items: calendarIds.map((id) => ({ id })),
     }),
   });
 
@@ -814,16 +822,20 @@ async function fetchBusyIntervals(date, timeZone, accessToken, env) {
   }
 
   const data = await response.json();
-  const calendar = data.calendars?.[calendarId];
+  const calendars = data.calendars || {};
 
-  if (calendar?.errors?.length) {
-    throw new Error("Google Calendar returned freeBusy errors");
+  for (const calendarId of calendarIds) {
+    if (calendars[calendarId]?.errors?.length) {
+      throw new Error("Google Calendar returned freeBusy errors");
+    }
   }
 
-  return (calendar?.busy || []).map((item) => ({
-    start: Date.parse(item.start),
-    end: Date.parse(item.end),
-  }));
+  return calendarIds.flatMap((calendarId) =>
+    (calendars[calendarId]?.busy || []).map((item) => ({
+      start: Date.parse(item.start),
+      end: Date.parse(item.end),
+    })),
+  );
 }
 
 async function createCalendarEvent(payload, interval, timeZone, accessToken, env) {
@@ -866,6 +878,11 @@ async function createCalendarEvent(payload, interval, timeZone, accessToken, env
   }
 
   return response.json();
+}
+
+function getGoogleBusyCalendarIds(env) {
+  const writeCalendarId = env.GOOGLE_CALENDAR_ID || "primary";
+  return [...new Set(readList(env.GOOGLE_BUSY_CALENDAR_IDS, [writeCalendarId]))];
 }
 
 async function trySendTelegramNotification(payload, context) {
@@ -950,6 +967,8 @@ function leadLines(payload, context = {}) {
     `Telefón: ${clean(payload.telefon)}`,
     `Email: ${clean(payload.email) || "-"}`,
     `Zámer: ${clean(payload.zamer)}`,
+    `Zdrojový lead: ${clean(payload.source_lead_id) || "-"}`,
+    `Offer: ${clean(payload.offer) || "-"}`,
     `Typ / vetva: ${clean(payload.typ) || "-"}`,
     `Lokalita: ${clean(payload.lokalita)}`,
     "",
@@ -973,6 +992,9 @@ function buildAttributionSummary(attribution) {
   const source = clean(attribution.utm_source);
   const medium = clean(attribution.utm_medium);
   const campaign = clean(attribution.utm_campaign);
+  const content = clean(attribution.utm_content);
+  const sourceLeadId = clean(attribution.source_lead_id);
+  const offer = clean(attribution.offer);
   const referrerHost = clean(attribution.referrer_host);
   const landingPath = clean(attribution.landing_path);
   const gclid = clean(attribution.gclid);
@@ -984,6 +1006,9 @@ function buildAttributionSummary(attribution) {
   if (source) parts.push(`utm_source=${source}`);
   if (medium) parts.push(`utm_medium=${medium}`);
   if (campaign) parts.push(`utm_campaign=${campaign}`);
+  if (content) parts.push(`utm_content=${content}`);
+  if (sourceLeadId) parts.push(`source_lead_id=${sourceLeadId}`);
+  if (offer) parts.push(`offer=${offer}`);
   if (gclid) parts.push("gclid=present");
   if (gbraid) parts.push("gbraid=present");
   if (wbraid) parts.push("wbraid=present");

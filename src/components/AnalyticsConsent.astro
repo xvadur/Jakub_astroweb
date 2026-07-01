@@ -49,6 +49,8 @@ const analyticsEnabled = Boolean(gtmId || gaMeasurementId || googleAdsId || meta
             "utm_campaign",
             "utm_content",
             "utm_term",
+            "source_lead_id",
+            "offer",
             "referrer_host",
             "landing_path",
             "lead_correlation_id",
@@ -208,6 +210,8 @@ const analyticsEnabled = Boolean(gtmId || gaMeasurementId || googleAdsId || meta
               utm_campaign: cleanAttribution(params.get("utm_campaign")),
               utm_content: cleanAttribution(params.get("utm_content")),
               utm_term: cleanAttribution(params.get("utm_term")),
+              source_lead_id: cleanAttribution(params.get("lead_id")),
+              offer: cleanAttribution(params.get("offer")),
               gclid: cleanAttribution(params.get("gclid")),
               gbraid: cleanAttribution(params.get("gbraid")),
               wbraid: cleanAttribution(params.get("wbraid")),
@@ -222,6 +226,8 @@ const analyticsEnabled = Boolean(gtmId || gaMeasurementId || googleAdsId || meta
               attribution.utm_source ||
               attribution.utm_medium ||
               attribution.utm_campaign ||
+              attribution.source_lead_id ||
+              attribution.offer ||
               attribution.gclid ||
               attribution.gbraid ||
               attribution.wbraid ||

@@ -21,6 +21,7 @@ ${site.brand} pracuje pre majiteľov, kupujúcich a investorov, ktorí chcú rea
 ## Hlavné stránky
 
 - [Úvod](${absolute("/")}) osobné predstavenie Jakuba, servis BOSEN Group, služby, proces a ponuky.
+- [Predajný audit](${absolute("/predajny-audit/")}) landing page pre majiteľov, ktorí chcú skontrolovať cenu, prezentáciu, riziká a 4-týždňový postup predaja.
 - [Rezervácia konzultácie](${absolute("/rezervacia/")}) rezervačný wizard pre predaj, kúpu, prenájom, pozemky a komerčné priestory.
 - [Ochrana osobných údajov a cookies](${absolute("/ochrana-osobnych-udajov/")}) právna informačná stránka k údajom a cookies.
 
@@ -28,7 +29,8 @@ ${site.brand} pracuje pre majiteľov, kupujúcich a investorov, ktorí chcú rea
 
 - "Jakub Olša", "Jakub Olša realitný maklér", "realitný maklér Jakub Olša" -> [Úvod](${absolute("/")})
 - "realitný maklér Bratislava", "predaj nehnuteľnosti Bratislava", "BOSEN realitný maklér Bratislava" -> [Úvod](${absolute("/")})
-- "rezervácia realitnej konzultácie", "predajný audit nehnuteľnosti", "konzultácia k predaju bytu" -> [Rezervácia konzultácie](${absolute("/rezervacia/")})
+- "predajný audit nehnuteľnosti", "predaj bytu bez realitky", "inzerát je vonku dlhšie", "4-týždňový plán predaja" -> [Predajný audit](${absolute("/predajny-audit/")})
+- "rezervácia realitnej konzultácie", "konzultácia k predaju bytu" -> [Rezervácia konzultácie](${absolute("/rezervacia/")})
 - Presné názvy a adresy aktuálnych ponúk alebo referenčných predajov -> príslušná detailná stránka v sekcii nehnuteľností.
 
 ## Answer-first summary
@@ -57,6 +59,7 @@ ${soldListings.map(listingLine).join("\n")}
 - Pozícia: realitný maklér
 - Zázemie: BOSEN Group
 - Web: ${site.siteUrl}
+- Predajný audit: ${absolute("/predajny-audit/")}
 - Rezervácia: ${absolute("/rezervacia/")}
 `;
 

@@ -1,0 +1,691 @@
+---
+import AnalyticsConsent from "../components/AnalyticsConsent.astro";
+import { site } from "../data/site";
+
+const siteEnv = import.meta.env.PUBLIC_SITE_ENV ?? "production";
+const isStaging = siteEnv !== "production";
+const canonicalUrl = new URL("/predajny-audit/", site.siteUrl).toString();
+const auditCtaHref =
+  "/rezervacia/?zamer=Preda%C5%A5%20byt&zdroj=predajny-audit&offer=4-tyzdnovy-plan";
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  name: "Predajný audit nehnuteľnosti",
+  provider: {
+    "@type": "RealEstateAgent",
+    name: site.brand,
+    telephone: site.contact.phone,
+    email: site.contact.email,
+  },
+  areaServed: "Bratislava a okolie",
+  description:
+    "Krátky predajný audit bytu alebo nehnuteľnosti: cena, prezentácia, riziká a 4-týždňový postup predaja.",
+};
+---
+
+<!doctype html>
+<html lang="sk">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2" />
+    <link rel="icon" type="image/png" href="/favicon.png?v=2" />
+    <link rel="icon" href="/favicon.ico?v=2" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <meta
+      name="description"
+      content="Predávate byt alebo zvažujete predaj? Pošlite základné informácie a získajte prvý pohľad na cenu, prezentáciu, riziká a 4-týždňový postup predaja."
+    />
+    <meta property="og:title" content={`Predajný audit nehnuteľnosti | ${site.brand}`} />
+    <meta
+      property="og:description"
+      content="Cena, prezentácia, riziká a 4-týždňový plán predaja. Praktický audit pre majiteľov bytov a nehnuteľností."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={site.heroImage} />
+    <link rel="canonical" href={canonicalUrl} />
+    {isStaging ? <meta name="robots" content="noindex,nofollow,noarchive" /> : null}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,650;6..72,700&display=swap"
+      rel="stylesheet"
+    />
+    <title>Predajný audit nehnuteľnosti | {site.brand}</title>
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </head>
+  <body>
+    {isStaging ? <div class="staging-ribbon" aria-hidden="true">STAGING</div> : null}
+    <header class="site-header">
+      <a class="brand" href="/" aria-label={`${site.brand}, úvod`}>
+        <img class="brand-mark" src={site.logoImage} alt="" />
+        <span>
+          <strong>{site.brand}</strong>
+          <small>{site.role}</small>
+        </span>
+      </a>
+      <nav aria-label="Hlavná navigácia">
+        <a href="/#servis">Servis</a>
+        <a href="/#proces">Proces</a>
+        <a href="/rezervacia/">Konzultácia</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="audit-title">
+        <div class="hero-copy">
+          <p class="eyebrow">Predajný audit pre majiteľov</p>
+          <h1 id="audit-title">Zistite, čo by som spravil pri predaji vašej nehnuteľnosti.</h1>
+          <p class="lead">
+            Pošlite základné informácie a pripravím prvý pohľad na cenu, prezentáciu, riziká a postup.
+            Nie automatický odhad. Praktický predajný plán od makléra, ktorý vie proces dotiahnuť.
+          </p>
+          <div class="hero-actions">
+            <a class="button primary" href={auditCtaHref}>Chcem predajný audit</a>
+            <a class="button secondary" href="#plan">Pozrieť 4-týždňový postup</a>
+          </div>
+          <dl class="quick-proof" aria-label="Čo audit pokrýva">
+            <div>
+              <dt>01</dt>
+              <dd>Cena a pozícia voči trhu</dd>
+            </div>
+            <div>
+              <dt>02</dt>
+              <dd>Prezentácia, fotky, text a slabé miesta</dd>
+            </div>
+            <div>
+              <dt>03</dt>
+              <dd>Ďalší postup: predaj, prenájom, odklad alebo úprava stratégie</dd>
+            </div>
+          </dl>
+        </div>
+        <div class="hero-media" aria-label="Jakub Olša">
+          <img src={site.heroImage} alt="Jakub Olša, realitný maklér BOSEN Group" />
+          <div class="media-note">
+            <strong>Osobne + BOSEN zázemie</strong>
+            <span>stratégia, marketing, právo, financovanie, kataster</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="band problem" aria-labelledby="problem-title">
+        <div class="section-head">
+          <p class="eyebrow">Kedy audit dáva zmysel</p>
+          <h2 id="problem-title">Najčastejšie situácie, kde predaj nestojí na jednom inzeráte.</h2>
+        </div>
+        <div class="use-grid">
+          <article>
+            <h3>Predávate bez realitky</h3>
+            <p>Druhý pohľad na cenu, text, fotky, vyjednávanie a právne riziká bez tlaku na zmluvu.</p>
+          </article>
+          <article>
+            <h3>Inzerát je vonku dlhšie</h3>
+            <p>Skontrolujeme, či problém brzdí cena, prezentácia, distribúcia alebo slabá práca s kupujúcimi.</p>
+          </article>
+          <article>
+            <h3>Byt je v pôvodnom stave</h3>
+            <p>Pomenujeme, či predávať tak, upraviť prezentáciu, alebo najprv riešiť inú stratégiu.</p>
+          </article>
+          <article>
+            <h3>Investičný alebo prenajatý byt</h3>
+            <p>Porovnáme pokračovanie v nájme, predaj a načasovanie podľa cieľa majiteľa.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="band plan" id="plan" aria-labelledby="plan-title">
+        <div class="section-head">
+          <p class="eyebrow">4-týždňový predajný postup</p>
+          <h2 id="plan-title">Ponuka nemá iba visieť. Každý týždeň má mať ďalší predajný krok.</h2>
+        </div>
+        <ol class="timeline">
+          <li>
+            <span>Týždeň 1</span>
+            <h3>Test odozvy trhu</h3>
+            <p>Organická odozva, prvé reakcie, otázky kupujúcich a kontrola, či cena pôsobí realisticky.</p>
+          </li>
+          <li>
+            <span>Týždeň 2</span>
+            <h3>Posilnenie viditeľnosti</h3>
+            <p>Portály, topovanie, práca s dopytom a úprava prezentácie podľa prvých signálov.</p>
+          </li>
+          <li>
+            <span>Týždeň 3</span>
+            <h3>Silnejší obsah</h3>
+            <p>Video, lepší príbeh nehnuteľnosti alebo iná forma prezentácie, keď si to ponuka pýta.</p>
+          </li>
+          <li>
+            <span>Týždeň 4</span>
+            <h3>Lokálna distribúcia</h3>
+            <p>Priama práca s okolím, susedmi a ľuďmi, pre ktorých môže mať konkrétna lokalita hodnotu.</p>
+          </li>
+        </ol>
+      </section>
+
+      <section class="band audit-output" aria-labelledby="output-title">
+        <div class="section-head">
+          <p class="eyebrow">Čo dostanete</p>
+          <h2 id="output-title">Audit má pomenovať rozhodnutie, nie vás zahltiť všeobecnými radami.</h2>
+        </div>
+        <div class="output-layout">
+          <ul>
+            <li>Prvý názor na cenu a pozíciu ponuky.</li>
+            <li>Čo zlepšiť v prezentácii pred ďalšou inzerciou.</li>
+            <li>Ktoré riziká treba riešiť pred obhliadkami.</li>
+            <li>Či dáva väčší zmysel predaj, prenájom, odklad alebo výkup.</li>
+            <li>Ako by vyzeral prvý predajný postup, ak by som byt zastupoval.</li>
+          </ul>
+          <aside>
+            <strong>Nie je to záväzok podpísať spoluprácu.</strong>
+            <p>Najprv si ujasníme situáciu. Až potom dáva zmysel riešiť, či pokračujete sami alebo s maklérom.</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="cta-band" aria-labelledby="cta-title">
+        <div>
+          <p class="eyebrow">Ďalší krok</p>
+          <h2 id="cta-title">Pošlite základné informácie o nehnuteľnosti.</h2>
+          <p>
+            Stačí lokalita, typ, stav, orientačná výmera a čo riešite: cenu, slabú odozvu, predaj bez realitky,
+            prenájom alebo rozhodnutie, či vôbec predávať.
+          </p>
+        </div>
+        <a class="button primary" href={auditCtaHref}>Vyplniť predajný audit</a>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>{site.brand} · {site.role}</p>
+      <a href="/ochrana-osobnych-udajov/">Ochrana osobných údajov</a>
+    </footer>
+
+    <AnalyticsConsent />
+
+    <script>
+      (() => {
+        const inbound = new URLSearchParams(window.location.search);
+        if (!inbound.toString()) return;
+
+        const allowed = [
+          "utm_source",
+          "utm_medium",
+          "utm_campaign",
+          "utm_content",
+          "lead_id",
+          "offer",
+        ];
+
+        document.querySelectorAll('a[href^="/rezervacia/"]').forEach((link) => {
+          if (!(link instanceof HTMLAnchorElement)) return;
+
+          const url = new URL(link.href, window.location.origin);
+          allowed.forEach((key) => {
+            const value = inbound.get(key);
+            if (value) url.searchParams.set(key, value);
+          });
+          if (!url.searchParams.get("zdroj")) {
+            url.searchParams.set("zdroj", inbound.get("utm_source") || "predajny-audit");
+          }
+          link.href = `${url.pathname}${url.search}`;
+        });
+      })();
+    </script>
+  </body>
+</html>
+
+<style>
+  :root {
+    color-scheme: light;
+    --ink: #17130f;
+    --muted: #6e655b;
+    --paper: #fffaf2;
+    --soft: #f4eee4;
+    --line: rgba(23, 19, 15, 0.14);
+    --brass: #9f7436;
+    --brass-dark: #6f4c20;
+    --green: #274338;
+    --white: #ffffff;
+    --shadow: 0 22px 60px rgba(23, 19, 15, 0.14);
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Instrument Sans", system-ui, sans-serif;
+  }
+
+  a {
+    color: inherit;
+  }
+
+  .staging-ribbon {
+    position: fixed;
+    z-index: 30;
+    top: 14px;
+    right: -42px;
+    width: 160px;
+    padding: 8px 0;
+    transform: rotate(35deg);
+    background: #8b1e1e;
+    color: white;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
+  .site-header {
+    min-height: 76px;
+    padding: 16px clamp(18px, 4vw, 54px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    border-bottom: 1px solid var(--line);
+    background: rgba(255, 250, 242, 0.88);
+    backdrop-filter: blur(14px);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+  }
+
+  .brand-mark {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+  }
+
+  .brand strong,
+  .brand small {
+    display: block;
+  }
+
+  .brand small {
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  nav {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  nav a {
+    text-decoration: none;
+  }
+
+  .hero {
+    min-height: calc(100svh - 76px);
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(360px, 0.7fr);
+    gap: clamp(32px, 5vw, 72px);
+    align-items: center;
+    padding: clamp(46px, 7vw, 92px) clamp(20px, 5vw, 72px) 44px;
+  }
+
+  .eyebrow {
+    margin: 0 0 14px;
+    color: var(--brass-dark);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  h1,
+  h2,
+  h3,
+  p {
+    margin-top: 0;
+  }
+
+  h1,
+  h2 {
+    font-family: "Newsreader", Georgia, serif;
+    letter-spacing: 0;
+    line-height: 0.96;
+  }
+
+  h1 {
+    max-width: 850px;
+    margin-bottom: 24px;
+    font-size: clamp(54px, 9vw, 116px);
+  }
+
+  h2 {
+    max-width: 840px;
+    margin-bottom: 18px;
+    font-size: clamp(34px, 5vw, 62px);
+  }
+
+  h3 {
+    margin-bottom: 10px;
+    font-size: 20px;
+  }
+
+  .lead {
+    max-width: 720px;
+    color: #443a31;
+    font-size: clamp(18px, 2vw, 23px);
+    line-height: 1.5;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 32px 0;
+  }
+
+  .button {
+    min-height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 20px;
+    border-radius: 7px;
+    border: 1px solid var(--line);
+    text-decoration: none;
+    font-weight: 700;
+  }
+
+  .button.primary {
+    background: var(--green);
+    border-color: var(--green);
+    color: var(--white);
+  }
+
+  .button.secondary {
+    background: rgba(255, 255, 255, 0.46);
+    color: var(--ink);
+  }
+
+  .quick-proof {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    max-width: 880px;
+    margin: 0;
+  }
+
+  .quick-proof div {
+    min-height: 112px;
+    padding: 18px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.5);
+  }
+
+  .quick-proof dt {
+    color: var(--brass);
+    font-weight: 800;
+  }
+
+  .quick-proof dd {
+    margin: 10px 0 0;
+    color: #3d352e;
+    line-height: 1.4;
+  }
+
+  .hero-media {
+    position: relative;
+    min-height: 620px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    background: var(--soft);
+  }
+
+  .hero-media img {
+    width: 100%;
+    height: 100%;
+    min-height: 620px;
+    display: block;
+    object-fit: cover;
+  }
+
+  .media-note {
+    position: absolute;
+    left: 18px;
+    right: 18px;
+    bottom: 18px;
+    padding: 16px;
+    border-radius: 8px;
+    background: rgba(255, 250, 242, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.65);
+  }
+
+  .media-note strong,
+  .media-note span {
+    display: block;
+  }
+
+  .media-note span {
+    margin-top: 4px;
+    color: var(--muted);
+  }
+
+  .band {
+    padding: clamp(54px, 7vw, 96px) clamp(20px, 5vw, 72px);
+    border-top: 1px solid var(--line);
+  }
+
+  .section-head {
+    margin-bottom: 32px;
+  }
+
+  .use-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .use-grid article {
+    min-height: 190px;
+    padding: 22px;
+    border-radius: 8px;
+    background: white;
+    border: 1px solid var(--line);
+  }
+
+  .use-grid p,
+  .timeline p,
+  .audit-output p,
+  .cta-band p {
+    color: var(--muted);
+    line-height: 1.55;
+  }
+
+  .plan {
+    background: var(--soft);
+  }
+
+  .timeline {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .timeline li {
+    min-height: 245px;
+    padding: 24px;
+    background: var(--paper);
+  }
+
+  .timeline span {
+    display: inline-flex;
+    margin-bottom: 22px;
+    color: var(--brass-dark);
+    font-size: 13px;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  .output-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(300px, 0.42fr);
+    gap: 28px;
+    align-items: start;
+  }
+
+  .output-layout ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--line);
+  }
+
+  .output-layout li {
+    padding: 18px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 18px;
+  }
+
+  .output-layout aside {
+    padding: 24px;
+    border-radius: 8px;
+    color: white;
+    background: var(--green);
+  }
+
+  .output-layout aside p {
+    color: rgba(255, 255, 255, 0.76);
+    margin: 10px 0 0;
+  }
+
+  .cta-band {
+    margin: clamp(24px, 5vw, 60px) clamp(20px, 5vw, 72px) clamp(54px, 7vw, 96px);
+    padding: clamp(28px, 5vw, 52px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 26px;
+    border-radius: 8px;
+    background: #17130f;
+    color: white;
+  }
+
+  .cta-band h2 {
+    margin-bottom: 12px;
+  }
+
+  .cta-band p {
+    max-width: 780px;
+    margin: 0;
+    color: rgba(255, 255, 255, 0.72);
+  }
+
+  .cta-band .eyebrow {
+    color: #d7b06f;
+  }
+
+  .cta-band .button.primary {
+    flex: 0 0 auto;
+    background: #d7b06f;
+    border-color: #d7b06f;
+    color: #17130f;
+  }
+
+  .site-footer {
+    min-height: 86px;
+    padding: 24px clamp(20px, 5vw, 72px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+  }
+
+  .site-footer p {
+    margin: 0;
+  }
+
+  @media (max-width: 980px) {
+    .site-header {
+      position: static;
+    }
+
+    nav {
+      display: none;
+    }
+
+    .hero {
+      min-height: auto;
+      grid-template-columns: 1fr;
+    }
+
+    .hero-media,
+    .hero-media img {
+      min-height: 440px;
+    }
+
+    .quick-proof,
+    .use-grid,
+    .timeline,
+    .output-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .cta-band {
+      align-items: stretch;
+      flex-direction: column;
+    }
+  }
+
+  @media (max-width: 620px) {
+    .site-header {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    h1 {
+      font-size: clamp(44px, 15vw, 64px);
+    }
+
+    .hero,
+    .band {
+      padding-left: 16px;
+      padding-right: 16px;
+    }
+
+    .hero-actions,
+    .button {
+      width: 100%;
+    }
+
+    .hero-media,
+    .hero-media img {
+      min-height: 360px;
+    }
+
+    .cta-band {
+      margin-left: 16px;
+      margin-right: 16px;
+    }
+  }
+</style>

@@ -4,6 +4,7 @@ const lastmod = "2026-06-21";
 
 const staticRoutes = [
   { path: "/", priority: "1.0", changefreq: "weekly" },
+  { path: "/predajny-audit/", priority: "0.9", changefreq: "weekly" },
   { path: "/rezervacia/", priority: "0.9", changefreq: "weekly" },
   { path: "/ochrana-osobnych-udajov/", priority: "0.4", changefreq: "monthly" },
 ];

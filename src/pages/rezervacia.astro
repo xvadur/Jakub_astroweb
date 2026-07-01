@@ -866,18 +866,38 @@ const googleMapsScriptUrl = googleMapsApiKey
           });
 
           const route = currentRoute();
-          payload.parametre = routeParameterLines();
-          payload.lead_title = route.leadTitle;
-          payload.subject_prefix = route.subjectPrefix;
-          payload.page_url = window.location.href;
-          payload.created_at = new Date().toISOString();
-          payload.attribution =
+          const params = new URLSearchParams(window.location.search);
+          const browserAttribution =
             typeof window.jakubGetAttribution === "function"
               ? window.jakubGetAttribution()
               : {
                   landing_path: window.location.pathname,
                   referrer: document.referrer || "",
                 };
+          const sourceAttribution = {
+            source_lead_id: params.get("lead_id") || browserAttribution.source_lead_id || "",
+            offer: params.get("offer") || browserAttribution.offer || "",
+            zdroj: params.get("zdroj") || "",
+            utm_source: params.get("utm_source") || browserAttribution.utm_source || "",
+            utm_medium: params.get("utm_medium") || browserAttribution.utm_medium || "",
+            utm_campaign: params.get("utm_campaign") || browserAttribution.utm_campaign || "",
+            utm_content: params.get("utm_content") || browserAttribution.utm_content || "",
+            utm_term: params.get("utm_term") || browserAttribution.utm_term || "",
+          };
+          payload.parametre = routeParameterLines();
+          payload.lead_title = route.leadTitle;
+          payload.subject_prefix = route.subjectPrefix;
+          payload.page_url = window.location.href;
+          payload.created_at = new Date().toISOString();
+          payload.source_lead_id = sourceAttribution.source_lead_id;
+          payload.offer = sourceAttribution.offer;
+          payload.zdroj = sourceAttribution.zdroj;
+          payload.utm_source = sourceAttribution.utm_source;
+          payload.utm_medium = sourceAttribution.utm_medium;
+          payload.utm_campaign = sourceAttribution.utm_campaign;
+          payload.utm_content = sourceAttribution.utm_content;
+          payload.utm_term = sourceAttribution.utm_term;
+          payload.attribution = { ...browserAttribution, ...sourceAttribution };
           payload.session_id = payload.attribution?.session_id || "";
           payload.consent_state =
             typeof window.jakubGetConsentState === "function" ? window.jakubGetConsentState() : "unset";
@@ -900,6 +920,9 @@ const googleMapsScriptUrl = googleMapsApiKey
             `Telefón: ${payload.telefon || "-"}`,
             `Email: ${payload.email || "-"}`,
             `Zámer: ${intentName}`,
+            `Zdrojový lead: ${payload.source_lead_id || "-"}`,
+            `Offer: ${payload.offer || "-"}`,
+            `Kampaň: ${payload.utm_source || "-"} / ${payload.utm_campaign || "-"}`,
             `Typ nehnuteľnosti / vetva: ${payload.typ || "-"}`,
             `Lokalita: ${payload.lokalita || "-"}`,
             "",
@@ -945,7 +968,14 @@ const googleMapsScriptUrl = googleMapsApiKey
           const endpoint = funnelForm.getAttribute("data-booking-endpoint") || "/api/book";
           const payload = buildLeadPayload();
           isSubmitting = true;
-          trackFunnelEvent("submit_attempt", { intent: payload.zamer || "" });
+          trackFunnelEvent("submit_attempt", {
+            intent: payload.zamer || "",
+            source_lead_id: payload.source_lead_id || "",
+            offer: payload.offer || "",
+            utm_source: payload.utm_source || "",
+            utm_campaign: payload.utm_campaign || "",
+            utm_content: payload.utm_content || "",
+          });
 
           if (funnelSubmit instanceof HTMLButtonElement) {
             funnelSubmit.disabled = true;
@@ -980,12 +1010,23 @@ const googleMapsScriptUrl = googleMapsApiKey
               booking_status: data.bookingStatus || "",
               mode: data.mode || "",
               lead_correlation_id: payload.lead_correlation_id || "",
+              source_lead_id: payload.source_lead_id || "",
+              offer: payload.offer || "",
+              utm_source: payload.utm_source || "",
+              utm_campaign: payload.utm_campaign || "",
+              utm_content: payload.utm_content || "",
             });
             showBookingConfirmation(data);
           } catch {
             const fallbackHref = buildMailFallbackHref(payload);
             setFunnelError("Rezerváciu sa teraz nepodarilo odoslať. Otvorím email, aby sa správa nestratila.");
-            trackFunnelEvent("submit_error", { intent: payload.zamer || "" });
+            trackFunnelEvent("submit_error", {
+              intent: payload.zamer || "",
+              source_lead_id: payload.source_lead_id || "",
+              offer: payload.offer || "",
+              utm_source: payload.utm_source || "",
+              utm_campaign: payload.utm_campaign || "",
+            });
 
             if (fallbackHref) {
               window.location.href = fallbackHref;
@@ -1144,6 +1185,33 @@ const googleMapsScriptUrl = googleMapsApiKey
         });
 
         setupLocationAutocomplete();
+
+        const applyQueryIntent = () => {
+          const params = new URLSearchParams(window.location.search);
+          const intent = params.get("zamer");
+          if (!intent) return;
+
+          const button = Array.from(funnelForm.querySelectorAll('[data-choice="zamer"]')).find((item) => {
+            return item instanceof HTMLButtonElement && item.dataset.value === intent;
+          });
+          if (!(button instanceof HTMLButtonElement)) return;
+
+          const field = funnelForm.elements.namedItem("zamer");
+          if (field instanceof HTMLInputElement) field.value = intent;
+
+          funnelForm.querySelectorAll('[data-choice="zamer"]').forEach((item) => {
+            item.classList.toggle("is-selected", item === button);
+            item.setAttribute("aria-pressed", item === button ? "true" : "false");
+          });
+
+          trackFunnelEvent("intent_prefill", {
+            intent,
+            source: params.get("zdroj") || "",
+            offer: params.get("offer") || "",
+          });
+        };
+
+        applyQueryIntent();
         applyIntentRoute();
         setFunnelStep(0);
       }
